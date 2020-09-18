@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+</head>
+<body>
+    <button type="button" class="layui-btn" id="test1">
+        <i class="layui-icon">&#xe67c;</i>上传图片
+      </button>
+       
+      <script src="../../layui/layui.js"></script>
+      <script>
+      layui.use(['upload', 'layer'], function(){
+        var upload = layui.upload;
+         
+        //执行实例
+        var uploadInst = upload.render({
+          elem: '#test1' //绑定元素
+          ,url: '../../../document/adddocumentrecordfile' //上传接口
+            ,data: {documentRecordId: '5f64268323782e06ed455dfc'}
+          ,done: function(res){
+            layer.alert(JSON.stringify(res));
+          }
+          ,error: function(index, upload){
+            layer.alert('失败');
+          }
+        });
+      });
+      </script>
+</body>
+</html>

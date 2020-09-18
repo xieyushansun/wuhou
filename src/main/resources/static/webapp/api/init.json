@@ -1,0 +1,51 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "pages/welcome.html"
+  },
+  "logoInfo": {
+    "title": "武侯",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "",
+      "icon": "",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "首页",
+          "href": "pages/welcome.html",
+          "icon": "fa fa-home",
+          "target": "_self"
+        },
+        {
+          "title": "新建档案",
+          "href": "pages/create-file.html",
+          "icon": "fa fa-window-maximize",
+          "target": "_self"
+        },
+        {
+          "title": "档案查询",
+          "href": "pages/search.html",
+          "icon": "fa fa-search",
+          "target": "_self"
+        },
+        {
+          "title": "档案管理",
+          "href": "pages/manage.html",
+          "icon": "fa fa-file-text",
+          "target": "_self"
+        },
+        {
+          "title": "系统维护",
+          "href": "pages/maintain.html",
+          "icon": "fa fa-calendar",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}
