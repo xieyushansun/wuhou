@@ -127,7 +127,7 @@ public class DocumentRecordController {
     public ResultUtil<String> addDocumentRecordFile(
             @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
             @ApiParam(value = "文件清单", required = true) @RequestParam("file") MultipartFile[] filelist
-    ) throws IOException {
+    ){
         try {
             documentRecordService.addDocumentRecordFile(documentRecordId, filelist);
         }catch (Exception e){
@@ -135,7 +135,6 @@ public class DocumentRecordController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
-    
     //下载档案文件
     @GetMapping("/downLoadDocumentRecordFile")
     @ApiOperation("下载档案文件")
