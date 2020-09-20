@@ -1,21 +1,37 @@
 package com.example.wuhou.controller;
 
 import com.example.wuhou.constant.ResponseConstant;
+import com.example.wuhou.entity.DocumentFile;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.entity.User;
 import com.example.wuhou.exception.ExistException;
 import com.example.wuhou.service.DocumentRecordService;
+import com.example.wuhou.util.FileOperationUtil;
 import com.example.wuhou.util.ResultUtil;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.spring.web.json.Json;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.*;
+import com.google.gson.JsonObject;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/document")
@@ -23,7 +39,9 @@ import java.util.List;
 public class DocumentRecordController {
     @Autowired
     DocumentRecordService documentRecordService;
-    @GetMapping("/adddocumentrecord")
+
+
+    @PostMapping("/adddocumentrecord")
     @ApiOperation("新增档案记录")
     public ResultUtil<String> addDocumentRecord(
             @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
@@ -34,7 +52,7 @@ public class DocumentRecordController {
             @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
             @ApiParam(value = "密级", required = true) @RequestParam(defaultValue = "1") String security,
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
-            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
+            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "2016-2018劳务品牌培训补贴申报资料") String fileCategory,
             @ApiParam(value = "责任者", required = true) @RequestParam(defaultValue = "1") String responsible,
             @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "1") String fileName,
             @ApiParam(value = "分类号", required = true) @RequestParam(defaultValue = "1") String classNumber,
@@ -66,19 +84,42 @@ public class DocumentRecordController {
         } catch (Exception e) {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.NOT_LOGIN, "添加成功！");
-        resultUtil.setBody(documentRecordId);  //返回档案在数据库中存储的id
+        List<String> filelist = new ArrayList<>();
+        filelist = documentRecordService.findFileListByFileName(fileCategory);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", documentRecordId);
+//        jsonObject.addProperty("filelist", filelist);
+        JsonArray jsonArray = new JsonArray();
+        for (int i = 0; i < filelist.size(); i++){
+            jsonArray.add(filelist.get(i));
+        }
+        jsonObject.add("filelist", jsonArray);
+        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+        resultUtil.setBody(jsonObject.toString());  //返回档案在数据库中存储的id
         return resultUtil;
-//        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
-//        String userame = userfind.getUserName();
+
+    }
+
+    //删除档案
+    @PostMapping("/deletedocumentrecord")
+    @ApiOperation("删除档案记录")
+    public ResultUtil<String> deleteDocumentRecord(
+            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId
+    ) throws IOException {
+        try {
+            documentRecordService.deleteDocumentRecord(documentRecordId);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
 
     //添加档案对应的几个文件
     @PostMapping("/adddocumentrecordfile")
-    @ApiOperation("新增档案记录")
+    @ApiOperation("新增档案记录关联文件")
     public ResultUtil<String> addDocumentRecordFile(
             @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
-            @ApiParam(value = "文件清单", required = true) @RequestParam() MultipartFile[] filelist
+            @ApiParam(value = "文件清单", required = true) @RequestParam("file") MultipartFile[] filelist
     ) throws IOException {
         try {
             documentRecordService.addDocumentRecordFile(documentRecordId, filelist);
@@ -86,6 +127,41 @@ public class DocumentRecordController {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+    }
+
+    //下载档案文件
+    @GetMapping("/downLoadDocumentRecordFile")
+    @ApiOperation("下载档案文件")
+    public void downLoadDocumentRecordFile(
+            @ApiParam(value = "下载文件在数据库中的编号", required = true) @RequestParam(defaultValue = "5f657558411e4d7514d2603b") String fileId,
+            HttpServletResponse response
+    ) throws IOException {
+        FileOutputStream fileOutputStream = null;
+
+        DocumentFile documentFile = documentRecordService.downLoadDocumentRecordFile(fileId);
+        byte[] buffer = documentFile.getFile();
+
+        //先下载到本地
+//        String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
+//        FileOutputStream out = new FileOutputStream(new File(path));
+//        out.write(buffer);
+//        File f = new File(path);
+//
+//        FileInputStream fileInputStream = new FileInputStream(f);
+
+        //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
+        response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode("test3.jpg", "UTF-8"));
+        OutputStream outputStream = response.getOutputStream();
+//        byte[] bytes = new byte[204800];
+        int len = buffer.length;
+//        while ((len = fileInputStream.read(bytes))>0){
+            outputStream.write(buffer,0,len);
+//        }
+//        fileInputStream.close();
+        outputStream.close();
+
+//        return response;
+//      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
 
 }

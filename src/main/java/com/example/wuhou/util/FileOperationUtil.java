@@ -1,11 +1,13 @@
 package com.example.wuhou.util;
 
+import org.bson.types.Binary;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class FileOperation {
+public class FileOperationUtil {
     public static byte[] fileToByte(File file) throws IOException {
         byte[] bytes = null;
         FileInputStream fis = null;
@@ -21,10 +23,12 @@ public class FileOperation {
         }
         return bytes;
     }
-    public static void bytesToFile(byte[] bFile, String fileDest) {
+    public static FileOutputStream bytesToFile(byte[] bFile, String fileName) {
+        Binary binary = new Binary(bFile);
+        binary.getData();
         FileOutputStream fileOuputStream = null;
         try {
-            fileOuputStream = new FileOutputStream(fileDest);
+            fileOuputStream = new FileOutputStream(fileName);
             fileOuputStream.write(bFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,5 +41,7 @@ public class FileOperation {
                 }
             }
         }
+
+        return fileOuputStream;
     }
 }

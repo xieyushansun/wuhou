@@ -10,6 +10,10 @@
     <button type="button" class="layui-btn" id="test1">
         <i class="layui-icon">&#xe67c;</i>上传图片
       </button>
+
+    <a class="layui-btn" href="../../../document/downLoadDocumentRecordFile">下载</a>
+
+    <img src="../../../document/downLoadDocumentRecordFile?fileId=5f657558411e4d7514d2603b" alt="">
        
       <script src="../../layui/layui.js"></script>
       <script>
@@ -20,6 +24,7 @@
         var uploadInst = upload.render({
           elem: '#test1' //绑定元素
           ,url: '../../../document/adddocumentrecordfile' //上传接口
+            ,accept: 'file'
             ,data: {documentRecordId: '5f64268323782e06ed455dfc'}
           ,done: function(res){
             layer.alert(JSON.stringify(res));

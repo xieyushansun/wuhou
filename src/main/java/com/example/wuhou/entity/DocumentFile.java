@@ -5,10 +5,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DocumentFile {
     String documentRecordId;
+    String documentName;
     byte[] file;
+    public String getDocumentName() {
+        return documentName;
+    }
 
-    public DocumentFile(){
-        documentRecordId = null;
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
     }
 
     public String getDocumentRecordId() {

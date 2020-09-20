@@ -23,4 +23,5 @@ public class FileCategoryDao {
         }
         mongoTemplate.insert(fileCategory);
     }
+
 }
