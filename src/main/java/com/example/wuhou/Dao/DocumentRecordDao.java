@@ -2,15 +2,8 @@ package com.example.wuhou.Dao;
 
 import com.example.wuhou.entity.DocumentFile;
 import com.example.wuhou.entity.DocumentRecord;
-import com.example.wuhou.entity.FileCategory;
+import com.example.wuhou.entity.DocumentCategory;
 import com.example.wuhou.exception.NotExistException;
-import com.example.wuhou.util.FileOperationUtil;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,15 +11,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-import java.io.*;
-import java.rmi.server.ExportException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class DocumentRecordDao {
@@ -44,20 +32,26 @@ public class DocumentRecordDao {
         return documentRecordReturn.getId();
     }
     //查询案卷号对应的文件清单
-    public List<String> findFileListByFileNumber(String fileCategory){
-        List<String> fileList = new ArrayList<>();
+    public String[] findFileListByDocumentRecordId(String DocumentRecordId) throws Exception {
         Query query = new Query();
-        Criteria criteria = Criteria.where("fileCategory").is(fileCategory);
-        List<FileCategory> list = mongoTemplate.find(query, FileCategory.class);
-        if (list.get(0) != null){
-            fileList = list.get(0).getFilelist();
+        Criteria criteria = Criteria.where("id").is(new ObjectId(DocumentRecordId));
+        DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
+        if (documentRecord == null){
+            throw new Exception("没有这条记录！");
+        }
+        String recordPath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
+        File file = new File(recordPath);
+        String[] fileList = null;
+        if (file.isDirectory()){
+//            fileList = list.get(0).getFilelist();
+            fileList = file.list();
         }
         return fileList;
     }
     //删除文件记录
     public void deleteDocumentRecord(String documentRecordId) throws NotExistException {
         Query query1 = new Query();
-        Criteria criteria1 = Criteria.where("_id").is(new ObjectId(documentRecordId));
+        Criteria criteria1 = Criteria.where("id").is(new ObjectId(documentRecordId));
         query1.addCriteria(criteria1);
         DocumentRecord documentRecord = mongoTemplate.findOne(query1, DocumentRecord.class);
         if (documentRecord == null){
@@ -71,7 +65,7 @@ public class DocumentRecordDao {
         mongoTemplate.remove(query2, DocumentFile.class);
     }
     //添加档案文件
-    public void addDocumentRecordFile(HttpServletRequest request, String documentRecordId, MultipartFile[] filelist) throws Exception {
+    public DocumentRecord getDocumentRecord(String documentRecordId){
 //        DocumentFile documentFile = new DocumentFile();
 //        if (filelist.length == 0){
 //            throw new Exception("没有文件，上传失败！");
@@ -88,8 +82,11 @@ public class DocumentRecordDao {
 //                throw new Exception("数据库插入失败！");
 //            }
 //        }
-
-
+        Query query = new Query();
+        Criteria criteria = Criteria.where("id").is(new ObjectId(documentRecordId));
+        query.addCriteria(criteria);
+        DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
+        return documentRecord;
     }
     //下载档案文件
     public DocumentFile downLoadDocumentRecordFile(ObjectId fileId) {

@@ -6,15 +6,15 @@ import org.springframework.stereotype.Repository;
 public class DocumentRecord {
     //记录在数据库中的id
     String id;
-    //档号
+    //案卷题名（描述/标题）
+    String fileName;
+    //档号 ()
     String documentNumber;
     //全宗号
     String recordGroupNumber;
-    //目录号
-    String catalogNumber;
-    //案卷号
-    String fileNumber;
-    //年度
+    //盒号
+    String boxNumber;
+    //年份
     String year;
     //保管期限
     String duration;
@@ -26,20 +26,20 @@ public class DocumentRecord {
     String fileCategory;
     //责任者
     String responsible;
-    //案卷题名
-    String fileName;
-    //分类号
-    String classNumber;
-    //存放位置
-    String storagePath;
+    //单位代码
+    String danwieCode;
+    //单位名称
+    String danweiName;
+    //档案室中的存放位置
+    String position;
     //著录人
     String recorder;
     //著录时间
     String recordTime;
-
-    public DocumentRecord(){
-        this.id = null;
-    }
+    //所在盘符路径
+    String diskPath;
+    //盘符下的存储路径
+    String storePath;
 
     public String getId() {
         return id;
@@ -47,6 +47,14 @@ public class DocumentRecord {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getDocumentNumber() {
@@ -65,20 +73,12 @@ public class DocumentRecord {
         this.recordGroupNumber = recordGroupNumber;
     }
 
-    public String getCatalogNumber() {
-        return catalogNumber;
+    public String getBoxNumber() {
+        return boxNumber;
     }
 
-    public void setCatalogNumber(String catalogNumber) {
-        this.catalogNumber = catalogNumber;
-    }
-
-    public String getFileNumber() {
-        return fileNumber;
-    }
-
-    public void setFileNumber(String fileNumber) {
-        this.fileNumber = fileNumber;
+    public void setBoxNumber(String boxNumber) {
+        this.boxNumber = boxNumber;
     }
 
     public String getYear() {
@@ -129,28 +129,28 @@ public class DocumentRecord {
         this.responsible = responsible;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getDanwieCode() {
+        return danwieCode;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setDanwieCode(String danwieCode) {
+        this.danwieCode = danwieCode;
     }
 
-    public String getClassNumber() {
-        return classNumber;
+    public String getDanweiName() {
+        return danweiName;
     }
 
-    public void setClassNumber(String classNumber) {
-        this.classNumber = classNumber;
+    public void setDanweiName(String danweiName) {
+        this.danweiName = danweiName;
     }
 
-    public String getStoragePath() {
-        return storagePath;
+    public String getPosition() {
+        return position;
     }
 
-    public void setStoragePath(String storagePath) {
-        this.storagePath = storagePath;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public String getRecorder() {
@@ -167,5 +167,21 @@ public class DocumentRecord {
 
     public void setRecordTime(String recordTime) {
         this.recordTime = recordTime;
+    }
+
+    public String getDiskPath() {
+        return diskPath;
+    }
+
+    public void setDiskPath(String diskPath) {
+        this.diskPath = diskPath;
+    }
+
+    public String getStorePath() {
+        return storePath;
+    }
+
+    public void setStorePath(String storePath) {
+        this.storePath = storePath;
     }
 }

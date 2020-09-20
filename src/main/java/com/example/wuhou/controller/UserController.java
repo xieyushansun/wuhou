@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -25,7 +22,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiOperation("登录")
     public ResultUtil<User> Login(
             @ApiParam(value = "用户名", required = true) @RequestParam() String userId,
@@ -59,7 +56,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/addUser")
+    @PostMapping("/addUser")
     @ApiOperation("新增用户")
     public ResultUtil<String> addUser(
             @ApiParam(value = "用户名", required = true) @RequestParam(defaultValue = "10010") String userId,
@@ -77,14 +74,14 @@ public class UserController {
 //        String userame = userfind.getUserName();
     }
 
-    @GetMapping("/deleteUser")
+    @PostMapping("/deleteUser")
     @ApiOperation("删除用户")
     public ResultUtil<String> deleteUser(
             @ApiParam(value = "用户名", required = true) @RequestParam(defaultValue = "10010") String userId
     ){
         try {
             userService.deleteUser(userId);
-        }catch (NotExistException e){
+        }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");

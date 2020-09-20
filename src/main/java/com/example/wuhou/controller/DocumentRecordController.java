@@ -35,68 +35,74 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/document")
-@Api(tags = "档案")
+@Api(tags = "档案记录")
 public class DocumentRecordController {
     @Autowired
     DocumentRecordService documentRecordService;
-
-
     @PostMapping("/adddocumentrecord")
     @ApiOperation("新增档案记录")
     public ResultUtil<String> addDocumentRecord(
-            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
-            @ApiParam(value = "全宗号", required = true) @RequestParam(defaultValue = "1") String recordGroupNumber,
-            @ApiParam(value = "目录号", required = true) @RequestParam(defaultValue = "1") String catalogNumber,
-            @ApiParam(value = "案卷号", required = true) @RequestParam(defaultValue = "1") String fileNumber,
-            @ApiParam(value = "年度", required = true) @RequestParam(defaultValue = "1") String year,
-            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
-            @ApiParam(value = "密级", required = true) @RequestParam(defaultValue = "1") String security,
-            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
-            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "2016-2018劳务品牌培训补贴申报资料") String fileCategory,
-            @ApiParam(value = "责任者", required = true) @RequestParam(defaultValue = "1") String responsible,
             @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "1") String fileName,
-            @ApiParam(value = "分类号", required = true) @RequestParam(defaultValue = "1") String classNumber,
-            @ApiParam(value = "存放位置", required = true) @RequestParam(defaultValue = "1") String storagePath,
+            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
+            @ApiParam(value = "全宗号", required = true) @RequestParam(defaultValue = "129") String recordGroupNumber,
+            @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "1") String boxNumber,
+            @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "1") String year,
+            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
+            @ApiParam(value = "密级", required = false) @RequestParam(defaultValue = "") String security,
+            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
+            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
+            @ApiParam(value = "责任者", required = false) @RequestParam(defaultValue = "") String responsible,
+            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danwieCode,
+            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
+            @ApiParam(value = "档案室中的存放位置", required = false) @RequestParam(defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime
+//            @ApiParam(value = "所在盘符路径", required = true) @RequestParam(defaultValue = "1") String diskPath,
+//            @ApiParam(value = "盘符下的存储路径", required = true) @RequestParam(defaultValue = "1") String storePath
             ){
         String documentRecordId = "";
         try {
             DocumentRecord documentRecord = new DocumentRecord();
 
+            documentRecord.setFileName(fileName);
             documentRecord.setDocumentNumber(documentNumber);
             documentRecord.setRecordGroupNumber(recordGroupNumber);
-            documentRecord.setCatalogNumber(catalogNumber);
-            documentRecord.setFileNumber(fileNumber);
+            documentRecord.setBoxNumber(boxNumber);
             documentRecord.setYear(year);
             documentRecord.setDuration(duration);
             documentRecord.setSecurity(security);
             documentRecord.setDocumentCategory(documentCategory);
             documentRecord.setFileCategory(fileCategory);
             documentRecord.setResponsible(responsible);
-            documentRecord.setFileName(fileName);
-            documentRecord.setClassNumber(classNumber);
-            documentRecord.setStoragePath(storagePath);
+            documentRecord.setDanwieCode(danwieCode);
+            documentRecord.setDanweiName(danweiName);
+            documentRecord.setPosition(position);
             documentRecord.setRecorder(recorder);
             documentRecord.setRecordTime(recordTime);
 
             documentRecordId = documentRecordService.addDocumentRecord(documentRecord);
+
         } catch (Exception e) {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        List<String> filelist = new ArrayList<>();
-        filelist = documentRecordService.findFileListByFileName(fileCategory);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("id", documentRecordId);
-//        jsonObject.addProperty("filelist", filelist);
-        JsonArray jsonArray = new JsonArray();
-        for (int i = 0; i < filelist.size(); i++){
-            jsonArray.add(filelist.get(i));
-        }
-        jsonObject.add("filelist", jsonArray);
-        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
-        resultUtil.setBody(jsonObject.toString());  //返回档案在数据库中存储的id
+        ResultUtil<String> resultUtil = new ResultUtil<String>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+        //返回档案记录Id
+        resultUtil.setBody(documentRecordId);
         return resultUtil;
+
+//        List<String> filelist = new ArrayList<>();
+//        filelist = documentRecordService.findFileListByFileName(fileCategory);
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("id", documentRecordId);
+////        jsonObject.addProperty("filelist", filelist);
+//        JsonArray jsonArray = new JsonArray();
+//        for (int i = 0; i < filelist.size(); i++){
+//            jsonArray.add(filelist.get(i));
+//        }
+//        jsonObject.add("filelist", jsonArray);
+//        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+//        resultUtil.setBody(jsonObject.toString());  //返回档案在数据库中存储的id
+//        return resultUtil;
 
     }
 
@@ -114,6 +120,7 @@ public class DocumentRecordController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
 
+
     //添加档案对应的几个文件
     @PostMapping("/adddocumentrecordfile")
     @ApiOperation("新增档案记录关联文件")
@@ -128,40 +135,74 @@ public class DocumentRecordController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
-
+    
     //下载档案文件
     @GetMapping("/downLoadDocumentRecordFile")
     @ApiOperation("下载档案文件")
-    public void downLoadDocumentRecordFile(
-            @ApiParam(value = "下载文件在数据库中的编号", required = true) @RequestParam(defaultValue = "5f657558411e4d7514d2603b") String fileId,
+    public ResultUtil<String> downLoadDocumentRecordFile(
+            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
+            @ApiParam(value = "下载文件名称", required = true) @RequestParam(defaultValue = "5f657558411e4d7514d2603b") String fileName,
             HttpServletResponse response
-    ) throws IOException {
-        FileOutputStream fileOutputStream = null;
-
-        DocumentFile documentFile = documentRecordService.downLoadDocumentRecordFile(fileId);
-        byte[] buffer = documentFile.getFile();
-
-        //先下载到本地
-//        String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
-//        FileOutputStream out = new FileOutputStream(new File(path));
-//        out.write(buffer);
-//        File f = new File(path);
+    ) {
+        try {
+            DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
+            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
+            File file = new File(filepath);
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            inputStream.close();
+            response.reset();
+            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "下载成功！");
+//        FileOutputStream fileOutputStream = null;
+//        DocumentFile documentFile = documentRecordService.downLoadDocumentRecordFile(fileId);
+//        byte[] buffer = documentFile.getFile();
 //
-//        FileInputStream fileInputStream = new FileInputStream(f);
-
-        //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
-        response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode("test3.jpg", "UTF-8"));
-        OutputStream outputStream = response.getOutputStream();
-//        byte[] bytes = new byte[204800];
-        int len = buffer.length;
-//        while ((len = fileInputStream.read(bytes))>0){
-            outputStream.write(buffer,0,len);
-//        }
-//        fileInputStream.close();
-        outputStream.close();
+//        //先下载到本地
+////        String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
+////        FileOutputStream out = new FileOutputStream(new File(path));
+////        out.write(buffer);
+////        File f = new File(path);
+////
+////        FileInputStream fileInputStream = new FileInputStream(f);
+//
+//        //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
+//        response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode("test3.jpg", "UTF-8"));
+//        OutputStream outputStream = response.getOutputStream();
+////        byte[] bytes = new byte[204800];
+//        int len = buffer.length;
+////        while ((len = fileInputStream.read(bytes))>0){
+//            outputStream.write(buffer,0,len);
+////        }
+////        fileInputStream.close();
+//        outputStream.close();
 
 //        return response;
 //      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
 
+    //根据档案记录Id查询路径下对应的文件清单名
+    @GetMapping("/findFileListByDocumentRecordId")
+    @ApiOperation("新增档案记录关联文件")
+    public ResultUtil<String[]> findFileListByDocumentRecordId(
+            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId
+    ){
+        String[] fileList;
+        try {
+            fileList = documentRecordService.findFileListByDocumentRecordId(documentRecordId);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        ResultUtil<String[]> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+        resultUtil.setBody(fileList);
+        return resultUtil;
+    }
 }
