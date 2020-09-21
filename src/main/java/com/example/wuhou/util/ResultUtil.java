@@ -5,6 +5,8 @@ public class ResultUtil<T> {
     private int code;
     private String message;
     private T body;
+    private int totalElements;
+
 
     public ResultUtil() {
         super();
@@ -44,6 +46,14 @@ public class ResultUtil<T> {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public int getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(int totalElements) {
+        this.totalElements = totalElements;
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class DocumentRecordDao {
@@ -97,5 +98,32 @@ public class DocumentRecordDao {
         return documentFile;
 //        FileOutputStream fileOutputStream = FileOperationUtil.bytesToFile(documentFile.getFile(), documentFile.getDocumentName());
 //        return fileOutputStream;
+    }
+    public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
+        List<List<DocumentRecord>> lists = new ArrayList<>();
+        List<DocumentRecord> resultList = new ArrayList<>();
+        Query query = new Query();
+        query.skip((currentPage - 1) * pageSize);
+        query.limit(pageSize);
+
+        if (blurryFind.compareTo("0") == 0){ //精确
+            for (String key : findKeyWordMap.keySet()) {
+                Criteria criteria = Criteria.where(key).is(findKeyWordMap.get(key));
+                query.addCriteria(criteria);
+            }
+        }else {
+            for (String key : findKeyWordMap.keySet()) {
+                Criteria criteria = Criteria.where(key).regex(".*?" + findKeyWordMap.get(key) + ".*?");
+                query.addCriteria(criteria);
+            }
+        }
+        lists.add(mongoTemplate.find(query, DocumentRecord.class));
+        // 将二维lists转为一维resultList
+        for (List<DocumentRecord> list : lists) {
+            for (DocumentRecord documentRecord : list) {
+                resultList.add(documentRecord);
+            }
+        }
+        return resultList;
     }
 }

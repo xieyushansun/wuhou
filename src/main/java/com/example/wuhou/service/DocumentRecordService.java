@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DocumentRecordService {
@@ -65,5 +67,8 @@ public class DocumentRecordService {
             throw new Exception("没有这条记录！");
         }
         return documentRecord;
+    }
+    public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
+        return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
     }
 }

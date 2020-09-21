@@ -8,7 +8,7 @@ public class DocumentRecord {
     String id;
     //案卷题名（描述/标题）
     String fileName;
-    //档号 ()
+    //档号
     String documentNumber;
     //全宗号
     String recordGroupNumber;
