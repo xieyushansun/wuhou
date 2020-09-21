@@ -1,36 +1,20 @@
 package com.example.wuhou.controller;
 
 import com.example.wuhou.constant.ResponseConstant;
-import com.example.wuhou.entity.DocumentFile;
 import com.example.wuhou.entity.DocumentRecord;
-import com.example.wuhou.entity.User;
-import com.example.wuhou.exception.ExistException;
 import com.example.wuhou.service.DocumentRecordService;
-import com.example.wuhou.util.FileOperationUtil;
 import com.example.wuhou.util.ResultUtil;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.bson.conversions.Bson;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.spring.web.json.Json;
 
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
-import com.google.gson.JsonObject;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -89,7 +73,6 @@ public class DocumentRecordController {
         //返回档案记录Id
         resultUtil.setBody(documentRecordId);
         return resultUtil;
-
 //        List<String> filelist = new ArrayList<>();
 //        filelist = documentRecordService.findFileListByFileName(fileCategory);
 //        JsonObject jsonObject = new JsonObject();
@@ -103,7 +86,6 @@ public class DocumentRecordController {
 //        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
 //        resultUtil.setBody(jsonObject.toString());  //返回档案在数据库中存储的id
 //        return resultUtil;
-
     }
 
     //删除档案
@@ -140,7 +122,7 @@ public class DocumentRecordController {
     @ApiOperation("下载档案文件")
     public ResultUtil<String> downLoadDocumentRecordFile(
             @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
-            @ApiParam(value = "下载文件名称", required = true) @RequestParam(defaultValue = "5f657558411e4d7514d2603b") String fileName,
+            @ApiParam(value = "下载文件名称", required = true) @RequestParam() String fileName,
             HttpServletResponse response
     ) {
         try {

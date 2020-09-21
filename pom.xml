@@ -57,6 +57,13 @@
             <version>2.6</version>
             <!--<scope>compile</scope>-->
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

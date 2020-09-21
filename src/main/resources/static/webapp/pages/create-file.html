@@ -65,75 +65,23 @@
 
         var documentCategoryList = [];
         var fileCategoryList = [];
-        var documentCategoryData = [
-                {
-                "id": "5f671217f116fa01e29335ac",
-                "documentCategory": "失业保险金基金类",
-                "documentCategoryShortName": "基金",
-                "fileCategory": [
-                    "2012-2019年领取失业金人员培训补贴申报资料",
-                    "失业金办理",
-                    "暂时困难企业稳岗补贴",
-                    "技能提升补贴",
-                    "技术技能提升补贴",
-                    "一般企业稳岗返补贴",
-                    "失业金办理退费",
-                    "暂时困难企业稳岗补贴退费",
-                    "技能提升补贴退费",
-                    "技术技能提升补贴退费",
-                    "一般企业稳岗返补贴退费"
-                ]
-                },
-                {
-                "id": "5f67117cf116fa01e29335ab",
-                "documentCategory": "就业创业补助资金",
-                "documentCategoryShortName": "bzj",
-                "fileCategory": [
-                    "2016-2018劳务品牌培训补贴申报资料",
-                    "2012-2014技能培训补贴申报资料",
-                    "全民免费培训技能提升补贴申报资料",
-                    "个人直补培训补贴申报资料",
-                    "灵活就业银行发放人员名单",
-                    "灵活就业社保补贴公示",
-                    "灵活就业街道上报人员台账（一个季度一套）",
-                    "单位社保补贴增加（减少）表",
-                    "公益性岗位社保补贴",
-                    "灵活就业社保补贴申报资料",
-                    "一般企业社保及岗位补贴",
-                    "小微企业社保及岗位补贴",
-                    "就业困难认定",
-                    "单位补贴检查资料",
-                    "单位补贴抽查检查资料",
-                    "高校毕业生求职创业补贴(院校汇总材料)",
-                    "高校毕业生求职创业补贴(个人申报材料)",
-                    "就业见习补贴(企业汇总材料)",
-                    "就业见习补贴(个人申报材料)",
-                    "创业培训补贴材料",
-                    "大学生创业实体补贴",
-                    "大学生创业孵化项目补贴",
-                    "大学生高校平台内孵化（实体）创业补贴",
-                    "大学生创业吸纳就业奖励",
-                    "创业担保贷款企业贷款贴息小微企业吸纳人员认定"
-                ]
-                }
-            ]
-
-        /* $(document).ready(function() {
+        var documentCategoryData = [];
+        $(document).ready(function() {
             (function() {
                 $.ajax({
-                    url: "../../", // 获取档案类别
+                    url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
                     type: "get",
                     success: function(res) {
                         if (res.code == 0) {
-                            documentRes = res.body;
-                            selectInit(documentRes); // 初始化渲染select
+                            documentCategoryData = res.body;
+                            selectInit(documentCategoryData); // 初始化渲染select
                         }
                     }
                 })
             })(); // 获取档案类别
         });
-         */
-        selectInit(documentCategoryData);
+
+        // selectInit(documentCategoryData);
         var documentCategory = '';
         form.on('select(documentCategory)', function(data) {
             documentCategory = data.value;
@@ -153,17 +101,7 @@
         var documentTable = table.render({
             elem: '#result-table',
             page: true,
-            data: [
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"},
-                {documentNumber: "129-2018-H.gl.03-0001", recordGroupNumber: "123", year: "2019-1", catalogNumber: "XXXX", e: "2019", f: "永久", g: "绝密", h: "医疗保险", i:"个人", j:"成都市武侯区社会保障局"}],
+            url: '../..//document/normalFindDocumentRecord',
             toolbar: '#toolbar',
             cols: [[
                 {type: 'checkbox', width: 50},
@@ -186,7 +124,15 @@
             ]],
             limits: [10, 15, 20, 25],
             limit: 15,
-            skin: 'line'
+            skin: 'line',
+            parseData: function(res) {
+                return {
+                    "code": res.code,
+                    "msg": res.message,
+                    "count": res.totalElements,
+                    "data": res.body
+                }
+            }
         });
 
         // 监听表格顶部工具栏事件

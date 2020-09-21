@@ -2,8 +2,7 @@ package com.example.wuhou.controller;
 
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DocumentCategory;
-import com.example.wuhou.exception.ExistException;
-import com.example.wuhou.exception.NotExistException;
+
 import com.example.wuhou.service.DocumentCategoryService;
 import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;
@@ -12,7 +11,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.Document;
 import java.util.List;
 
 @RestController
@@ -21,6 +19,7 @@ import java.util.List;
 public class DocumentCategoryController {
     @Autowired
     DocumentCategoryService documentCategoryService;
+
     @PostMapping("/addDocumentCategory")
     @ApiOperation("新增案卷类别")
     public ResultUtil<String> addDocumentCategoryService(

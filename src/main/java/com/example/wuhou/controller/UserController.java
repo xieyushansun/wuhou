@@ -62,7 +62,7 @@ public class UserController {
             @ApiParam(value = "用户名", required = true) @RequestParam(defaultValue = "10010") String userId,
             @ApiParam(value = "密码", required = true) @RequestParam(defaultValue = "123") String password,
             @ApiParam(value = "昵称", required = true) @RequestParam(defaultValue = "杉杉") String nickName,
-            @ApiParam(value = "角色", required = true) @RequestParam(defaultValue = "guest") String role
+            @ApiParam(value = "角色", required = false) @RequestParam(required = false) String role
     ){
         try {
             userService.addUser(userId, password, nickName);

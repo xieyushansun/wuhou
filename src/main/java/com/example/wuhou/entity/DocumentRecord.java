@@ -1,8 +1,5 @@
 package com.example.wuhou.entity;
 
-import org.springframework.stereotype.Repository;
-
-@Repository
 public class DocumentRecord {
     //记录在数据库中的id
     String id;

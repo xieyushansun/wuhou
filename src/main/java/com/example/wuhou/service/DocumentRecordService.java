@@ -1,10 +1,9 @@
 package com.example.wuhou.service;
 
 import com.example.wuhou.Dao.DocumentRecordDao;
-import com.example.wuhou.entity.DocumentFile;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.exception.NotExistException;
-import org.bson.types.ObjectId;
+import com.example.wuhou.util.FileOperationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +18,11 @@ public class DocumentRecordService {
     @Autowired
     DocumentRecordDao documentRecordDao;
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
+
+        if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
+            throw new Exception("案卷题目重复！修改后创建创建！");
+        }
+
         String storePath = documentRecord.getRecordGroupNumber() + "\\" + documentRecord.getDocumentCategory() + "\\" + documentRecord.getYear()
                 + "\\" + documentRecord.getFileCategory() + "\\" + documentRecord.getBoxNumber() + "\\" + documentRecord.getFileName();
         documentRecord.setStorePath(storePath);
@@ -34,7 +38,9 @@ public class DocumentRecordService {
         return documentRecordId;
     }
     public void deleteDocumentRecord(String documentRecordId) throws NotExistException {
-         documentRecordDao.deleteDocumentRecord(documentRecordId);
+        String path = documentRecordDao.deleteDocumentRecord(documentRecordId);
+        //删除documentrecord的文件夹以及文件夹中的内容
+        FileOperationUtil.delFolder(path);
     }
     public void addDocumentRecordFile(String documentRecordId, MultipartFile[] filelist) throws Exception {
         if (filelist.length == 0){
@@ -55,9 +61,9 @@ public class DocumentRecordService {
             out.close();
         }
     }
-    public DocumentFile downLoadDocumentRecordFile(String fileId){
-        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
-    }
+//    public DocumentFile downLoadDocumentRecordFile(String fileId){
+//        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
+//    }
     public String[] findFileListByDocumentRecordId(String fileCategory) throws Exception {
         return documentRecordDao.findFileListByDocumentRecordId(fileCategory);
     }

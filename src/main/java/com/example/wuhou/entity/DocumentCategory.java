@@ -1,10 +1,5 @@
 package com.example.wuhou.entity;
 
-import org.springframework.stereotype.Repository;
-import java.util.List;
-
-@Repository
-
 public class DocumentCategory {
     //数据库中的id
     private String id;
