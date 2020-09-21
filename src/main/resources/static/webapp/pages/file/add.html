@@ -12,142 +12,339 @@
         body {
             background-color: #ffffff;
         }
+        .add-form {margin: 0 auto;}
+        
+        @media screen and (min-width: 642px) {
+            .add-form {
+                width: 642px;
+                margin: 10px auto;
+            }
+        }
+
+        @media screen and (min-width: 965px) {
+            .add-form {
+                width: 965px;
+                margin: 10px auto;
+            }
+            .layui-upload {
+                margin: 0 80px;
+            }
+        }
+
     </style>
 </head>
 <body>
-<div class="layui-form layuimini-form layui-form-pane">
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <label class="layui-form-label required">档号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input">
-                <!-- <tip>填写自己管理账号的名称。</tip> -->
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">全宗号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="recordGroupNumber" lay-verify="required" lay-reqtext="全宗号不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">目录号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="目录号不能为空" value="" class="layui-input">
-            </div>
-        </div>
-
-        <div class="layui-inline">
-            <label class="layui-form-label required">案卷号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="fileNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input">
-                <!-- <tip>填写自己管理账号的名称。</tip> -->
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">年度</label>
-            <div class="layui-input-inline">
-                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">保管期限</label>
-            <div class="layui-input-inline">
-               <select name="duration" lay-verify="required">
-                <option value=""></option>
-                   <option value="5年">5年</option>
-                   <option value="10年">10年</option>
-                   <option value="15年">15年</option>
-                   <option value="20年">20年</option>
-                   <option value="25年">25年</option>
-                   <option value="50年">50年</option>
-                   <option value="永久">永久</option>
-               </select>
-            </div>
-        </div>
-
-        <div class="layui-inline">
-            <label class="layui-form-label required">密级</label>
-            <div class="layui-input-inline">
-                <input type="text" name="security" lay-verify="required" lay-reqtext="密级不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">档案类别</label>
-            <div class="layui-input-inline">
-                <select name="documentCategory" lay-verify="required" lay-reqtext="档案类别不能为空">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">案卷类别</label>
-            <div class="layui-input-inline">
-                <select name="fileCategory" lay-verify="required" lay-reqtext="案卷类别不能为空">
-            </div>
-        </div>
-
-        <div class="layui-inline">
-            <label class="layui-form-label required">责任者</label>
-            <div class="layui-input-inline">
-                <input type="text" name="responsible" lay-verify="required" lay-reqtext="责任者不能为空" value="" class="layui-input">
-                <!-- <tip>填写自己管理账号的名称。</tip> -->
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">案卷题名</label>
-            <div class="layui-input-inline">
-                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">分类号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="classNumber" lay-verify="" lay-reqtext="目录号不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">存放位置</label>
-            <div class="layui-input-inline">
-                <input type="text" name="storagePath" lay-verify="" lay-reqtext="存放位置不能为空" value="" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">著录人</label>
-            <div class="layui-input-inline">
-                <input type="text" name="recorder" class="layui-input layui-disabled" readonly>
-            </div>
-        </div>
-        <div class="layui-inline">
-            <label class="layui-form-label required">著录时间</label>
-            <div class="layui-input-inline">
-                <input type="text" name="recordTime"class="layui-input layui-disabled" readonly>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <fieldset class="table-search-fieldset">
+                <legend>
+                    档案归类
+                </legend>
+                <div style="margin: 10px 10px 10px 10px">
+                    <button class="layui-btn layui-btn-xs" id="continue-add">继续添加</button>
+                </div>
+            </fieldset>
+            <div class="add-form">
+                <div class="layui-form layuimini-form layui-form-pane" lay-filter="add-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">档号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">全宗号</label>
+                            <div class="layui-input-inline">
+                                <select name="recordGroupNumber" lay-verify="required">
+                                    <option value="129">129</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">年度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input" id="year">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">保管期限</label>
+                            <div class="layui-input-inline">
+                                <select name="duration" lay-verify="required">
+                                <option value=""></option>
+                                    <option value="10年">10年</option>
+                                    <option value="20年">30年</option>
+                                    <option value="50年">50年</option>
+                                    <option value="100年">100年</option>
+                                    <option value="永久">永久</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密级</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="security" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">档案类别</label>
+                            <div class="layui-input-inline">
+                                <select name="documentCategory" lay-verify="required" lay-reqtext="档案类别不能为空"></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷类别</label>
+                            <div class="layui-input-inline">
+                                <select name="fileCategory" lay-verify="required" lay-reqtext="案卷类别不能为空"></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="fileNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input" placeholder="盒号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">责任者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="responsible" value="" class="layui-input">
+                                <!-- <tip>填写自己管理账号的名称。</tip> -->
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位代码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="danweiCode" class="layui-input" placeholder="(社会保障号码)">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="danweiName" class="layui-input" placeholder="(姓名)">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷题名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <!-- <div class="layui-inline">
+                            <label class="layui-form-label">分类号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="classNumber" lay-verify="" lay-reqtext="目录号不能为空" value="" class="layui-input">
+                            </div>
+                        </div> -->
+                        <div class="layui-inline">
+                            <label class="layui-form-label">存放位置</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="position" lay-verify="" lay-reqtext="存放位置不能为空" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">著录人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="recorder" class="layui-input layui-disabled" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">著录时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="recordTime"class="layui-input layui-disabled" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" id="sava" class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+                            <button id="mount-btn" class="layui-btn layui-btn-normal layui-disabled" lay-filter="mountBtn">
+                                <i class="layui-icon layui-icon-upload"></i>
+                                挂载文件
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="layuimini-container" id="upload-container" style="display: none;">
+        <div class="layuimini-main">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button> 
+                <div class="layui-upload-list">
+                  <table class="layui-table">
+                    <thead>
+                      <tr><th>文件名</th>
+                      <th>大小</th>
+                      <th>状态</th>
+                      <th>操作</th>
+                    </tr></thead>
+                    <tbody id="demoList"></tbody>
+                  </table>
+                </div>
+                <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+              </div> 
+        </div>
+    </div>
+
+<!-- <script type="text/html" id="uploadTpl">
+    <table class="layui-table">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>文件目录</th>
+                <th>已传文件</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{# layui.each(d, function(index, item) { }}
+                <tr id="file"+index >
+                    <td>item</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {{# }); }}
+        </tbody>
+    </table>
+    <a class="layui-tbn layui-btn-xs" lay-event="upload"><i class="layui-icon layui-icon-upload"></i>上传</a>
+</script> -->
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
 <script src="../../layui/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form'], function () {
+    layui.use(['form', 'layer', 'laytpl', 'laydate', 'upload'], function () {
         var form = layui.form,
             layer = layui.layer,
-            $ = layui.$;
+            // table = layui.table,
+            laytpl = layui.laytpl,
+            laydate = layui.laydate,
+            upload = layui.upload;
+
+        laydate.render({
+            elem: "#year",
+            type: 'year',
+            value: undefined
+        });
+
+        var url = layui.url();
+        var params = url.search;
+        var username = $.cookie
+        $(document).ready(function(){
+            form.val("add-form", {
+                //
+                "documentCategory": params.documentCategory,
+                "fileCategory": params.fileCategory,
+                "recorder": $.cookie('nickname'),
+                "recordTime": getDate()
+            });
+        });
+
+        var documentRecordId = 3,
+            fileList = ['1','2'];
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
+            // var index = layer.alert(JSON.stringify(data.field), {
+            //     title: '最终的提交信息'
+            // }, function () {
 
-                // 关闭弹出层
-                layer.close(index);
+            //     // 关闭弹出层
+            //     layer.close(index);
 
-                var iframeIndex = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(iframeIndex);
+            //     // var iframeIndex = parent.layer.getFrameIndex(window.name);
+            //     // parent.layer.close(iframeIndex);
 
+            // });
+
+            $.ajax({
+                type: "post",
+                url: '../../../',
+                data: data.field,
+                success: function(res) {
+                    if (res.code == 0) {
+                        documentRecordId = res.body.id;
+                        fileList = res.body.fileList;
+                        $("#mount-btn").removeClass("layui-disabled");
+                        $("#save").addClass("layui-disabled").attr(disabled);
+                    } else {
+                        layer.alert(res.message, {icon: 2});
+                    }
+                }
             });
-
+            
             return false;
         });
 
+        // 提交后才能挂载文件
+        $('#mount-btn').on('click', function() {
+            if ($(this).hasClass('layui-disabled')) {
+                layer.tips('请先保存档案再挂载文档', '#mount-btn', {time: 1*1000});
+                return;
+            }
+            // laytpl(uploadTpl.innerHTML).render(fileList, function(html) {
+            //     $("#file-list").html(html);
+            // });
+
+            $("#upload-container").css("display", "block");
+
+        });
+
+        var demoListView = $('#demoList'),
+            uploadListIns = upload.render({
+                elem: '#testList',
+                url: 'https://httpbin.org/post',
+                accept: 'file',
+                multiple: true,
+                auto: false,
+                bindAction: '#testListAction',
+                choose: function(obj) {
+                    var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                    //读取本地文件
+                    obj.preview(function(index, file, result) {
+                        var tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>', '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', '<td>等待上传</td>', '<td>', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+
+                        //单个重传
+                        tr.find('.demo-reload').on('click', function() {
+                            obj.upload(index, file);
+                        });
+
+                        //删除
+                        tr.find('.demo-delete').on('click', function() {
+                            delete files[index]; //删除对应的文件
+                            tr.remove();
+                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                        });
+
+                        demoListView.append(tr);
+                    });
+                },
+                done: function(res, index, upload) {
+                    if (res.files.file) { //上传成功
+                        var tr = demoListView.find('tr#upload-' + index),
+                            tds = tr.children();
+                        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                        tds.eq(3).html(''); //清空操作
+                        return delete this.files[index]; //删除文件队列已经上传成功的文件
+                    }
+                    this.error(index, upload);
+                },
+                error: function(index, upload) {
+                    var tr = demoListView.find('tr#upload-' + index),
+                        tds = tr.children();
+                    tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                    tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                }
+            });
+
+        function getDate() {
+            var date = new Date();
+            var year = date.getFullYear();
+            var month =  date.getMonth();
+            var day = date.getDay();
+            return year.toString() + (month < 10? '0' + month.toString(): month.toString()) + (day < 10? '0' + day.toString(): day.toString());
+        }
     });
 </script>
 </body>

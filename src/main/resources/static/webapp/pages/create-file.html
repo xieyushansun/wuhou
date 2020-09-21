@@ -20,13 +20,13 @@
                             <div class="layui-inline">
                                 <label class="layui-form-label">档案类别</label>
                                 <div class="layui-input-inline">
-                                    <select name="documentCategory"></select>
+                                    <select name="documentCategory" lay-filter='documentCategory'></select>
                                 </div>
                             </div>
                             <div class="layui-inline">
                                 <label class="layui-form-label">案卷类别</label>
                                 <div class="layui-input-inline">
-                                    <select name="fileCategory"></select>
+                                    <select name="fileCategory" lay-filter='fileCategory'></select>
                                 </div>
                             </div>
                         </div>
@@ -39,8 +39,8 @@
                         <i class="layui-icon layui-icon-add-circle-fine"></i>
                          添加 
                         </button>
-                    <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete">
-                        <i class="layui-icon layui-icon-delete"></i>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger data-devare-btn" lay-event="devare">
+                        <i class="layui-icon layui-icon-devare"></i>
                          删除 
                         </button>
                 </div>
@@ -51,7 +51,7 @@
 
             <script type="text/html" id="currentTableBar">
                 <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-devare" lay-event="devare">删除</a>
             </script>
         </div>
     </div>
@@ -60,9 +60,97 @@
     <script src="../layui/layui.all.js"></script>
     <script>
         var table = layui.table,
-            form = layui.form;
+            form = layui.form,
             layer = layui.layer;
-        table.render({
+
+        var documentCategoryList = [];
+        var fileCategoryList = [];
+        var documentCategoryData = [
+                {
+                "id": "5f671217f116fa01e29335ac",
+                "documentCategory": "失业保险金基金类",
+                "documentCategoryShortName": "基金",
+                "fileCategory": [
+                    "2012-2019年领取失业金人员培训补贴申报资料",
+                    "失业金办理",
+                    "暂时困难企业稳岗补贴",
+                    "技能提升补贴",
+                    "技术技能提升补贴",
+                    "一般企业稳岗返补贴",
+                    "失业金办理退费",
+                    "暂时困难企业稳岗补贴退费",
+                    "技能提升补贴退费",
+                    "技术技能提升补贴退费",
+                    "一般企业稳岗返补贴退费"
+                ]
+                },
+                {
+                "id": "5f67117cf116fa01e29335ab",
+                "documentCategory": "就业创业补助资金",
+                "documentCategoryShortName": "bzj",
+                "fileCategory": [
+                    "2016-2018劳务品牌培训补贴申报资料",
+                    "2012-2014技能培训补贴申报资料",
+                    "全民免费培训技能提升补贴申报资料",
+                    "个人直补培训补贴申报资料",
+                    "灵活就业银行发放人员名单",
+                    "灵活就业社保补贴公示",
+                    "灵活就业街道上报人员台账（一个季度一套）",
+                    "单位社保补贴增加（减少）表",
+                    "公益性岗位社保补贴",
+                    "灵活就业社保补贴申报资料",
+                    "一般企业社保及岗位补贴",
+                    "小微企业社保及岗位补贴",
+                    "就业困难认定",
+                    "单位补贴检查资料",
+                    "单位补贴抽查检查资料",
+                    "高校毕业生求职创业补贴(院校汇总材料)",
+                    "高校毕业生求职创业补贴(个人申报材料)",
+                    "就业见习补贴(企业汇总材料)",
+                    "就业见习补贴(个人申报材料)",
+                    "创业培训补贴材料",
+                    "大学生创业实体补贴",
+                    "大学生创业孵化项目补贴",
+                    "大学生高校平台内孵化（实体）创业补贴",
+                    "大学生创业吸纳就业奖励",
+                    "创业担保贷款企业贷款贴息小微企业吸纳人员认定"
+                ]
+                }
+            ]
+
+        /* $(document).ready(function() {
+            (function() {
+                $.ajax({
+                    url: "../../", // 获取档案类别
+                    type: "get",
+                    success: function(res) {
+                        if (res.code == 0) {
+                            documentRes = res.body;
+                            selectInit(documentRes); // 初始化渲染select
+                        }
+                    }
+                })
+            })(); // 获取档案类别
+        });
+         */
+        selectInit(documentCategoryData);
+        var documentCategory = '';
+        form.on('select(documentCategory)', function(data) {
+            documentCategory = data.value;
+            fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+            changeOption('fileCategory', makeOption(fileCategoryList));
+            form.render('select');
+            changeTable(documentCategory);
+        });
+
+        form.on('select(fileCategory)', function(data) {
+            fileCategory = data.value;
+            changeTable(documentCategory, fileCategory);
+        });
+
+
+        // 初始化渲染表格
+        var documentTable = table.render({
             elem: '#result-table',
             page: true,
             data: [
@@ -81,17 +169,17 @@
                 {type: 'checkbox', width: 50},
                 {field: 'documentNumber', title: '档号'},
                 {field: 'recordGroupNumber', title: '全宗号'},
-                {field: 'catalogNumber', title: '目录号'},
-                {field: 'fileNumber', title: '案卷号'},
                 {field: 'year', title: '年度'},
                 {field: 'duration', title: '保管期限'},
                 {field: 'security', title: '密级'},
                 {field: 'documentCategory', title: '档案类别'},
                 {field: 'fileCategory', title: '案卷类型'},
+                {field: 'fileNumber', title: '案卷号'},
                 {field: 'responsible', title: '责任者'},
+                {field: 'danweiCode', title: '单位代码'},
+                {field: 'danweiName', title: '单位名称'},
                 {field: 'fileName', title: '案卷题名'},
-                {field: 'classNumber', title: '分类号'},
-                {field: 'storagePath', title: '存放位置'},
+                {field: 'position', title: '存放位置'},
                 {field: 'recorder', title: '著录人'},
                 {field: 'recordTime', title: '著录时间'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
@@ -101,6 +189,7 @@
             skin: 'line'
         });
 
+        // 监听表格顶部工具栏事件
         table.on('toolbar(result-table)', function (obj) {
             var formData = form.val('fileClass');
             var data = obj.data;
@@ -117,12 +206,90 @@
                     layer.full(index);
                 });
                 return false;
-            } else if (obj.event === 'delete') {
+            } else if (obj.event === 'devare') {
                 var checkStatus = table.checkStatus('result-table'),
                     data = checkStatus.data;
                 layer.alert(JSON.stringify(data));
             }
         });
+
+        // 获取档案类别
+        function getDocumentCategoryList(data) {
+            if (!(data instanceof Array)) {
+                return [];
+            }
+            var documentCategoryList = [];
+            for (var idx = 0; idx < data.length; idx++) {
+                var cat = data[idx];
+                documentCategoryList.push(cat['documentCategory']);
+            }
+            return documentCategoryList;
+        }
+
+        // 根据档案类别获取案卷类别
+        function getFileCategoryList(data, documentCategory=null) {
+            if (!(data instanceof Array)) {
+                return [];
+            }
+            var fileCategoryList = [];
+            if (documentCategory === null || documentCategory === '' || documentCategory === undefined) {
+                for (var docuIdx = 0; docuIdx < data.length; docuIdx++) {
+                    fileCategoryList = fileCategoryList.concat(data[docuIdx]['fileCategory']); 
+                }
+            } else {
+                for (var docuIdx = 0; docuIdx < data.length; docuIdx++) {
+                    if (data[docuIdx]['documentCategory'] === documentCategory) {
+                        fileCategoryList = fileCategoryList.concat(data[docuIdx]['fileCategory']); 
+                    }
+                }
+            }
+            return fileCategoryList;
+        }
+
+        // 创建option list
+        function makeOption(data_list){
+            if (!(data_list instanceof Array)) {
+                return [];
+            }
+            var option_list = [{val: '', text: ''}];
+            for (var indexList = 0; indexList < data_list.length; indexList++) {
+                var data = data_list[indexList];
+                option_list.push({"val": data, "text": data});
+            }
+            return option_list;
+        }
+
+        // 根据lay-filter修改select的option
+        function changeOption(filter, option_list){
+            var selector = "[lay-filter="+filter+"]";
+            $(selector).empty();
+            if (!(option_list instanceof Array)) {
+                return;
+            }
+            if(option_list)
+                for(var i = 0, len = option_list.length; i < len; i++){
+                    var option = $("<option>").val(option_list[i].val).text(option_list[i].text);
+                    $(selector).append(option);
+                }
+        }
+
+        // select标签的初始化渲染
+        function selectInit(data) {
+            documentCategoryList = getDocumentCategoryList(data); // 获取档案类别的list
+            changeOption('documentCategory', makeOption(documentCategoryList)); //修改档案类别的option;
+            fileCategoryList = getFileCategoryList(data);
+            changeOption('fileCategory', makeOption(fileCategoryList));
+
+            form.render('select');
+        }
+
+        // 根据选择的select重新渲染表格
+        function changeTable(documentCategory='', fileCategory='') {
+            documentTable.reload({
+                where: {documentCategory: documentCategory, fileCategory: fileCategory},
+                page: {curr: 1}
+            })
+        }
     </script>
 </body>
 </html>

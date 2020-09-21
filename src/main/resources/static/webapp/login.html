@@ -168,10 +168,26 @@
             layer.msg('密码不能为空');
             return false;
         }
+        $.ajax({
+            utl: '../user/login',
+            method: 'post',
+            data: {userId: data.username, password: data.password},
+            success: function(res) {
+                if (res.code == 0) {
+                    $.cookie('username', res.body.nickName);
+                    $.cookie('role', res.body.role);
+                    layer.msg('登录成功', function() {
+                        window.location = './index.html';
+                    })
+                } else {
+                    layer.msg(res.message);
+                }
+            }
+        })
 
-        layer.msg('登录成功', function () {
-            window.location = './index.html';
-        });
+        // layer.msg('登录成功', function () {
+        //     window.location = './index.html';
+        // });
         return false;
     });
 
