@@ -27,7 +27,7 @@
     
                 <ul class="layui-nav layui-layout-right">
                     <li class="layui-nav-item layuimini-setting">
-                        <a href="javascript:;">admin</a>
+                        <a href="javascript:;" id="nickname">admin</a>
                         <dl class="layui-nav-child">
                             <dd>
                                 <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
@@ -90,9 +90,15 @@
 
     </div>
     <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
     <script src="layui/layui.js"></script>
     <script src="js/lay-config.js"></script>
     <script>
+        $(document).ready(function() {
+            (function() {
+                $("#nickname").val($.cookie("nickname"));
+            })();
+        })
         layui.use(['layer', 'miniAdmin'], function () {
             var layer = layui.layer,
                 miniAdmin = layui.miniAdmin,
