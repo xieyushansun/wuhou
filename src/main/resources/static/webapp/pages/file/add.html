@@ -320,6 +320,8 @@
 
         });
 
+        var choosedFiles = [];
+        var uploadedFiles = [];
         // 上传按钮和列表
         var fileListView = $('#fileList');
             uploadListIns = upload.render({
@@ -333,6 +335,12 @@
                     var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                     //读取本地文件
                     obj.preview(function(index, file, result) {
+                        if (uploadedFiles.indexOf(file.name) !== -1) {
+                            layer.msg('已上传过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已上传重名文件
+                            delete files[index];
+                            return;
+                        }
+
                         var tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>', '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', '<td>等待上传</td>', '<td>', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
 
                         //单个重传
@@ -342,9 +350,19 @@
 
                         //删除
                         tr.find('.demo-delete').on('click', function() {
-                            delete files[index]; //删除对应的文件
-                            tr.remove();
-                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                            var uploadedIdx = -1;
+                            if ((uploadedIdx = uploadedFiles.indexOf(files[index].filename)) !== -1) {
+                                if (deleteFile(documentRecordId, files[index].filename)) { // 删除成功
+                                    uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
+                                    tr.remove();
+                                    uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                                }
+                            } else {
+                                delete files[index]; // 该文件未上传，只从上传列表删除对应的文件
+                                tr.remove();
+                                uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                            }
+                            
                         });
 
                         fileListView.append(tr);
@@ -355,16 +373,22 @@
                         var tr = fileListView.find('tr#upload-' + index),
                             tds = tr.children();
                         tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
-                        tds.eq(3).html(''); //清空操作
+                        tds.eq(3).find('.demo-reload').addClass('layui-hide');
+                        uploadedFiles.push(this.files[index].filename); // 在已上传文件中添加该文件
                         return delete this.files[index]; //删除文件队列已经上传成功的文件
                     }
-                    this.error(index, upload);
+                    this.error(index, upload, res.message);
                 },
-                error: function(index, upload) {
+                error: function(index, upload, msg=undefined) {
                     var tr = fileListView.find('tr#upload-' + index),
                         tds = tr.children();
-                    tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
-                    tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                    if (msg !== undefined) { // 如果有错误信息则显示错误信息
+                        tds.eq(2).html('<span style="color: #FF5722;">' + msg +'</span>');
+                    } else { // 一般是网络问题造成的错误
+                        tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                        tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                    }
+
                 }
             });
 
@@ -373,6 +397,8 @@
             if ($(this).hasClass('layui-disabled')) {
                 return;
             }
+            // $("#mount-btn").removeClass("layui-disabled");
+            // $("#save").addClass("layui-disabled").attr("disabled", "true");
             $.ajax({
                 type: "post",
                 url: '../../../document/adddocumentrecord',
@@ -383,7 +409,7 @@
                         documentRecordId = res.body;
                         $("#mount-btn").removeClass("layui-disabled");
                         $("#save").addClass("layui-disabled").attr("disabled", "true");
-                        uoloadListIns.reload({ // 重载上传实例
+                        uploadListIns.reload({ // 重载上传实例
                             data: {documentRecordId: documentRecordId}
                         });
                     } else {
@@ -425,8 +451,30 @@
             return year.toString() + (month < 10? '0' + month.toString(): month.toString()) + (day < 10? '0' + day.toString(): day.toString());
         }
 
-        function renderCategoryData(documentCategoryData) {
-
+        // 删除服务器上的文件
+        function deleteFile(documentRecordId, filename) {
+            /**
+             * @description: 删除服务器上的文件
+             * @param {documentRecordId: String} 档案ID 
+             * @param {filename: String} 文件名
+             * @return  返回成功与否{true/false: boolean}
+             */
+            var successful = false;
+            $.ajax({
+                url: '../../../deleteDocumentRecordFile', 
+                type: 'post',
+                data: {documentRecordId: documentRecordId, fileName: filename},
+                success: function(res) {
+                    if (res.code === 0) {
+                        layer.msg('删除成功');
+                        successful = true
+                    } else {
+                        layer.msg(res.message);
+                        successful = false;
+                    }
+                }
+            });
+            return successful;
         }
     });
 </script>
