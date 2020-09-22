@@ -28,7 +28,7 @@ public class DocumentCategoryDao {
     }
     public void deleteDocumentCategory(String id) throws NotExistException {
         Query query = new Query();
-        Criteria criteria = Criteria.where("id").is(new ObjectId(id));
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(id));
         query.addCriteria(criteria);
         DocumentCategory documentCategory = mongoTemplate.findOne(query, DocumentCategory.class);
         if (documentCategory == null) {
@@ -38,7 +38,7 @@ public class DocumentCategoryDao {
     }
     public void modifyDocumentCategory(DocumentCategory documentCategory) throws NotExistException {
         Query query = new Query();
-        Criteria criteria = Criteria.where("id").is(new ObjectId(documentCategory.getId()));
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(documentCategory.getId()));
         query.addCriteria(criteria);
         DocumentCategory DBdocumentCategory = mongoTemplate.findOne(query, DocumentCategory.class);
         if (DBdocumentCategory == null){

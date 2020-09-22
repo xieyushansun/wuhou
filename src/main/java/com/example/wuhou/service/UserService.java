@@ -31,7 +31,7 @@ public class UserService {
         user.setUserId(userId);
         user.setPassword(password);
         user.setNickName(nickName);
-        user.setRole("guest");
+        user.setRoleId("guest");
         userDao.addUser(user);
     }
     public void deleteUser(String userId) throws NotExistException {

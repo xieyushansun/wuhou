@@ -35,7 +35,7 @@ public class DocumentRecordDao {
     //查询案卷号对应的文件清单
     public String[] findFileListByDocumentRecordId(String DocumentRecordId) throws Exception {
         Query query = new Query();
-        Criteria criteria = Criteria.where("id").is(new ObjectId(DocumentRecordId));
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(DocumentRecordId));
         DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
         if (documentRecord == null){
             throw new Exception("没有这条记录！");
@@ -52,7 +52,7 @@ public class DocumentRecordDao {
     //删除文件记录
     public String deleteDocumentRecord(String documentRecordId) throws NotExistException {
         Query query = new Query();
-        Criteria criteria = Criteria.where("id").is(new ObjectId(documentRecordId));
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecordId));
         query.addCriteria(criteria);
         DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
         if (documentRecord == null){
@@ -81,7 +81,7 @@ public class DocumentRecordDao {
 //            }
 //        }
         Query query = new Query();
-        Criteria criteria = Criteria.where("id").is(new ObjectId(documentRecordId));
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecordId));
         query.addCriteria(criteria);
         DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
         return documentRecord;

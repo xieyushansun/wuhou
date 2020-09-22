@@ -29,4 +29,10 @@ public class RoleService {
     public List<Role> getAllRole(){
         return roleDao.getAllRole();
     }
+    public void userRoleAuthorize(String userId, String roleId){
+        roleDao.userRoleAuthorize(userId, roleId);
+    }
+    public void removeUserRoleAuthorize(String userId){
+        roleDao.removeUserRoleAuthorize(userId);
+    }
 }

@@ -82,4 +82,27 @@ public class RoleController {
         resultUtil.setBody(roleList);
         return resultUtil;
     }
+
+    @PostMapping("/userRoleAuthorize")
+    @ApiOperation("为用户授权")
+    public ResultUtil<String>userRoleAuthorize(String userId, String roleId){
+        try {
+            roleService.userRoleAuthorize(userId, roleId);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "角色授权成功！");
+    }
+
+    @PostMapping("/removeUserRoleAuthorize")
+    @ApiOperation("删除用户当前角色，默认为guest")
+    public ResultUtil<String>removeUserRoleAuthorize(String userId){
+        try {
+            roleService.removeUserRoleAuthorize(userId);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除角色成功！");
+    }
+
 }

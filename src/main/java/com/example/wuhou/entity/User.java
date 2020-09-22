@@ -7,7 +7,7 @@ public class User implements Serializable {
     String password;
     String nickName;
     String salt = "";  //盐值
-    String role;  //角色
+    String roleId;  //角色
 
     public String getUserId() {
         return userId;
@@ -41,12 +41,12 @@ public class User implements Serializable {
         this.salt = salt;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoleId() {
+        return roleId;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", nickName='" + nickName + '\'' +
                 ", salt='" + salt + '\'' +
-                ", role='" + role + '\'' +
+                ", roleId='" + roleId + '\'' +
                 '}';
     }
 }
