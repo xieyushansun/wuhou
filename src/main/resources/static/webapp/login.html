@@ -174,7 +174,7 @@
             data: {userId: data.username, password: data.password},
             success: function(res) {
                 if (res.code == 0) {
-                    $.cookie('username', res.body.nickName);
+                    $.cookie('nickname', res.body.nickName);
                     $.cookie('role', res.body.role);
                     layer.msg('登录成功', function() {
                         window.location = './index.html';
