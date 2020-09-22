@@ -37,9 +37,6 @@
     <div class="layuimini-container">
         <div class="layuimini-main">
             <fieldset class="table-search-fieldset">
-                <legend>
-                    档案归类
-                </legend>
                 <div style="margin: 10px 10px 10px 10px">
                     <button class="layui-btn layui-btn-xs" id="continue-add">继续添加</button>
                 </div>
@@ -49,14 +46,14 @@
                     <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">档号</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input">
+                            <div class="layui-input-inline">    
+                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">全宗号</label>
                             <div class="layui-input-inline">
-                                <select name="recordGroupNumber" lay-verify="required">
+                                <select name="recordGroupNumber" class="docNoUsed" lay-verify="required">
                                     <option value="129">129</option>
                                 </select>
                             </div>
@@ -64,13 +61,13 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">年度</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input" id="year">
+                                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input docNoUsed" id="year">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">保管期限</label>
                             <div class="layui-input-inline">
-                                <select name="duration" lay-verify="required">
+                                <select name="duration" class="docNoUsed" lay-verify="required" lay-filter='duration'>
                                 <option value=""></option>
                                     <option value="10年">10年</option>
                                     <option value="20年">30年</option>
@@ -89,44 +86,44 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">档案类别</label>
                             <div class="layui-input-inline">
-                                <select name="documentCategory" lay-verify="required" lay-reqtext="档案类别不能为空"></select>
+                                <select name="documentCategory" class="docNoUsed" lay-verify="required" lay-reqtext="档案类别不能为空" lay-filter='documentCategory'></select>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">案卷类别</label>
                             <div class="layui-input-inline">
-                                <select name="fileCategory" lay-verify="required" lay-reqtext="案卷类别不能为空"></select>
+                                <select name="fileCategory" class="docNoUsed" lay-verify="required" lay-reqtext="案卷类别不能为空" lay-filter='fileCategory'></select>
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">案卷号</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="fileNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input" placeholder="盒号">
+                                <input type="text" name="boxNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input docNoUsed" placeholder="盒号">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">责任者</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="responsible" value="" class="layui-input">
+                                <input type="text" name="responsible" value="" class="layui-input" autocomplete="off">
                                 <!-- <tip>填写自己管理账号的名称。</tip> -->
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">单位代码</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="danweiCode" class="layui-input" placeholder="(社会保障号码)">
+                                <input type="text" name="danweiCode" class="layui-input" placeholder="(社会保障号码)" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">单位名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="danweiName" class="layui-input" placeholder="(姓名)">
+                                <input type="text" name="danweiName" class="layui-input" placeholder="(姓名)" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">案卷题名</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input">
+                                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input" autocomplete="off">
                             </div>
                         </div>
                         <!-- <div class="layui-inline">
@@ -156,7 +153,7 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button type="submit" id="sava" class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
+                            <button type="submit" id="save" class="layui-btn" lay-submit lay-filter="saveBtn">保存</button>
                             <button id="mount-btn" class="layui-btn layui-btn-normal layui-disabled" lay-filter="mountBtn">
                                 <i class="layui-icon layui-icon-upload"></i>
                                 挂载文件
@@ -179,7 +176,7 @@
                       <th>状态</th>
                       <th>操作</th>
                     </tr></thead>
-                    <tbody id="demoList"></tbody>
+                    <tbody id="fileList"></tbody>
                   </table>
                 </div>
                 <button type="button" class="layui-btn" id="testListAction">开始上传</button>
@@ -213,6 +210,7 @@
 <script src="../../js/jquery.min.js"></script>
 <script src="../../js/jquery.cookie.js"></script>
 <script src="../../layui/layui.js" charset="utf-8"></script>
+<script src="../../js/document-category-render.js"></script>
 <script>
     layui.use(['form', 'layer', 'laytpl', 'laydate', 'upload'], function () {
         var form = layui.form,
@@ -222,23 +220,87 @@
             laydate = layui.laydate,
             upload = layui.upload;
 
-        laydate.render({
-            elem: "#year",
-            type: 'year',
-            value: undefined
-        });
+        var documentCategoryData = parent.documentCategoryData;
+        var documentCatAbbr = getDocCatAbbr(documentCategoryData);
+        var documentCategoryList = parent.documentCategoryList,
+            fileCategoryList = parent.fileCategoryList;
+        var documentCategory = parent.documentCategory,
+            fileCategory = parent.fileCategory;
+        
+        var username = $.cookie("nickname");
+        
 
-        var url = layui.url();
-        var params = url.search;
-        var username = $.cookie
         $(document).ready(function(){
+            
+            selectInit(documentCategoryData, add=true);
+            
             form.val("add-form", {
                 //
-                "documentCategory": params.documentCategory,
-                "fileCategory": params.fileCategory,
+                "documentCategory": documentCategory,
+                "fileCategory": fileCategory,
                 "recorder": $.cookie('nickname'),
                 "recordTime": getDate()
             });
+            form.render('select');
+        });
+
+        // laydate.render({
+        //     elem: "#year",
+        //     type: 'year',
+        //     // showBottom: false,
+        //     done: function(value, date, endDate) {
+        //         makeDocumentNo();
+        //     }
+        // });
+
+        
+        $(".docNoUsed").change(function() {
+            makeDocumentNo();
+        });
+
+        // 继续添加按钮的点击
+        $("#continue-add").on('click', function() {
+            form.val('add-form', {
+                "documentNumber": "",
+                "year": "",
+                "duration": "",
+                "security": "",
+                "documentCategory": documentCategory,
+                "fileCategory": fileCategory,
+                "boxNumber": "",
+                "responsible": "",
+                "danweiCode": "",
+                "danweiName": "",
+                "fileName": "",
+                "position": "",
+                "recorder": $.cookie('nickname'),
+                "recordTime": getDate()
+            });
+            $("#save").removeClass("layui-disabled").removeAttr("disabled");
+            $("#mount-btn").addClass("layui-disabled");
+            $("#fileList").empty();
+            $("#upload-container").css("display", "none");
+        });
+
+        // 监听案卷类别下拉选择的变化
+        form.on('select(documentCategory)', function(data) {
+            makeDocumentNo();
+            documentCategory = data.value;
+            fileCategory = '';
+            fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+            changeOption('fileCategory', makeOption(fileCategoryList, documentCategory=undefined, file=true));
+            form.render('select');
+            console.log(documentCategory);
+        });
+
+        // 监听案卷类别下拉选择的变化
+        form.on('select(fileCategory)', function(data) {
+            makeDocumentNo();
+            fileCategory = data.value;
+        });
+
+        form.on('select(duration)', function(data) {
+            makeDocumentNo();
         });
 
         var documentRecordId = 3,
@@ -246,36 +308,30 @@
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            // var index = layer.alert(JSON.stringify(data.field), {
-            //     title: '最终的提交信息'
-            // }, function () {
-
-            //     // 关闭弹出层
-            //     layer.close(index);
-
-            //     // var iframeIndex = parent.layer.getFrameIndex(window.name);
-            //     // parent.layer.close(iframeIndex);
-
+            if ($(this).hasClass('layui-disabled')) {
+                return;
+            }
+            $("#mount-btn").removeClass("layui-disabled");
+            $("#save").addClass("layui-disabled").attr("disabled", "true")
+            // $.ajax({
+            //     type: "post",
+            //     url: '../../../document/adddocumentrecord',
+            //     data: data.field,
+            //     success: function(res) {
+            //         if (res.code == 0) {
+            //             documentRecordId = res.body;
+            //             $("#mount-btn").removeClass("layui-disabled");
+            //             $("#save").addClass("layui-disabled").attr("disabled", "true");
+            //         } else {
+            //             layer.alert(res.message, {icon: 2});
+            //         }
+            //     }
             // });
-
-            $.ajax({
-                type: "post",
-                url: '../../../',
-                data: data.field,
-                success: function(res) {
-                    if (res.code == 0) {
-                        documentRecordId = res.body.id;
-                        fileList = res.body.fileList;
-                        $("#mount-btn").removeClass("layui-disabled");
-                        $("#save").addClass("layui-disabled").attr(disabled);
-                    } else {
-                        layer.alert(res.message, {icon: 2});
-                    }
-                }
-            });
             
             return false;
         });
+
+
 
         // 提交后才能挂载文件
         $('#mount-btn').on('click', function() {
@@ -291,10 +347,11 @@
 
         });
 
-        var demoListView = $('#demoList'),
+        // 上传按钮和列表
+        var fileListView = $('#fileList'),
             uploadListIns = upload.render({
                 elem: '#testList',
-                url: 'https://httpbin.org/post',
+                url: '../../../document/adddocumentrecordfile',
                 accept: 'file',
                 multiple: true,
                 auto: false,
@@ -317,12 +374,12 @@
                             uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                         });
 
-                        demoListView.append(tr);
+                        fileListView.append(tr);
                     });
                 },
                 done: function(res, index, upload) {
                     if (res.files.file) { //上传成功
-                        var tr = demoListView.find('tr#upload-' + index),
+                        var tr = fileListView.find('tr#upload-' + index),
                             tds = tr.children();
                         tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
                         tds.eq(3).html(''); //清空操作
@@ -331,19 +388,45 @@
                     this.error(index, upload);
                 },
                 error: function(index, upload) {
-                    var tr = demoListView.find('tr#upload-' + index),
+                    var tr = fileListView.find('tr#upload-' + index),
                         tds = tr.children();
                     tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
                     tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
                 }
             });
 
+        // 生成档号
+        function makeDocumentNo() {
+            var formData = form.val('add-form');
+            var recordGroupNumber = formData.recordGroupNumber,
+                year = formData.year,
+                duration = formData.duration, 
+                documentCategory = formData.documentCategory,
+                fileCategory = formData.fileCategory,
+                boxNumber = formData.boxNumber;
+
+            if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
+                documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
+                var documentNumber = recordGroupNumber + '-' + year + '-' + duration + '.' + 
+                                     documentCatAbbr[documentCategory] + '.' + fileCategoryList.indexOf(fileCategory) +
+                                     '-' + boxNumber;
+                form.val('add-form', {
+                    "documentNumber": documentNumber
+                });
+            }
+        }
+        
+        // 获取格式为yyyymmdd的日期
         function getDate() {
             var date = new Date();
             var year = date.getFullYear();
             var month =  date.getMonth();
             var day = date.getDay();
             return year.toString() + (month < 10? '0' + month.toString(): month.toString()) + (day < 10? '0' + day.toString(): day.toString());
+        }
+
+        function renderCategoryData(documentCategoryData) {
+
         }
     });
 </script>
