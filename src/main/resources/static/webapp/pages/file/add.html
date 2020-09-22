@@ -306,33 +306,6 @@
         var documentRecordId = 3,
             fileList = ['1','2'];
 
-        //监听提交
-        form.on('submit(saveBtn)', function (data) {
-            if ($(this).hasClass('layui-disabled')) {
-                return;
-            }
-            $("#mount-btn").removeClass("layui-disabled");
-            $("#save").addClass("layui-disabled").attr("disabled", "true")
-            // $.ajax({
-            //     type: "post",
-            //     url: '../../../document/adddocumentrecord',
-            //     data: data.field,
-            //     success: function(res) {
-            //         if (res.code == 0) {
-            //             documentRecordId = res.body;
-            //             $("#mount-btn").removeClass("layui-disabled");
-            //             $("#save").addClass("layui-disabled").attr("disabled", "true");
-            //         } else {
-            //             layer.alert(res.message, {icon: 2});
-            //         }
-            //     }
-            // });
-            
-            return false;
-        });
-
-
-
         // 提交后才能挂载文件
         $('#mount-btn').on('click', function() {
             if ($(this).hasClass('layui-disabled')) {
@@ -348,7 +321,7 @@
         });
 
         // 上传按钮和列表
-        var fileListView = $('#fileList'),
+        var fileListView = $('#fileList');
             uploadListIns = upload.render({
                 elem: '#testList',
                 url: '../../../document/adddocumentrecordfile',
@@ -378,7 +351,7 @@
                     });
                 },
                 done: function(res, index, upload) {
-                    if (res.files.file) { //上传成功
+                    if (res.code === 0) { //上传成功
                         var tr = fileListView.find('tr#upload-' + index),
                             tds = tr.children();
                         tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
@@ -394,6 +367,33 @@
                     tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
                 }
             });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            if ($(this).hasClass('layui-disabled')) {
+                return;
+            }
+            $.ajax({
+                type: "post",
+                url: '../../../document/adddocumentrecord',
+                data: data.field,
+                success: function(res) {
+                    if (res.code == 0) {
+                        layer.msg(res.message, {icon: 1});
+                        documentRecordId = res.body;
+                        $("#mount-btn").removeClass("layui-disabled");
+                        $("#save").addClass("layui-disabled").attr("disabled", "true");
+                        uoloadListIns.reload({ // 重载上传实例
+                            data: {documentRecordId: documentRecordId}
+                        });
+                    } else {
+                        layer.alert(res.message, {icon: 2});
+                    }
+                }
+            });
+            
+            return false;
+        });
 
         // 生成档号
         function makeDocumentNo() {
