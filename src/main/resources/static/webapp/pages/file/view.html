@@ -171,7 +171,7 @@
     <div class="layuimini-container" id="upload-container">
         <div class="layuimini-main">
             <div class="layui-upload">
-                <button type="button" class="layui-btn layui-btn-normal layui-hide" id="testList">选择多文件</button> 
+                <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button> 
                 <div class="layui-upload-list">
                   <table class="layui-table">
                     <thead>
@@ -182,7 +182,7 @@
                     <tbody id="fileList"></tbody>
                   </table>
                 </div>
-                <button type="button" class="layui-btn layui-hide" id="testListAction">开始上传</button>
+                <button type="button" class="layui-btn" id="testListAction">开始上传</button>
               </div> 
         </div>
     </div>
@@ -287,6 +287,9 @@
                                 },
                             });
                         });
+                    },
+                    end: function() {
+                        $('body').off('click', '#show');
                     }
                 });
             });
