@@ -176,7 +176,6 @@
                   <table class="layui-table">
                     <thead>
                       <tr><th>文件名</th>
-                      <th>大小</th>
                       <th>状态</th>
                       <th>操作</th>
                     </tr></thead>
@@ -278,6 +277,7 @@
                     title: '图片预览',
                     content: '<div id=\"show\"><img id=\"image\" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
                     area: ['80%', '80%'],
+                    zIndex: 200,
                     success: function(layero, index) {
                         $('#show').on('click', function() {
                             const viewer = new Viewer(document.getElementById('image'), {
