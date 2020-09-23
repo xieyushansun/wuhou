@@ -24,7 +24,7 @@
         {
           "title": "新建档案",
           "href": "pages/create-file.html",
-          "icon": "fa fa-window-maximize",
+          "icon": "fa fa-file-text",
           "target": "_self"
         },
         {
@@ -36,14 +36,22 @@
         {
           "title": "档案管理",
           "href": "pages/manage.html",
-          "icon": "fa fa-file-text",
+          "icon": "fa fa-window-maximize",
           "target": "_self"
         },
         {
           "title": "系统维护",
-          "href": "pages/maintain.html",
-          "icon": "fa fa-calendar",
-          "target": "_self"
+          "href": "",
+          "icon": "fa fa-gears",
+          "target": "_self",
+          "child": [
+            {
+              "title": "用户管理",
+              "href": "pages/user/user-manage.html",
+              "icon": "fa fa-users",
+              "target": "_self"
+            }
+          ]
         }
       ]
     }
