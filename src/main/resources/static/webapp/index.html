@@ -119,9 +119,17 @@
             // 百度统计代码，只统计指定域名
 
             $('.login-out').on("click", function () {
-                layer.msg('退出登录成功', function () {
-                    window.location = 'login.html';
+                $.ajax({
+                    url: '../../user/logout',
+                    success: function(res) {
+                        if (res.code === 0) {
+                            layer.msg('退出登录成功', function () {
+                                window.location = 'login.html';
+                            });
+                        }
+                    }
                 });
+
             });
             $('#update-password').on('click', function() {
                 layer.open({
@@ -139,7 +147,6 @@
                 })
             })
         });
-        
     </script>
 </body>
 </html>
