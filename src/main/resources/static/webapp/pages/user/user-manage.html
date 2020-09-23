@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-09-23 22:44:47
+ * @LastEditTime: 2020-09-23 22:49:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-mamage.html
@@ -56,8 +56,7 @@
                     layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
 
                 },
-                data: [],
-                // url: '../../user/getUsers',
+                url: '../../../user/getAllUser',
                 toolbar: '#toolbar', 
                 width: 700,  
                 cols: [[
@@ -77,7 +76,6 @@
             });
 
             table.on('toolbar(user-table)', function (obj) {
-                var formData = form.val('');
                 var data = obj.data;
                 if (obj.event === 'add') {
                     var index = layer.open({
@@ -105,7 +103,7 @@
                 if (layEvent === 'delete') {
                     layer.confirm("确定删除用户\"" + data.nickname + "\"?", {icon: 3, title: '提示'}, function(index) {
                         $.ajax({
-                            url: '../../user/deleteUser',
+                            url: '../../../user/deleteUser',
                             data: {userId: data.userId},
                             success: function(res) {
                                 if (res.code === 0) {
