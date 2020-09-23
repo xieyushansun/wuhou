@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-09-23 21:04:19
+ * @LastEditTime: 2020-09-23 22:35:51
  * @LastEditors: Please set LastEditors
  * @Description: 创建档案页面的查询页面
  * @FilePath: \archives-management\archives-management\src\main\webapp\pages\create-file.html
@@ -119,6 +119,7 @@
         // 初始化渲染表格
         var documentTable = table.render({
             elem: '#result-table',
+            id: 'result-table',
             page: {
                 layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
 
@@ -175,7 +176,7 @@
                     area: ['80%', '80%'],
                     content: './file/add.html',
                     end: function() {
-                        table.reload();
+                        table.reload('result-table');
                     }
                 });
                 $(window).on('resize', function() {
@@ -203,7 +204,9 @@
                     content: './file/view.html',
                     success: function(layero, index) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
-                        iframeWin.fillData(data);
+                        $(iframeWin).ready(function() {
+                            iframeWin.fillData(data);
+                        });
                     }
                 });
                 $(window).on('resize', function() {

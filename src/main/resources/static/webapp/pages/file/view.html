@@ -258,11 +258,10 @@
                 return;
             }
             var downloadUrl = '../../../document/downLoadDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
-            var previewUrl = '../../../docuement/previewDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
+            var previewUrl = '../../../document/previewDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
             var tr = $([
                 '<tr id="upload-' + index + '">', 
-                    '<td>' + file.name + '</td>', 
-                    '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', 
+                    '<td>' + file + '</td>', 
                     '<td>已上传</td>', 
                     '<td>', 
                         '<button class="layui-btn layui-btn-primary layui-btn-xs view-file">查看</button>', 
@@ -277,7 +276,8 @@
                 layer.open({
                     type: 1,
                     title: '图片预览',
-                    content: '<div><img id="image" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
+                    content: '<div><img id=\"image\" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
+                    area: ['80%', '80%'],
                     success: function(layero, index) {
                         const viewer = new Viewer(document.getElementById('image'), {
                             inline: true,
@@ -288,7 +288,7 @@
                     }
                 });
             });
-            tr.find('delete-file').on('click', function() {
+            tr.find('.delete-file').on('click', function() {
                 if(deleteFile(documentRecordId, file)) {
                     tr.remove();
                     delete uploadedFiles[index];
