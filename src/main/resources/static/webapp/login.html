@@ -174,11 +174,21 @@
             data: {userId: data.username, password: data.password},
             success: function(res) {
                 if (res.code == 0) {
-                    $.cookie('nickname', res.body.nickName);
-                    $.cookie('role', res.body.role);
-                    layer.msg('登录成功', function() {
-                        window.location = './index.html';
-                    })
+                    $.ajax({
+                        url: '../user/getCurrentUser',
+                        type: 'get',
+                        success: function(res) {
+                            if (res.code === 0) {
+                                $.cookie('nickname', res.body.nickName);
+                                $.cookie('role', res.body.role);
+                                layer.msg('登录成功', function() {
+                                    window.location = './index.html';
+                                })
+                            } else {
+                                layer.msg(res.message);
+                            }
+                        }
+                    });
                 } else {
                     layer.msg(res.message);
                 }
