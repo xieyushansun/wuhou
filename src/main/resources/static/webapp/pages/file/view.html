@@ -279,7 +279,7 @@
                     area: ['80%', '80%'],
                     zIndex: 200,
                     success: function(layero, index) {
-                        $('#show').on('click', function() {
+                        $('body').on('click', '#show', function() {
                             const viewer = new Viewer(document.getElementById('image'), {
                                 inline: false,
                                 viewed() {
@@ -476,6 +476,7 @@
         $.ajax({
             url: '../../../document/deleteDocumentRecordFile', 
             type: 'post',
+            async: false,
             data: {documentRecordId: documentRecordId, fileName: filename},
             success: function(res) {
                 if (res.code === 0) {

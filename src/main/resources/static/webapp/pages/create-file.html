@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-09-23 22:35:51
+ * @LastEditTime: 2020-09-23 23:18:16
  * @LastEditors: Please set LastEditors
  * @Description: 创建档案页面的查询页面
  * @FilePath: \archives-management\archives-management\src\main\webapp\pages\create-file.html
@@ -219,6 +219,7 @@
                 layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {
                     $.ajax({
                         url: '../../document/deletedocumentrecord',
+                        type: 'post',
                         data: {documentRecordId: data.documentRecordId},
                         success: function(res) {
                             if (res.code === 0) {
