@@ -276,14 +276,16 @@
                 layer.open({
                     type: 1,
                     title: '图片预览',
-                    content: '<div><img id=\"image\" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
+                    content: '<div id=\"show\"><img id=\"image\" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
                     area: ['80%', '80%'],
                     success: function(layero, index) {
-                        const viewer = new Viewer(document.getElementById('image'), {
-                            inline: true,
-                            viewed() {
-                                viewer.zoomTo(1);
-                            },
+                        $('#show').on('click', function() {
+                            const viewer = new Viewer(document.getElementById('image'), {
+                                inline: false,
+                                viewed() {
+                                    viewer.zoomTo(1);
+                                },
+                            });
                         });
                     }
                 });
@@ -472,7 +474,7 @@
          */
         var successful = false;
         $.ajax({
-            url: '../../../deleteDocumentRecordFile', 
+            url: '../../../document/deleteDocumentRecordFile', 
             type: 'post',
             data: {documentRecordId: documentRecordId, fileName: filename},
             success: function(res) {
