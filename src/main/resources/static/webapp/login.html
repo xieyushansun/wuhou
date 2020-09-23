@@ -169,7 +169,7 @@
             return false;
         }
         $.ajax({
-            utl: '../user/login',
+            url: '../user/login',
             method: 'post',
             data: {userId: data.username, password: data.password},
             success: function(res) {
