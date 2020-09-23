@@ -204,6 +204,7 @@
         fileCategoryList = parent.fileCategoryList;
     var documentCategory = parent.documentCategory,
         fileCategory = parent.fileCategory;
+    var fileListView = $('#fileList');
 
     var uploadedFiles = [];
     
@@ -293,7 +294,7 @@
                     delete uploadedFiles[index];
                 }
             });
-            
+            fileListView.append(tr);
         });
     }
     
@@ -334,8 +335,7 @@
         fileList = ['1','2'];
 
     // 上传按钮和列表
-    var fileListView = $('#fileList');
-        uploadListIns = upload.render({
+    var uploadListIns = upload.render({
             elem: '#testList',
             url: '../../../document/adddocumentrecordfile',
             accept: 'file',
