@@ -212,13 +212,11 @@
 <script src="../../layui/layui.js" charset="utf-8"></script>
 <script src="../../js/document-category-render.js"></script>
 <script>
-    layui.use(['form', 'layer', 'laytpl', 'laydate', 'upload'], function () {
+    layui.use(['form', 'layer', 'upload', 'util'], function () {
         var form = layui.form,
             layer = layui.layer,
-            // table = layui.table,
-            laytpl = layui.laytpl,
-            laydate = layui.laydate,
-            upload = layui.upload;
+            upload = layui.upload,
+            util = layui.util;
 
         var documentCategoryData = parent.documentCategoryData;
         var documentCatAbbr = getDocCatAbbr(documentCategoryData);
@@ -444,11 +442,7 @@
         
         // 获取格式为yyyymmdd的日期
         function getDate() {
-            var date = new Date();
-            var year = date.getFullYear();
-            var month =  date.getMonth();
-            var day = date.getDay();
-            return year.toString() + (month < 10? '0' + month.toString(): month.toString()) + (day < 10? '0' + day.toString(): day.toString());
+            return util.toDateString(new Date(), 'yyyyMMdd');
         }
 
         // 删除服务器上的文件
