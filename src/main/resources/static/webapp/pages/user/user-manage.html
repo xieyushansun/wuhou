@@ -1,0 +1,126 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-09-23 21:24:24
+ * @LastEditTime: 2020-09-23 22:44:47
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-mamage.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新建档案</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <script type="text/html" id="toolbar">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add">
+                        <i class="layui-icon layui-icon-add-circle-fine"></i>
+                         添加 
+                        </button>
+                    <!-- <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete">
+                        <i class="layui-icon layui-icon-delete"></i>
+                         删除 
+                    </button> -->
+                </div>
+            </script>
+            <div>
+                <div style="margin: 0 auto;">
+                    <table id="user-table" class="layui-table" lay-filter="user-table">    
+                    </table>
+                </div>
+            </div>
+
+            <script type="text/html" id="currentTableBar">
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="view">查&nbsp;看</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs  data-count-delete" lay-event="delete">删&nbsp;除</a>
+            </script>
+        </div>
+    </div>
+    <script src="../../layui/layui.js"></script>
+    <script>
+        layui.use(['table', 'layer'], function() {
+            var $ = layui.$,
+                table = layui.table;
+
+            table.render({
+                elem: '#user-table',
+                id: 'user-table',
+                page: {
+                    layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
+
+                },
+                data: [],
+                // url: '../../user/getUsers',
+                toolbar: '#toolbar', 
+                width: 700,  
+                cols: [[
+                    {field: 'userId', title: '用户名'},
+                    {field: 'nickname', title: '昵称'},
+                    {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+                ]],
+                parseData: function(res) {
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.totalElements,
+                        "data": res.body
+                    }
+                },
+                skin: 'line'
+            });
+
+            table.on('toolbar(user-table)', function (obj) {
+                var formData = form.val('');
+                var data = obj.data;
+                if (obj.event === 'add') {
+                    var index = layer.open({
+                        title: '新建用户',
+                        type: 2,
+                        shade: 0.2,
+                        maxmin: true,
+                        area: ['500px', '450px'],
+                        content: './user-form.html',
+                        end: function() {
+                            table.reload('user-table');
+                        }
+                    });
+                    return false;
+                } else if (obj.event === 'delete') {
+                    var checkStatus = table.checkStatus('result-table'),
+                        data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                }
+            });
+
+            table.on('tool(user-table)', function(obj) {
+                var data = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'delete') {
+                    layer.confirm("确定删除用户\"" + data.nickname + "\"?", {icon: 3, title: '提示'}, function(index) {
+                        $.ajax({
+                            url: '../../user/deleteUser',
+                            data: {userId: data.userId},
+                            success: function(res) {
+                                if (res.code === 0) {
+                                    layer.close(index);
+                                    layer.msg('删除成功！', {icon: 1});
+                                    obj.del();
+                                } else {
+                                    layer.msg(res.message, {icon: 2});
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
