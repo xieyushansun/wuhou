@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-09-21 22:05:27
+ * @LastEditTime: 2020-09-23 20:26:36
  * @LastEditors: Please set LastEditors
  * @Description: 创建档案页面的查询页面
  * @FilePath: \archives-management\archives-management\src\main\webapp\pages\create-file.html
@@ -47,10 +47,10 @@
                         <i class="layui-icon layui-icon-add-circle-fine"></i>
                          添加 
                         </button>
-                    <button class="layui-btn layui-btn-sm layui-btn-danger data-devare-btn" lay-event="devare">
-                        <i class="layui-icon layui-icon-devare"></i>
+                    <!-- <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete">
+                        <i class="layui-icon layui-icon-delete"></i>
                          删除 
-                    </button>
+                    </button> -->
                 </div>
             </script>
 
@@ -58,8 +58,8 @@
             </div>
 
             <script type="text/html" id="currentTableBar">
-                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-devare" lay-event="devare">删除</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="view">查&nbsp;看</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs  data-count-delete" lay-event="delete">删&nbsp;除</a>
             </script>
         </div>
     </div>
@@ -171,9 +171,10 @@
             elem: '#result-table',
             page: true,
             url: '../../document/normalFindDocumentRecord',
+            // data: tabledata,
             toolbar: '#toolbar',
             cols: [[
-                {type: 'checkbox', width: 50},
+                // {type: 'checkbox', width: 50},
                 {field: 'documentNumber', title: '档号'},
                 {field: 'recordGroupNumber', title: '全宗号'},
                 {field: 'year', title: '年度'},
@@ -221,12 +222,54 @@
                     layer.full(index);
                 });
                 return false;
-            } else if (obj.event === 'devare') {
+            } else if (obj.event === 'delete') {
                 var checkStatus = table.checkStatus('result-table'),
                     data = checkStatus.data;
                 layer.alert(JSON.stringify(data));
             }
         });
+
+        table.on('tool(result-table)', function(obj) {
+            var data = obj.data;
+            var layEvent = obj.event;
+
+            if (layEvent === 'view') { 
+                var index = layer.open({
+                    title: '查看档案',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    area: ['80%', '80%'],
+                    content: './file/view.html',
+                    success: function(layero, index) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        iframeWin.fillData(data);
+                    }
+                });
+                $(window).on('resize', function() {
+                    layer.full(index);
+                });
+                return false;
+            } else if (layEvent === 'edit') {
+                // edit
+            } else if (layEvent === 'delete') {
+                layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {
+                    $.ajax({
+                        url: '../../document/deletedocumentrecord',
+                        data: {documentRecordId: data.documentRecordId},
+                        success: function(res) {
+                            if (res.code === 0) {
+                                layer.close(index);
+                                layer.msg('删除成功！', {icon: 1});
+                                obj.del();
+                            } else {
+                                layer.msg(res.message, {icon: 2});
+                            }
+                        }
+                    })
+                })
+            }
+        })
 
         
     </script>

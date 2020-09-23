@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../css/viewer.min.css">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+        .view-form {margin: 0 auto;}
+        
+        @media screen and (min-width: 642px) {
+            .view-form {
+                width: 642px;
+                margin: 10px auto;
+            }
+        }
+
+        @media screen and (min-width: 965px) {
+            .view-form {
+                width: 965px;
+                margin: 10px auto;
+            }
+            .layui-upload {
+                margin: 0 80px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <fieldset class="table-search-fieldset">
+                <div style="margin: 10px 10px 10px 10px">
+                    <button class="layui-btn layui-btn" id="edit-btn">
+                        <i class="layui-icon layui-icon-edit"></i>编辑
+                    </button>
+                </div>
+            </fieldset>
+            <div class="view-form">
+                <div class="layui-form layuimini-form layui-form-pane" lay-filter="view-form">
+                    <div class="layui-form-item">
+                        <input type="text" name="documentRecordId" class="layui-hide">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">档号</label>
+                            <div class="layui-input-inline">    
+                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input doc-form" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">全宗号</label>
+                            <div class="layui-input-inline">
+                                <select name="recordGroupNumber" class="docNoUsed doc-form" lay-verify="required">
+                                    <option value="129">129</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">年度</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input docNoUsed doc-form" id="year">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">保管期限</label>
+                            <div class="layui-input-inline">
+                                <select name="duration" class="docNoUsed doc-form" lay-verify="required" lay-filter='duration'>
+                                <option value=""></option>
+                                    <option value="10年">10年</option>
+                                    <option value="20年">30年</option>
+                                    <option value="50年">50年</option>
+                                    <option value="100年">100年</option>
+                                    <option value="永久">永久</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">密级</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="security" value="" class="layui-input doc-form">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">档案类别</label>
+                            <div class="layui-input-inline">
+                                <select name="documentCategory" class="docNoUsed doc-form" lay-verify="required" lay-reqtext="档案类别不能为空" lay-filter='documentCategory'></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷类别</label>
+                            <div class="layui-input-inline">
+                                <select name="fileCategory" class="docNoUsed doc-form" lay-verify="required" lay-reqtext="案卷类别不能为空" lay-filter='fileCategory'></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="boxNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input docNoUsed doc-form" placeholder="盒号">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">责任者</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="responsible" value="" class="layui-input doc-form" autocomplete="off">
+                                <!-- <tip>填写自己管理账号的名称。</tip> -->
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位代码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="danweiCode" class="layui-input doc-form" placeholder="(社会保障号码)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="danweiName" class="layui-input doc-form" placeholder="(姓名)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">案卷题名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input doc-form" autocomplete="off">
+                            </div>
+                        </div>
+                        <!-- <div class="layui-inline">
+                            <label class="layui-form-label">分类号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="classNumber" lay-verify="" lay-reqtext="目录号不能为空" value="" class="layui-input">
+                            </div>
+                        </div> -->
+                        <div class="layui-inline">
+                            <label class="layui-form-label">存放位置</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="position" lay-verify="" lay-reqtext="存放位置不能为空" value="" class="layui-input doc-form">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">著录人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="recorder" class="layui-input layui-disabled" readonly>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">著录时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="recordTime"class="layui-input layui-disabled" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" id="save-btn" class="layui-btn layui-hide" lay-submit lay-filter="saveBtn">保存</button>
+                            <!-- <button id="mount-btn" class="layui-btn layui-btn-normal layui-disabled" lay-filter="mountBtn">
+                                <i class="layui-icon layui-icon-upload"></i>
+                                挂载文件
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layuimini-container" id="upload-container">
+        <div class="layuimini-main">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal layui-hide" id="testList">选择多文件</button> 
+                <div class="layui-upload-list">
+                  <table class="layui-table">
+                    <thead>
+                      <tr><th>文件名</th>
+                      <th>大小</th>
+                      <th>状态</th>
+                      <th>操作</th>
+                    </tr></thead>
+                    <tbody id="fileList"></tbody>
+                  </table>
+                </div>
+                <button type="button" class="layui-btn layui-hide" id="testListAction">开始上传</button>
+              </div> 
+        </div>
+    </div>
+
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/viewer.min.js"></script>
+<script src="../../js/jquery.cookie.js"></script>
+<script src="../../layui/layui.all.js" charset="utf-8"></script>
+<script src="../../js/document-category-render.js"></script>
+<script>
+    var form = layui.form,
+        layer = layui.layer,
+        upload = layui.upload;
+
+    var documentCategoryData = parent.documentCategoryData;
+    var documentCatAbbr = getDocCatAbbr(documentCategoryData); // 档案类别缩写；
+    var documentCategoryList = parent.documentCategoryList,
+        fileCategoryList = parent.fileCategoryList;
+    var documentCategory = parent.documentCategory,
+        fileCategory = parent.fileCategory;
+
+    var uploadedFiles = [];
+    
+    var username = $.cookie("nickname");
+    
+
+    $(document).ready(function(){
+        selectInit(documentCategoryData, add=true);
+        $('.doc-form').attr('readonly', true).attr('disabled', true).addClass('layui-disabled');
+        form.render();
+    });
+
+    // 填充数据 由父页面调用；
+    function fillData(data) {
+        form.val('view-form', {
+            "documentNumber": data.documentNumber,
+            "year": data.year,
+            "duration": data.duration,
+            "security": data.security,
+            "documentCategory": data.documentCategory,
+            "fileCategory": data.fileCategory,
+            "boxNumber": data.boxNumber,
+            "responsible": data.responsible,
+            "danweiCode": data.danweiCode,
+            "danweiName": data.danweiName,
+            "fileName": data.fileName,
+            "position": data.position,
+            "recorder": data.recorder,
+            "recordTime": data.recordTime
+        });
+        form.render();
+        // 获取文件列表
+        $.ajax({
+            url: '../../../document/findFileListByDocumentRecordId',
+            type: 'get',
+            data: {documentRecordId: data.id},
+            success: function(res) {
+                if (res.code === 0) {
+                    uploadedFiles = res.body;
+                    fileTable(data.id, uploadedFiles);
+                }
+            }
+        })
+    }
+
+
+    function fileTable(documentRecordId, files) {
+        files = files.sort();
+        layui.each(files, function(index, file) {
+            if (file === undefined || file === null) {
+                return;
+            }
+            var downloadUrl = '../../../document/downLoadDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
+            var previewUrl = '../../../docuement/previewDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
+            var tr = $([
+                '<tr id="upload-' + index + '">', 
+                    '<td>' + file.name + '</td>', 
+                    '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', 
+                    '<td>已上传</td>', 
+                    '<td>', 
+                        '<button class="layui-btn layui-btn-primary layui-btn-xs view-file">查看</button>', 
+                        '<a class="layui-btn layui-btn-xs download-file" href=\"'+ downloadUrl + '\">下载</a>', 
+                        '<button class="layui-btn layui-btn-xs delete-file">删除</button>', 
+                    '</td>', 
+                '</tr>'].join(''));
+            if (!(file.endsWith('jpg') || file.endsWith('.png') || file.endsWith('.jpeg'))) {
+                tr.find('.view-file').addClass('layui-hide');
+            }
+            tr.find('.view-file').on('click', function() {
+                layer.open({
+                    type: 1,
+                    title: '图片预览',
+                    content: '<div><img id="image" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
+                    success: function(layero, index) {
+                        const viewer = new Viewer(document.getElementById('image'), {
+                            inline: true,
+                            viewed() {
+                                viewer.zoomTo(1);
+                            },
+                        });
+                    }
+                });
+            });
+            tr.find('delete-file').on('click', function() {
+                if(deleteFile(documentRecordId, file)) {
+                    tr.remove();
+                    delete uploadedFiles[index];
+                }
+            });
+            
+        });
+    }
+    
+    $(".docNoUsed").change(function() {
+        makeDocumentNo();
+    });
+
+    // 编辑按钮的点击
+    $("#edit-btn").on('click', function() {
+        $(".doc-form").removeClass('layui-disabled').removeAttr('readonly').removeAttr('disabled');
+        $("#save-btn").removeClass('layui-hide');
+        $("#testList").removeClass('layui-hide');
+        $("testListAction").removeClass('layui-hide');
+    });
+
+    // 监听案卷类别下拉选择的变化
+    form.on('select(documentCategory)', function(data) {
+        makeDocumentNo();
+        documentCategory = data.value;
+        fileCategory = '';
+        fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+        changeOption('fileCategory', makeOption(fileCategoryList, documentCategory=undefined, file=true));
+        form.render('select');
+        console.log(documentCategory);
+    });
+
+    // 监听案卷类别下拉选择的变化
+    form.on('select(fileCategory)', function(data) {
+        makeDocumentNo();
+        fileCategory = data.value;
+    });
+
+    form.on('select(duration)', function(data) {
+        makeDocumentNo();
+    });
+
+    var documentRecordId = 3,
+        fileList = ['1','2'];
+
+    // 上传按钮和列表
+    var fileListView = $('#fileList');
+        uploadListIns = upload.render({
+            elem: '#testList',
+            url: '../../../document/adddocumentrecordfile',
+            accept: 'file',
+            multiple: true,
+            auto: false,
+            bindAction: '#testListAction',
+            choose: function(obj) {
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result) {
+                    if (uploadedFiles.indexOf(file.name) !== -1) {
+                        layer.msg('已上传过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已上传重名文件
+                        delete files[index];
+                        return;
+                    }
+
+                    var tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>', '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', '<td>等待上传</td>', '<td>', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function() {
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function() {
+                        var uploadedIdx = -1;
+                        if ((uploadedIdx = uploadedFiles.indexOf(files[index].filename)) !== -1) {
+                            if (deleteFile(documentRecordId, files[index].filename)) { // 删除成功
+                                uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
+                                tr.remove();
+                                uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                            }
+                        } else {
+                            delete files[index]; // 该文件未上传，只从上传列表删除对应的文件
+                            tr.remove();
+                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                        }
+                        
+                    });
+
+                    fileListView.append(tr);
+                });
+            },
+            done: function(res, index, upload) {
+                if (res.code === 0) { //上传成功
+                    var tr = fileListView.find('tr#upload-' + index),
+                        tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(3).find('.demo-reload').addClass('layui-hide');
+                    uploadedFiles.push(this.files[index].filename); // 在已上传文件中添加该文件
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                }
+                this.error(index, upload, res.message);
+            },
+            error: function(index, upload, msg=undefined) {
+                var tr = fileListView.find('tr#upload-' + index),
+                    tds = tr.children();
+                if (msg !== undefined) { // 如果有错误信息则显示错误信息
+                    tds.eq(2).html('<span style="color: #FF5722;">' + msg +'</span>');
+                } else { // 一般是网络问题造成的错误
+                    tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                    tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                }
+
+            }
+        });
+
+    //监听提交
+    form.on('submit(saveBtn)', function (data) {
+        if ($(this).hasClass('layui-disabled')) {
+            return;
+        }
+        // $("#mount-btn").removeClass("layui-disabled");
+        // $("#save").addClass("layui-disabled").attr("disabled", "true");
+        $.ajax({
+            type: "post",
+            url: '../../../document/editDocumentRecord',
+            data: data.field,
+            success: function(res) {
+                if (res.code == 0) {
+                    layer.msg(res.message, {icon: 1});
+                    documentRecordId = res.body;
+                    $("#mount-btn").removeClass("layui-disabled");
+                    $("#save").addClass("layui-disabled").attr("disabled", "true");
+                    uploadListIns.reload({ // 重载上传实例
+                        data: {documentRecordId: documentRecordId}
+                    });
+                } else {
+                    layer.alert(res.message, {icon: 2});
+                }
+            }
+        });
+        
+        return false;
+    });
+
+    // 生成档号
+    function makeDocumentNo() {
+        var formData = form.val('view-form');
+        var recordGroupNumber = formData.recordGroupNumber,
+            year = formData.year,
+            duration = formData.duration, 
+            documentCategory = formData.documentCategory,
+            fileCategory = formData.fileCategory,
+            boxNumber = formData.boxNumber;
+
+        if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
+            documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
+            var documentNumber = recordGroupNumber + '-' + year + '-' + duration + '.' + 
+                                    documentCatAbbr[documentCategory] + '.' + fileCategoryList.indexOf(fileCategory) +
+                                    '-' + boxNumber;
+            form.val('view-form', {
+                "documentNumber": documentNumber
+            });
+        }
+    }
+    
+    // 获取格式为yyyymmdd的日期
+    function getDate() {
+        var date = new Date();
+        var year = date.getFullYear();
+        var month =  date.getMonth();
+        var day = date.getDay();
+        return year.toString() + (month < 10? '0' + month.toString(): month.toString()) + (day < 10? '0' + day.toString(): day.toString());
+    }
+
+    // 删除服务器上的文件
+    function deleteFile(documentRecordId, filename) {
+        /**
+         * @description: 删除服务器上的文件
+         * @param {documentRecordId: String} 档案ID 
+         * @param {filename: String} 文件名
+         * @return  返回成功与否{true/false: boolean}
+         */
+        var successful = false;
+        $.ajax({
+            url: '../../../deleteDocumentRecordFile', 
+            type: 'post',
+            data: {documentRecordId: documentRecordId, fileName: filename},
+            success: function(res) {
+                if (res.code === 0) {
+                    layer.msg('删除成功');
+                    successful = true
+                } else {
+                    layer.msg(res.message);
+                    successful = false;
+                }
+            }
+        });
+        return successful;
+    }
+
+</script>
+</body>
+</html>
