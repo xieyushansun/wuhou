@@ -50,17 +50,17 @@
             </div>
         </fieldset> -->
 
-        <script type="text/html" id="toolbarDemo">
+        <!-- <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
             </div>
-        </script>
+        </script> -->
 
-        <table class="layui-hide" id="searchTable" lay-filter="currentTableFilter"></table>
+        <table class="layui-hide" id="search-table" lay-filter="search-table    "></table>
 
         <script type="text/html" id="currentTableBar">
-            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="view">查看</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>
     </div>
@@ -73,8 +73,12 @@
             table = layui.table;
 
         table.render({
-            elem: '#searchTable',
+            elem: '#search-table',
+            id: 'search-table',
             url: '../../document/normalFindDocumentRecord',
+            page: {
+                layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
+            },
             toolbar: '#toolbarDemo',
             cols: [[
                 {field: 'documentNumber', title: '档号'},
@@ -94,9 +98,20 @@
                 {field: 'recordTime', title: '著录时间'},
                 {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
             ]],
+            request: {
+                pageName: 'currentPage',
+                limitName: 'pageSize'
+            },
+            parseData: function(res) {
+                return {
+                    "code": res.code,
+                    "msg": res.message,
+                    "count": res.totalElements,
+                    "data": res.body
+                }
+            },
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
-            page: true,
             skin: 'line'
         });
 
@@ -123,7 +138,7 @@
         /**
          * toolbar监听事件
          */
-        table.on('toolbar(currentTableFilter)', function (obj) {
+        table.on('toolbar(search-table)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
                     title: '添加用户',
@@ -145,35 +160,54 @@
         });
 
         //监听表格复选框选择
-        table.on('checkbox(currentTableFilter)', function (obj) {
+        table.on('checkbox(search-table)', function (obj) {
             console.log(obj)
             layer.msg('页面开发中！！', {anim: 6});
         });
 
-        table.on('tool(currentTableFilter)', function (obj) {
+        table.on('tool(search-table)', function(obj) {
             var data = obj.data;
-            layer.msg('页面开发中！！', {anim: 6});
-            // if (obj.event === 'edit') {
+            var layEvent = obj.event;
 
-            //     var index = layer.open({
-            //         title: '编辑用户',
-            //         type: 2,
-            //         shade: 0.2,
-            //         maxmin:true,
-            //         shadeClose: true,
-            //         area: ['100%', '100%'],
-            //         content: '../page/table/edit.html',
-            //     });
-            //     $(window).on("resize", function () {
-            //         layer.full(index);
-            //     });
-            //     return false;
-            // } else if (obj.event === 'delete') {
-            //     layer.confirm('真的删除行么', function (index) {
-            //         obj.del();
-            //         layer.close(index);
-            //     });
-            // }
+            if (layEvent === 'view') { 
+                var index = layer.open({
+                    title: '查看档案',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    area: ['80%', '80%'],
+                    content: './file/view.html',
+                    success: function(layero, index) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        $(iframeWin).ready(function() {
+                            iframeWin.fillData(data);
+                        });
+                    }
+                });
+                $(window).on('resize', function() {
+                    layer.full(index);
+                });
+                return false;
+            } else if (layEvent === 'edit') {
+                // edit
+            } else if (layEvent === 'delete') {
+                layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {
+                    $.ajax({
+                        url: '../../document/deletedocumentrecord',
+                        type: 'post',
+                        data: {documentRecordId: data.id},
+                        success: function(res) {
+                            if (res.code === 0) {
+                                layer.close(index);
+                                layer.msg('删除成功！', {icon: 1});
+                                obj.del();
+                            } else {
+                                layer.msg(res.message, {icon: 2});
+                            }
+                        }
+                    })
+                })
+            }
         });
 
     });
