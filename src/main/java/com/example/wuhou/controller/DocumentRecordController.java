@@ -170,7 +170,7 @@ public class DocumentRecordController {
 //      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
 
-    //下载档案文件
+    //预览档案文件
     @GetMapping("/previewDocumentRecordFile")
     @ApiOperation("预览文件")
     public ResultUtil<String> previewDocumentRecordFile(
@@ -224,7 +224,7 @@ public class DocumentRecordController {
     }
     //根据档案记录Id查询路径下对应的文件清单名
     @GetMapping("/findFileListByDocumentRecordId")
-    @ApiOperation("新增档案记录关联文件")
+    @ApiOperation("查找档案记录关联文件")
     public ResultUtil<String[]> findFileListByDocumentRecordId(
             @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId
     ){
@@ -234,7 +234,7 @@ public class DocumentRecordController {
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        ResultUtil<String[]> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
+        ResultUtil<String[]> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！");
         resultUtil.setBody(fileList);
         return resultUtil;
     }
@@ -315,5 +315,71 @@ public class DocumentRecordController {
         resultUtil.setBody(documentRecordList);
         resultUtil.setTotalElements(documentRecordList.size());
         return resultUtil;
+    }
+
+    //删除档案记录对应文件
+    @PostMapping("/deleteDocumentRecordFile")
+    @ApiOperation("删除档案记录文件")
+    public ResultUtil<String> deleteDocumentRecordFile(
+            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
+            @ApiParam(value = "删除文件名称", required = true) @RequestParam() String fileName
+    ) {
+        try {
+            DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
+            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
+            File file = new File(filepath);
+            documentRecordService.deleteDocumentRecordFile(file);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
+    }
+
+    @PostMapping("/modifyDocumentRecord")
+    @ApiOperation("修改档案记录")
+    public ResultUtil<String> modifyDocumentRecord(
+            @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "1") String fileName,
+            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
+            @ApiParam(value = "全宗号", required = true) @RequestParam(defaultValue = "129") String recordGroupNumber,
+            @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "1") String boxNumber,
+            @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "1") String year,
+            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
+            @ApiParam(value = "密级", required = false) @RequestParam(required = false, defaultValue = "") String security,
+            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
+            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
+            @ApiParam(value = "责任者", required = false) @RequestParam(required = false, defaultValue = "") String responsible,
+            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danwieCode,
+            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
+            @ApiParam(value = "档案室中的存放位置", required = false) @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
+            @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime,
+            @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId
+    ){
+        try {
+            DocumentRecord newDocumentRecord = new DocumentRecord();
+
+            newDocumentRecord.setId(documentRecordId);
+            newDocumentRecord.setFileName(fileName);
+            newDocumentRecord.setDocumentNumber(documentNumber);
+            newDocumentRecord.setRecordGroupNumber(recordGroupNumber);
+            newDocumentRecord.setBoxNumber(boxNumber);
+            newDocumentRecord.setYear(year);
+            newDocumentRecord.setDuration(duration);
+            newDocumentRecord.setSecurity(security);
+            newDocumentRecord.setDocumentCategory(documentCategory);
+            newDocumentRecord.setFileCategory(fileCategory);
+            newDocumentRecord.setResponsible(responsible);
+            newDocumentRecord.setDanwieCode(danwieCode);
+            newDocumentRecord.setDanweiName(danweiName);
+            newDocumentRecord.setPosition(position);
+            newDocumentRecord.setRecorder(recorder);
+            newDocumentRecord.setRecordTime(recordTime);
+
+            documentRecordService.modifyDocumentRecord(newDocumentRecord);
+
+        } catch (Exception e) {
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "档案记录修改成功！");
     }
 }

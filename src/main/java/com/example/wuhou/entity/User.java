@@ -2,6 +2,8 @@ package com.example.wuhou.entity;
 
 import java.io.Serializable;
 
+
+
 public class User implements Serializable {
     String userId;  //登录ID
     String password;

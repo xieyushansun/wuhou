@@ -36,6 +36,7 @@ public class DocumentRecordDao {
     public String[] findFileListByDocumentRecordId(String DocumentRecordId) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(DocumentRecordId));
+        query.addCriteria(criteria);
         DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
         if (documentRecord == null){
             throw new Exception("没有这条记录！");
@@ -63,7 +64,7 @@ public class DocumentRecordDao {
         return documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
     }
     //添加档案文件
-    public DocumentRecord getDocumentRecord(String documentRecordId){
+    public DocumentRecord getDocumentRecordById(String documentRecordId){
 //        DocumentFile documentFile = new DocumentFile();
 //        if (filelist.length == 0){
 //            throw new Exception("没有文件，上传失败！");
@@ -130,4 +131,13 @@ public class DocumentRecordDao {
         return documentRecordList.size() == 0;
     }
 
+    public void ModifyDocumentRecord(DocumentRecord documentRecord){
+        Query query = new Query();
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecord.getId()));
+        query.addCriteria(criteria);
+
+        mongoTemplate.remove(query, DocumentRecord.class);
+
+        mongoTemplate.insert(documentRecord);
+    }
 }

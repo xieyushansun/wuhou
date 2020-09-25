@@ -24,7 +24,7 @@ public class DocumentCategoryController {
     @ApiOperation("新增案卷类别")
     public ResultUtil<String> addDocumentCategoryService(
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "就业创业补助资金") String documentCategory,
-            @ApiParam(value = "档案类别缩写", required = true) @RequestParam() String documentCategoryShortName,
+            @ApiParam(value = "档案类别缩写", required = false) @RequestParam(required = false) String documentCategoryShortName,
             @ApiParam(value = "案卷类别", required = true) @RequestParam() String[] fileCategory
     ){
         try {

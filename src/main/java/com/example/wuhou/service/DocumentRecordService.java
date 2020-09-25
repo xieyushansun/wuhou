@@ -1,6 +1,7 @@
 package com.example.wuhou.service;
 
 import com.example.wuhou.Dao.DocumentRecordDao;
+import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.exception.NotExistException;
 import com.example.wuhou.util.FileOperationUtil;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -18,15 +21,13 @@ public class DocumentRecordService {
     @Autowired
     DocumentRecordDao documentRecordDao;
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
-
         if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
             throw new Exception("案卷题目重复！修改后创建创建！");
         }
-
         String storePath = documentRecord.getRecordGroupNumber() + "\\" + documentRecord.getDocumentCategory() + "\\" + documentRecord.getYear()
                 + "\\" + documentRecord.getFileCategory() + "\\" + documentRecord.getBoxNumber() + "\\" + documentRecord.getFileName();
         documentRecord.setStorePath(storePath);
-        documentRecord.setDiskPath("E:\\wuhoudocument");
+        documentRecord.setDiskPath(PathConstant.DISKPATH);
         //创建这条记录对应的文件夹
         String strPath = documentRecord.getDiskPath() + "\\" + storePath;
         File file = new File(strPath);
@@ -47,15 +48,24 @@ public class DocumentRecordService {
             throw new Exception("服务器没有接收到上传的文件！");
         }
         //获取数据库中对应id的记录内容
-        DocumentRecord documentRecord = documentRecordDao.getDocumentRecord(documentRecordId);
+        DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
+        String path = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
+        File file = new File(path);
+        String[] fileName = file.list();
+        List<String> list = new ArrayList<>();
+        list.addAll(Arrays.asList(fileName));
+
+
         for (MultipartFile multipartFile : filelist) {
             if (multipartFile == null) {
                 throw new Exception("存在空文件，上传失败！");
             }
-            String path = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + multipartFile.getOriginalFilename();
+            if (list.contains(multipartFile.getOriginalFilename())){
+                throw new Exception("存在重名文件:" + multipartFile.getOriginalFilename());
+            }
+            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + multipartFile.getOriginalFilename();
             byte[] bytesfile = multipartFile.getBytes();
-//            String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
-            FileOutputStream out = new FileOutputStream(new File(path));
+            FileOutputStream out = new FileOutputStream(new File(filepath));
             out.write(bytesfile);
             out.flush();
             out.close();
@@ -68,7 +78,7 @@ public class DocumentRecordService {
         return documentRecordDao.findFileListByDocumentRecordId(fileCategory);
     }
     public DocumentRecord getDocumentRecordByDocumentRecordId(String documentRecordId) throws Exception {
-        DocumentRecord documentRecord = documentRecordDao.getDocumentRecord(documentRecordId);
+        DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
         if (documentRecord == null){
             throw new Exception("没有这条记录！");
         }
@@ -76,5 +86,50 @@ public class DocumentRecordService {
     }
     public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
         return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
+    }
+    public void deleteDocumentRecordFile(File file){
+        if (file.exists()){
+            file.delete();
+        }
+    }
+
+    public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
+        //初始化新记录的存储路径set
+        String storePath = newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()
+                + "\\" + newDocumentRecord.getFileCategory() + "\\" + newDocumentRecord.getBoxNumber() + "\\" + newDocumentRecord.getFileName();
+        newDocumentRecord.setStorePath(storePath);
+        newDocumentRecord.setDiskPath(PathConstant.DISKPATH);
+
+        String newPath = newDocumentRecord.getDiskPath() + "\\" + storePath;
+
+        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
+        String oldPath = oldDocumentRecord.getDiskPath() + "\\" + oldDocumentRecord.getStorePath();
+
+
+        // 判断新旧文件夹路径是否一样
+        if (!oldPath.equals(newPath)){
+            //1.创建新文件夹
+            File newFile = new File(newPath);
+            if (!newFile.exists()){
+                newFile.mkdirs();
+            }
+            //2.将旧文件夹下的文件移动到新文件夹下
+            File oldFile = new File(oldPath);
+            String[] fileName = oldFile.list();
+            for (String s : fileName) {
+                //file中的文件移到file2去
+                File file1 = new File(oldPath + "\\" + s);
+                File file2 = new File(newPath + "\\" + s);
+                if (!file1.renameTo(file2)) {
+                    // 删除之前新建的文件夹
+                    file2.delete();
+                    throw new Exception("文件: " + s + "移动到新路径" + newPath + "失败!");
+                }
+            }
+            //3.删除旧文件夹
+            FileOperationUtil.delFolder(oldPath);
+        }
+
+        documentRecordDao.ModifyDocumentRecord(newDocumentRecord);
     }
 }
