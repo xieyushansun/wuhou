@@ -222,6 +222,7 @@
     function fillData(data) {
         documentRecordId = data.id;
         form.val('view-form', {
+            "documentRecordId": data.id,
             "documentNumber": data.documentNumber,
             "year": data.year,
             "duration": data.duration,
@@ -302,8 +303,11 @@
         $(".doc-form").removeClass('layui-disabled').removeAttr('readonly').removeAttr('disabled'); // 表单解除禁用
         $("#save-btn").removeClass('layui-hide'); // 保存按钮显示
         $("#testList").addClass('layui-disabled'); // 禁用文件选择按钮
-        $("testListAction").addClass('layui-disabled'); // 禁用文件上传按钮
+        $("#testListAction").addClass('layui-disabled'); // 禁用文件上传按钮
         $(".file-btn").addClass("layui-disabled").attr("disabled", "true");
+        fileListView.empty();
+        $("#upload-container").addClass('layui-hide');
+        form.render('select');
     });
 
     // 监听案卷类别下拉选择的变化
@@ -420,7 +424,6 @@
                     layer.msg(res.message, {icon: 1}); // 保存成功，隐藏保存按钮，显示编辑按钮，重新渲染表格。
                     $("#save").addClass("layui-hide").attr("disabled", "true");
                     $("#edit-btn").removeClass("layui-hide");
-                    fileListView.empty();
                     getFileList()
                 } else {
                     layer.alert(res.message, {icon: 2});
@@ -443,6 +446,7 @@
 
         if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
             documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
+            var indexList = fileCategoryList.indexOf(fileCategory);
             var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
             var documentNumber = recordGroupNumber + '-' + year + '-' + duration + '.' + 
                                     documentCatAbbr[documentCategory] + '.' + no +
