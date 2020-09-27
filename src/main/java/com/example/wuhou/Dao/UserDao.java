@@ -3,7 +3,6 @@ package com.example.wuhou.Dao;
 import com.example.wuhou.entity.User;
 import com.example.wuhou.exception.ExistException;
 import com.example.wuhou.exception.NotExistException;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -17,6 +16,10 @@ import java.util.List;
 public class UserDao {
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Autowired
+    LogDao logDao;
+
     public User findUserByUserId(String userId) {
         Query query = new Query();
         Criteria criteria = Criteria.where("userId").is(userId);
@@ -42,8 +45,12 @@ public class UserDao {
             throw new Exception("插入失败");
         }
 
+        logDao.inserLog("user", "添加", "添加userId为：" + user.getUserId() + " 的用户");
+
+//        LogUtil.addDB("插入用户 " + user.getUserId());
+
     }
-    public void deleteUser(String userId) throws NotExistException {
+    public void deleteUser(String userId) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("userId").is(userId);
         query.addCriteria(criteria);
@@ -53,6 +60,8 @@ public class UserDao {
             throw new NotExistException(userId + ":没有该用户\n");
         }
         mongoTemplate.remove(query, User.class);
+//        LogUtil.delteDB("删除用户 " + userId);
+        logDao.inserLog("user", "删除", "删除用户 " + userId);
     }
 
     public void changePassword(String newPassword, String userId) throws Exception {
@@ -60,6 +69,8 @@ public class UserDao {
         Update update = Update.update("password", newPassword);
         try {
             mongoTemplate.updateFirst(query, update, User.class);
+//            LogUtil.modifyDB("修改用户 " + userId + " 的密码");
+            logDao.inserLog("user", "修改", "修改用户 " + userId + " 的密码");
         }catch (Exception e){
             throw new Exception("修改失败!");
         }
@@ -70,6 +81,8 @@ public class UserDao {
         Update update = Update.update("password", resetedPassword);
         try {
             mongoTemplate.updateFirst(query, update, User.class);
+//            LogUtil.modifyDB("重置用户 " + userId + " 的密码为12345678");
+            logDao.inserLog("user", "修改", "重置用户 " + userId + " 的密码为12345678" );
         }catch (Exception e){
             throw new Exception("重置失败!");
         }

@@ -13,7 +13,7 @@ import java.util.List;
 public class DocumentCategoryService {
     @Autowired
     DocumentCategoryDao documentCategoryDao;
-    public void addDocumentCategory(String documentCategory, String documentCategoryShortName, String[] fileCategory) throws ExistException {
+    public void addDocumentCategory(String documentCategory, String documentCategoryShortName, String[] fileCategory) throws Exception {
         DocumentCategory documentCategory1 = new DocumentCategory();
 
         documentCategory1.setDocumentCategory(documentCategory);
@@ -23,11 +23,11 @@ public class DocumentCategoryService {
         documentCategoryDao.addDocumentCategory(documentCategory1);
 
     }
-    public void deleteDocumentCategory(String id) throws NotExistException {
+    public void deleteDocumentCategory(String id) throws Exception {
         documentCategoryDao.deleteDocumentCategory(id);
     }
 
-    public void modifyDocumentCategory(String id, String documentCategory, String documentCategoryShortName, String[] fileCategory ) throws NotExistException{
+    public void modifyDocumentCategory(String id, String documentCategory, String documentCategoryShortName, String[] fileCategory ) throws Exception {
         DocumentCategory documentCategory1 = new DocumentCategory();
         documentCategory1.setId(id);
         documentCategory1.setDocumentCategory(documentCategory);

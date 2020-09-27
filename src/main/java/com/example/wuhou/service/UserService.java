@@ -40,7 +40,7 @@ public class UserService {
         user.setRoleId("guest");
         userDao.addUser(user);
     }
-    public void deleteUser(String userId) throws NotExistException {
+    public void deleteUser(String userId) throws Exception {
         userDao.deleteUser(userId);
     }
     public User findUserByUserId(String userId){

@@ -22,7 +22,7 @@ public class DocumentRecordDao {
     @Autowired
     MongoTemplate mongoTemplate;
     @Autowired
-    private GridFsTemplate gridFsTemplate;
+    LogDao logDao;
 
     //添加档案记录
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
@@ -30,6 +30,7 @@ public class DocumentRecordDao {
         if (documentRecordReturn == null){
             throw new Exception("插入失败");
         }
+        logDao.inserLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
         return documentRecordReturn.getId();
     }
     //查询案卷号对应的文件清单
@@ -51,7 +52,7 @@ public class DocumentRecordDao {
         return fileList;
     }
     //删除文件记录
-    public String deleteDocumentRecord(String documentRecordId) throws NotExistException {
+    public String deleteDocumentRecord(String documentRecordId) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecordId));
         query.addCriteria(criteria);
@@ -60,6 +61,7 @@ public class DocumentRecordDao {
             throw new NotExistException(documentRecordId + ":没有该条档案记录\n");
         }
         mongoTemplate.remove(query, DocumentRecord.class);
+        logDao.inserLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
         //返回档案记录对应的文件，在service层删除
         return documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
     }
@@ -98,7 +100,7 @@ public class DocumentRecordDao {
 ////        return fileOutputStream;
 //    }
     public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
-        List<List<DocumentRecord>> lists = new ArrayList<>();
+//        List<List<DocumentRecord>> lists = new ArrayList<>();
         List<DocumentRecord> resultList = new ArrayList<>();
         Query query = new Query();
         if (blurryFind.compareTo("0") == 0){ //精确
@@ -122,7 +124,7 @@ public class DocumentRecordDao {
 //        }
         return resultList;
     }
-
+    // 判断案卷名是否有重复的
     public Boolean checkFileName(String fileName){
         Query query = new Query();
         Criteria criteria = Criteria.where("fileName").is(fileName);
@@ -131,13 +133,13 @@ public class DocumentRecordDao {
         return documentRecordList.size() == 0;
     }
 
-    public void ModifyDocumentRecord(DocumentRecord documentRecord){
+    public void ModifyDocumentRecord(DocumentRecord documentRecord) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecord.getId()));
         query.addCriteria(criteria);
-
         mongoTemplate.remove(query, DocumentRecord.class);
-
+        logDao.inserLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
         mongoTemplate.insert(documentRecord);
+        logDao.inserLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
     }
 }

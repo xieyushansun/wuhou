@@ -24,25 +24,22 @@ public class ShiroConfig {
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/webapp/pages/*", "authc");
         filterMap.put("/webapp/index.html", "authc");
+
+        //接口拦截
+//        filterMap.put("/user/*", "authc");
         bean.setFilterChainDefinitionMap(filterMap);
         //设置登录失败的跳转页面
         bean.setLoginUrl("/webapp/login.html");
-
-
         return bean;
     }
 
     @Bean(name = "securityManager")
     public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-
         //关联realm
         securityManager.setRealm(realm);
-
-
         return securityManager;
     }
-
     //创建realm对象，需要自定义类1
     @Bean
     public Realm getrRealm(){

@@ -1,6 +1,7 @@
 package com.example.wuhou.service;
 
 import com.example.wuhou.Dao.DocumentRecordDao;
+import com.example.wuhou.Dao.LogDao;
 import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.exception.NotExistException;
@@ -20,6 +21,9 @@ import java.util.Map;
 public class DocumentRecordService {
     @Autowired
     DocumentRecordDao documentRecordDao;
+    @Autowired
+    LogDao logDao;
+
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
         if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
             throw new Exception("案卷题目重复！修改后创建创建！");
@@ -38,7 +42,7 @@ public class DocumentRecordService {
         String documentRecordId = documentRecordDao.addDocumentRecord(documentRecord);
         return documentRecordId;
     }
-    public void deleteDocumentRecord(String documentRecordId) throws NotExistException {
+    public void deleteDocumentRecord(String documentRecordId) throws Exception {
         String path = documentRecordDao.deleteDocumentRecord(documentRecordId);
         //删除documentrecord的文件夹以及文件夹中的内容
         FileOperationUtil.delFolder(path);
@@ -55,7 +59,6 @@ public class DocumentRecordService {
         List<String> list = new ArrayList<>();
         list.addAll(Arrays.asList(fileName));
 
-
         for (MultipartFile multipartFile : filelist) {
             if (multipartFile == null) {
                 throw new Exception("存在空文件，上传失败！");
@@ -70,6 +73,7 @@ public class DocumentRecordService {
             out.flush();
             out.close();
         }
+        logDao.inserLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件: " + Arrays.toString(filelist));
     }
 //    public DocumentFile downLoadDocumentRecordFile(String fileId){
 //        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
@@ -87,10 +91,11 @@ public class DocumentRecordService {
     public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
         return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
     }
-    public void deleteDocumentRecordFile(File file){
+    public void deleteDocumentRecordFile(File file, String documentRecordId) throws Exception {
         if (file.exists()){
             file.delete();
         }
+        logDao.inserLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
 
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {

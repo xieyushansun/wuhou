@@ -20,7 +20,7 @@ public class RoleService {
         role.setRoleName(roleName);
         roleDao.addRole(role);
     }
-    public void deleteRole(String id) throws ExistException {
+    public void deleteRole(String id) throws Exception {
         roleDao.deleteRole(id);
     }
     public void modifyRole(Role role, String id) throws Exception {
@@ -29,10 +29,10 @@ public class RoleService {
     public List<Role> getAllRole(){
         return roleDao.getAllRole();
     }
-    public void userRoleAuthorize(String userId, String roleId){
+    public void userRoleAuthorize(String userId, String roleId) throws Exception {
         roleDao.userRoleAuthorize(userId, roleId);
     }
-    public void removeUserRoleAuthorize(String userId){
+    public void removeUserRoleAuthorize(String userId) throws Exception {
         roleDao.removeUserRoleAuthorize(userId);
     }
 }

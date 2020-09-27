@@ -181,4 +181,28 @@ public class DocumentRecord {
     public void setStorePath(String storePath) {
         this.storePath = storePath;
     }
+
+    @Override
+    public String toString() {
+        return "DocumentRecord{" +
+                "id='" + id + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", documentNumber='" + documentNumber + '\'' +
+                ", recordGroupNumber='" + recordGroupNumber + '\'' +
+                ", boxNumber='" + boxNumber + '\'' +
+                ", year='" + year + '\'' +
+                ", duration='" + duration + '\'' +
+                ", security='" + security + '\'' +
+                ", documentCategory='" + documentCategory + '\'' +
+                ", fileCategory='" + fileCategory + '\'' +
+                ", responsible='" + responsible + '\'' +
+                ", danwieCode='" + danwieCode + '\'' +
+                ", danweiName='" + danweiName + '\'' +
+                ", position='" + position + '\'' +
+                ", recorder='" + recorder + '\'' +
+                ", recordTime='" + recordTime + '\'' +
+                ", diskPath='" + diskPath + '\'' +
+                ", storePath='" + storePath + '\'' +
+                '}';
+    }
 }

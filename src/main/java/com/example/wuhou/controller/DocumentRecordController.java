@@ -328,7 +328,7 @@ public class DocumentRecordController {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
             String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
             File file = new File(filepath);
-            documentRecordService.deleteDocumentRecordFile(file);
+            documentRecordService.deleteDocumentRecordFile(file, documentRecordId);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }

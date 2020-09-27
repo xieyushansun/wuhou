@@ -1,13 +1,22 @@
 package com.example.wuhou.util;
 
+import com.example.wuhou.Dao.UserDao;
+import com.example.wuhou.constant.PathConstant;
+import org.apache.tomcat.jni.User;
 import org.bson.types.Binary;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class FileOperationUtil {
+    @Autowired
+    static
+    MongoTemplate mongoTemplate;
+
     public static byte[] fileToByte(File file) throws IOException {
         byte[] bytes = null;
         FileInputStream fis = null;
@@ -44,7 +53,6 @@ public class FileOperationUtil {
 
         return fileOuputStream;
     }
-
     public static boolean delAllFile(String path) {
         boolean flag = false;
         File file = new File(path);
@@ -84,5 +92,33 @@ public class FileOperationUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void wirteUserLog(String msg) {
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(System.currentTimeMillis());
+
+        String path = PathConstant.DISKPATH + "\\" + "logfile";
+        String filepath = path + "\\" + formatter.format(date) + ".txt";
+
+        formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
+        String recordTime = formatter.format(date);
+        msg = recordTime + "--------" + msg;
+//        FileWriter fileWriter = new FileWriter(filepath, true);
+//        fileWriter.write(msg + "\r\n");
+//        fileWriter.close();
+//        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+//        RandomAccessFile randomFile = new RandomAccessFile(filepath, "rw");
+//        long fileLength = randomFile.length();
+//        randomFile.seek(fileLength);
+//        randomFile.writeBytes(msg + "\r\n");
+//        randomFile.close();
+
+
+
+
+//        bufferedWriter.write(msg + "\r\n");
+//        bufferedWriter.flush();
+//        bufferedWriter.close();
     }
 }

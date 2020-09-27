@@ -16,7 +16,9 @@ import java.util.List;
 public class DocumentCategoryDao {
     @Autowired
     MongoTemplate mongoTemplate;
-    public void addDocumentCategory(DocumentCategory documentCategory) throws ExistException {
+    @Autowired
+    LogDao logDao;
+    public void addDocumentCategory(DocumentCategory documentCategory) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("DocumentCategory").is(documentCategory.getDocumentCategory());
         query.addCriteria(criteria);
@@ -25,8 +27,9 @@ public class DocumentCategoryDao {
             throw new ExistException("该档案类别已存在!");
         }
         mongoTemplate.insert(documentCategory);
+        logDao.inserLog("documentCategory", "添加", "添加档案类别:" + documentCategory.toString());
     }
-    public void deleteDocumentCategory(String id) throws NotExistException {
+    public void deleteDocumentCategory(String id) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(id));
         query.addCriteria(criteria);
@@ -35,8 +38,9 @@ public class DocumentCategoryDao {
             throw new NotExistException("该档案类别不存在!");
         }
         mongoTemplate.remove(documentCategory);
+        logDao.inserLog("documentCategory", "删除", "删除档案类别 " + documentCategory.toString());
     }
-    public void modifyDocumentCategory(DocumentCategory documentCategory) throws NotExistException {
+    public void modifyDocumentCategory(DocumentCategory documentCategory) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentCategory.getId()));
         query.addCriteria(criteria);
@@ -46,8 +50,10 @@ public class DocumentCategoryDao {
         }
         //将数据库中对应id的数据删除
         mongoTemplate.remove(DBdocumentCategory);
+        logDao.inserLog("documentCategory", "删除", "删除档案类别id为 " + documentCategory.getId());
         //重新插入修改后的
         mongoTemplate.insert(documentCategory);
+        logDao.inserLog("documentCategory", "添加", "添加档案类别:" + documentCategory.toString());
     }
     public List<DocumentCategory> findAllDocumentCategory(){
         List<DocumentCategory> documentCategories;

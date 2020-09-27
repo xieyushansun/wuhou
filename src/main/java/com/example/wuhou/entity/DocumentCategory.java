@@ -1,5 +1,7 @@
 package com.example.wuhou.entity;
 
+import java.util.Arrays;
+
 public class DocumentCategory {
     //数据库中的id
     private String id;
@@ -44,5 +46,15 @@ public class DocumentCategory {
 
     public void setFileCategory(String[] fileCategory) {
         this.fileCategory = fileCategory;
+    }
+
+    @Override
+    public String toString() {
+        return "DocumentCategory{" +
+                "id='" + id + '\'' +
+                ", documentCategory='" + documentCategory + '\'' +
+                ", documentCategoryShortName='" + documentCategoryShortName + '\'' +
+                ", fileCategory=" + Arrays.toString(fileCategory) +
+                '}';
     }
 }
