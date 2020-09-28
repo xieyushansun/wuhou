@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-09-24 15:36:14
+ * @LastEditTime: 2020-09-27 14:07:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-mamage.html
@@ -62,6 +62,7 @@
                 cols: [[
                     {field: 'userId', title: '用户名'},
                     {field: 'nickName', title: '昵称'},
+                    {field: 'roleId', title: '角色'},
                     {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
                 ]],
                 parseData: function(res) {
@@ -101,7 +102,7 @@
                 var data = obj.data;
                 var layEvent = obj.event;
                 if (layEvent === 'delete') {
-                    layer.confirm("确定删除用户\"" + data.nickname + "\"?", {icon: 3, title: '提示'}, function(index) {
+                    layer.confirm("确定删除用户\"" + data.nickName + "\"?", {icon: 3, title: '提示'}, function(index) {
                         $.ajax({
                             url: '../../../user/deleteUser',
                             data: {userId: data.userId},
