@@ -5,6 +5,7 @@
     <title>layui</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
     <link rel="stylesheet" href="../../css/public.css" media="all">
@@ -224,6 +225,14 @@
             fileCategoryList = parent.fileCategoryList;
         var documentCategory = parent.documentCategory,
             fileCategory = parent.fileCategory;
+
+        var durationDict = {
+            '10年': 'D',
+            '30年': 'Z',
+            '50年': 'C',
+            '100年': 'H',
+            '永久': 'Y'
+        };
         
         var username = $.cookie("nickname");
         
@@ -431,8 +440,10 @@
 
             if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
                 documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
-                var documentNumber = recordGroupNumber + '-' + year + '-' + duration + '.' + 
-                                     documentCatAbbr[documentCategory] + '.' + fileCategoryList.indexOf(fileCategory) +
+                var fileIndex = fileCategoryList.indexOf(fileCategory);
+                var no = fileIndex < 10? '0' + (fileIndex + 1).toString(): (fileIndex + 1).toString();
+                var documentNumber = recordGroupNumber + '-' + year + '-' + durationDict[duration] + '.' + 
+                                     documentCatAbbr[documentCategory] + '.' + no +
                                      '-' + boxNumber;
                 form.val('add-form', {
                     "documentNumber": documentNumber
