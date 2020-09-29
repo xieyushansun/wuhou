@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta http-equiv="cache-control" content="no-cache">
     <title>武侯区就业局档案管理系统</title>
     <link rel="icon" href="images/favicon.png">
     <link rel="stylesheet" href="layui/css/layui.css">
@@ -133,7 +134,7 @@
                     type: 'post',
                     success: function(res) {
                         if (res.code === 0) {
-                            layer.msg('退出登录成功', function () {
+                            layer.msg('退出登录成功', {time: 700}, function () {
                                 window.location = 'login.html';
                             });
                         }
