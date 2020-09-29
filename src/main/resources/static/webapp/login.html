@@ -103,7 +103,7 @@
 </div>
 
 <script>
-    if (window != top) {
+    if (window !== top) {
         top.location.href = location.href;
     }
 </script>
@@ -192,9 +192,9 @@
                             if (res.code === 0) {
                                 $.cookie('nickname', res.body.nickName);
                                 $.cookie('role', res.body.role);
-                                layer.msg('登录成功', function() {
+                                layer.msg('登录成功',  {time: 700},function() {
                                     window.location = './index.html';
-                                })
+                                });
                             } else {
                                 layer.msg(res.message);
                             }
@@ -205,10 +205,6 @@
                 }
             }
         })
-
-        // layer.msg('登录成功', function () {
-        //     window.location = './index.html';
-        // });
         return false;
     });
 
