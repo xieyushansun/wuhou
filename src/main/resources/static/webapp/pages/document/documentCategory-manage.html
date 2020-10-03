@@ -1,0 +1,395 @@
+<!--
+ * @Author: liyan
+ * @LastEditors: liyan
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>档案类别管理</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/layuimini.css">
+    <link rel="stylesheet" href="../../css/public.css">
+    <style>
+        #save-btn {
+            float: left;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <fieldset class="layui-elem-field layui-field-title">
+                <legend>档案类别管理</legend>
+            </fieldset>
+            <fieldset class="layui-elem-field layui-field-title">
+                <div class="layui-field-box">
+                    <button class="layui-btn" id="save-btn">保存</button>
+                    <div class="layui-form-mid layui-word-aux">档案类别删除操作将直接删除，其余修改需要点击保存按钮才会生效</div>
+                </div>
+              </fieldset>
+            <!-- <blockquote class="layui-elem-quote layui-quote-nm">
+                <button class="layui-btn">保存</button>
+            </blockquote> -->
+            <div class="layui-row layui-col-space25">
+                <div class="layui-col-md6">
+                    <blockquote class="layui-elem-quote layui-text">点击单元格可对档案类别和缩写进行修改</blockquote>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-normal" id="add-docCat"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                    </div>
+                    <table id="left-table" lay-filter="left-table"></table>
+                </div>
+                <div class="layui-col-md6">
+                    <div id="right">
+                        <blockquote class="layui-elem-quote layui-text">案卷类别的顺序将影响其编号，注意排序</blockquote>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-normal" id="add-fileCat"><i class="layui-icon layui-icon-add-circle-fine"></i> 添加</button>
+                        </div>
+                        <div class="layui-inline">
+                            <lable class="layui-form-label" style="width: 100px;">当前档案类别：</lable>
+                            <div class="layui-form-mid layui-form-text" id="docCat"></div>
+                        </div>
+                        <table id="right-table" lay-filter="right-table"></table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script type="text/html" id="toolBar">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">修改案卷类别</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script type="text/html" id="toolBar2">
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../layui/layui.js"></script>
+    <script src="../../js/lay-config.js"></script>
+    <script>
+        layui.use(['layer', 'table', 'form', 'soulTable'], function() {
+            var layer = layui.layer,
+                table = layui.table,
+                form = layui.form,
+                soulTable = layui.soulTable;
+
+            var device = layui.device(),
+                callFn = Function();
+            
+                callFn = function() {
+                    var errs = [];
+                    for (var i = 0, l = arguments.length; i < l; i++) {
+                        var arg = arguments[i];
+                        if (arg.code !== 0) {
+                            errs.push(arg.message);
+                        }
+                    }
+                    layer.alert(errs.join(), {title: '错误', icon:2});
+                }
+
+            
+            var modified = new Set(),
+                randCode = 0,
+                tableData = [
+                    {
+                        "id": "5f6deda62aa5f210980f3845",
+                        "documentCategory": "就业创业补助资金",
+                        "documentCategoryShortName": "jb",
+                        "fileCategory": [
+                            "类别1",
+                            "类别2",
+                            "类别3",
+                            "类别4",
+                            "类别5"
+                        ]
+                    },
+                    {
+                        "id": "5f6deda62aa5f210980f3846",
+                        "documentCategory": "事业保险金基金类",
+                        "documentCategoryShortName": "sy",
+                        "fileCategory": [
+                            "类别1",
+                            "类别2",
+                            "类别3",
+                            "类别4",
+                            "类别5"
+                        ]
+                    }
+                ];
+
+            var currDocId = '';
+            
+            soulTable.config({
+                drag: false,  // 关闭列拖动
+                rowDrag: true  // 开启行拖动
+            })
+            
+            table.render({
+                elem: "#left-table",
+                id: "left-table",
+                data: tableData,
+                cols: [[
+                    {field: 'documentCategory', title: '档案类别', edit: 'text'},
+                    {field: 'documentCategoryShortName', title: '缩写', edit: 'text'},
+                    {title: '操作', toolbar: '#toolBar'}
+                ]],
+            });
+
+            table.render({
+                elem: "#right-table",
+                id: "right-table",
+                data: [],
+                cols: [[
+                    {type: 'numbers', title: '编号', fixed: 'left'},
+                    {field: 'fileCategory', title: "档案类别", edit: 'text'},
+                    {title: '操作', toolbar: '#toolBar2'}
+                ]],
+                done: function() {
+                    soulTable.render(this);
+                }
+            });
+
+            function getData() {
+                $.ajax({
+                    url: "../../../DocumentCategory/FindAllDocumentCategory",
+                    type: "get",
+                    success: function(res) {
+                        if (res.code === 0) {
+                            tableData = res.body;
+                            table.render('left-table', {
+                                data: tableData
+                            }); // 重新渲染左边的档案类别表
+                            table.render('right-table', {
+                                data: []
+                            }); // 情况右边的案卷类别表
+                            currDocId = "";
+                        } else {
+                            layui.alert(res.message, {icon: 5});
+                        }
+                    }
+                });
+            }
+
+            
+
+            table.on('edit(left-table)', function(obj) {
+                var data = obj.data;
+                console.log(data.id);
+                modified.add(data.id);
+            });
+
+            // 左边档案类别的添加按钮点击事件
+            $('#add-docCat').on('click', function() {
+                tableData = table.cache['left-table'];
+                randCode++;
+                var newID = 'new-add-' + randCode;
+                var newData = {'id': newID, 'documentCategory': '', 'documentCategoryShortName': '', 'fileCategory': []}
+                tableData.push(newData);
+                table.reload('left-table', {
+                    data: tableData
+                });
+            });
+            
+            // 左边档案类别表的操作
+            table.on('tool(left-table)', function(obj) {
+                if (obj.event === 'edit') {
+                    var rightPart = $('#right');
+                    if (rightPart.hasClass("layui-hide")) {
+                        rightPart.removeClass("layui-hide");
+                    } else {
+                        // 不是第一次编辑案卷类别，记录上次的案卷类别修改
+                        var oldFileCatData = fileCategoryDataReTran(table.cache['right-table']);
+                        var currTableData = table.cache['left-table'];
+                        fileModify(currTableData, oldFileCatData);
+                        table.reload('left-table', {
+                            data: currTableData
+                        });
+                    }
+                    currDocId = obj.data.id;
+                    table.reload('right-table', {
+                        data: fileCategoryDataTran(obj.data.fileCategory)
+                    });
+                    $("#docCat").text(obj.data.documentCategory);
+                    // obj.tr.css('background', '#79a29e');
+                } else if (obj.event === 'del') {
+                    delDocCat(obj.data.id, obj);
+                }
+            });
+
+            // 右边案卷类别添加按钮的点击事件
+            $("#add-fileCat").on('click', function() {
+                if (currDocId === '') {
+                    layer.msg('请先选择档案类别', {time: 0.4 * 1000});
+                    return;
+                }
+                var fileData = table.cache['right-table'];
+                var newData = {fileCategory: '未命名档案类别'};
+                fileData.push(newData);
+                table.reload('right-table', {
+                    data: fileData
+                });
+            });
+
+            // 右边案卷类别表的操作
+            table.on('tool(right-table)', function(obj) {
+                if (obj.event === 'del') {
+                    obj.del();
+                }
+            })
+
+            // 保存按钮的点击
+            $("#save-btn").on("click", function() {
+                var oldFileCatData = fileCategoryDataReTran(table.cache['right-table']);
+                var currTableData = table.cache['left-table'];
+                fileModify(currTableData, oldFileCatData);
+                if (modified.size === 0) {
+                    return;
+                }
+                var dfds = [];
+                var layIndex = layer.load();
+                modified.forEach(function(value1, value2) {
+                    layui.each(currTableData, function(index, item) {
+                        if (item.id === value1) {
+                            if (item.id.indexOf('new-add') !== -1) {
+                                var addDfd = addDocCat(item);
+                                dfds.push(addDfd);
+                            } else {
+                                var modDfd = modifyDocCat(item);
+                                dfds.push(dfds);
+                            }
+                            return false; // 相当于实现layui.each的break
+                        }
+                    });
+                });
+                
+                // success后的回调
+                $.when(dfds).done(function() {
+                    var errs = [];
+                    for (var i = 0, l = arguments.length; i < l; i++) {
+                        var arg = arguments[i];
+                        if (arg.code !== 0) {
+                            errs.push(arg.message);
+                        }
+                    }
+                    layer.close(layIndex);
+                    if(errs.length === 0) {
+                        layer.msg("保存成功", {time: 0.7 * 1000});
+                    } else {
+                        layer.alert(errs.join(), {title: '错误', icon:2});
+                    }
+                });
+
+                
+            })
+
+            // 将案卷类别转化为表格数据
+            function fileCategoryDataTran(data) {
+                if (!data instanceof Array) {
+                    return [];
+                }
+                var newData = [];
+                layui.each(data, function(index, item) {
+                    newData.push({fileCategory: item});
+                });
+                return newData;
+            }
+
+            // 将表格中的案卷类别转化为Array
+            function fileCategoryDataReTran(data) {
+                var newData = [];
+                layui.each(data, function(index, item) {
+                    newData.push(item.fileCategory);
+                });
+                return newData;
+            }
+
+            // 找到当前修改的档案类别判断是否有修改，有的话就修改当前的数据
+            function fileModify(currTableData, newData) {
+                newData = newData.filter(Boolean);
+                layui.each(currTableData, function(index, item) {
+                    if (item.id === currDocId) {
+                        if (!arrayEquals(item.fileCategory, newData)) {
+                            item.fileCategory = newData;
+                            modified.add(currDocId);
+                        }
+                    }
+                })
+            }
+
+            // 创建新的档案类别,返回一个jq延迟对象
+            function addDocCat(data) {
+                console.log("add:");
+                console.log(data);
+                var addDfd = $.ajax({
+                    url: '../../DocumentCategory/addDocumentCategory',
+                    type: 'post',
+                    data: data,
+                    cache: false,
+                    error: function(xhr, textStatus, errorThrown) {
+                        layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
+                    }
+                });
+                return addDfd;
+            }
+
+            // 修改档案类别, 返回一个jq延迟对象
+            function modifyDocCat(data) {
+                console.log("mod:");
+                console.log(data);
+                var modDfd = $.ajax({
+                    url: '../../DocumentCategory/modifyDocumentCategory',
+                    type: 'post',
+                    data: data,
+                    cache: false,
+                    error: function(xhr, textStatus, errorThrown) {
+                        layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
+                    }
+                });
+                return modDfd;
+            }
+
+            // 删除档案
+            function delDocCat(id, obj) {
+                $.ajax({
+                    url: '../../DocumentCategory/deleteDocumentCategory',
+                    type: 'post',
+                    data: {id: id},
+                    success: function(res) {
+                        if (res.code === 0) {
+                            layer.msg('删除成功', {time: 0.6*1000});
+                            obj.del();
+                        }
+                    }
+                })
+            }
+
+            // 判断两个数组是否相等
+            function arrayEquals(array1, array2) {
+                if(!(array1 || array1)) {
+                return false;
+                }
+                // 先比较长度 
+                if (array1.length != array2.length)
+                    return false;
+
+                for (var i = 0, l=array1.length; i < l; i++) {
+                    // 检查是否为内嵌数组
+                    if (array1[i] instanceof Array && array2[i] instanceof Array) {
+                        // 递归比较数组
+                        if (!arrayEquals(array1[i],array2[i]))
+                            return false;       
+                    } else if (array1[i] != array2[i]) { //标量比较 
+                        return false;   
+                    }           
+                }       
+                return true;
+            }
+
+        });
+    </script>
+</body>
+</html>

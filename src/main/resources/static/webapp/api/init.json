@@ -50,6 +50,12 @@
               "href": "pages/user/user-manage.html",
               "icon": "fa fa-users",
               "target": "_self"
+            },
+            {
+              "title": "档案类别管理",
+              "href": "pages/document/documentCategory-manage.html",
+              "icon": "fa fa-tasks",
+              "target": "_self"
             }
           ]
         }
