@@ -13,51 +13,17 @@
 <div class="layuimini-container">
     <div class="layuimini-main">
 
-        <!-- <fieldset class="table-search-fieldset">
+        <fieldset class="table-search-fieldset">
             <legend>搜索信息</legend>
             <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" action="">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户姓名</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="username" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户性别</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="sex" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户城市</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="city" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户职业</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="classify" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
-                        </div>
-                    </div>
-                </form>
+                <button class="layui-btn" id="search-btn">
+                    <i class="layui-icon layui-icon-search"></i>
+                    搜索
+                </button>
             </div>
-        </fieldset> -->
+        </fieldset>
 
-        <!-- <script type="text/html" id="toolbarDemo">
-            <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
-            </div>
-        </script> -->
-
-        <table class="layui-hide" id="search-table" lay-filter="search-table    "></table>
+        <table class="layui-hide" id="search-table" lay-filter="search-table"></table>
 
         <script type="text/html" id="currentTableBar">
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="view">查看</a>
@@ -68,9 +34,10 @@
 <script src="../js/jquery.min.js"></script>
 <script src="../layui/layui.js" charset="utf-8"></script>
 <script>
-    layui.use(['form', 'table'], function () {
+    layui.use(['form', 'table', 'form'], function () {
         var form = layui.form,
-            table = layui.table;
+            table = layui.table,
+            form = layui.form;
 
         table.render({
             elem: '#search-table',
@@ -116,23 +83,29 @@
         });
 
         // 监听搜索操作
-        form.on('submit(data-search-btn)', function (data) {
-            var result = JSON.stringify(data.field);
-            layer.alert(result, {
-                title: '最终的搜索信息'
+        $("#search-btn").on("click", function() {
+            layer.open({
+                type: 2,
+                content: "./query/query.html",
+                area: ["600px", "80%"],
+                btn: ['提交', '取消'],
+                yes: function(index, layero) {
+                    var formCurr = layer.getChildFrame('.layui-tab-item.layui-show', index).find('.layui-form').attr("lay-filter");
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    var formData = iframeWin.layui.form.val(formCurr);
+                    if (formCurr === 'general-query') {
+                        // 
+                    } else if (formCurr === 'class-query') {
+                        // 分类查询
+                        table.reload('search-render', {
+                            url: '../../document/normalFindDocumentRecord',
+                            where: formData
+                        });
+                    } else if (formCurr === 'combined-query') {
+                        //
+                    }
+                }
             });
-
-            //执行搜索重载
-            table.reload('currentTableId', {
-                page: {
-                    curr: 1
-                }
-                , where: {
-                    searchParams: result
-                }
-            }, 'data');
-
-            return false;
         });
 
         /**
