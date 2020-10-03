@@ -80,16 +80,16 @@
             var device = layui.device(),
                 callFn = Function();
             
-                callFn = function() {
-                    var errs = [];
-                    for (var i = 0, l = arguments.length; i < l; i++) {
-                        var arg = arguments[i];
-                        if (arg.code !== 0) {
-                            errs.push(arg.message);
-                        }
+            callFn = function() {
+                var errs = [];
+                for (var i = 0, l = arguments.length; i < l; i++) {
+                    var arg = arguments[i];
+                    if (arg.code !== 0) {
+                        errs.push(arg.message);
                     }
-                    layer.alert(errs.join(), {title: '错误', icon:2});
                 }
+                layer.alert(errs.join(), {title: '错误', icon:2});
+            };
 
             
             var modified = new Set(),
@@ -101,7 +101,7 @@
             soulTable.config({
                 drag: false,  // 关闭列拖动
                 rowDrag: true  // 开启行拖动
-            })
+            });
             
             table.render({
                 elem: "#left-table",
@@ -111,7 +111,7 @@
                     {field: 'documentCategory', title: '档案类别', edit: 'text'},
                     {field: 'documentCategoryShortName', title: '缩写', edit: 'text'},
                     {title: '操作', toolbar: '#toolBar'}
-                ]],
+                ]]
             });
 
             table.render({
@@ -135,10 +135,10 @@
                     success: function(res) {
                         if (res.code === 0) {
                             tableData = res.body;
-                            table.render('left-table', {
+                            table.reload('left-table', {
                                 data: tableData
                             }); // 重新渲染左边的档案类别表
-                            table.render('right-table', {
+                            table.reload('right-table', {
                                 data: []
                             }); // 情况右边的案卷类别表
                             currDocId = "";
@@ -164,7 +164,7 @@
                 tableData = table.cache['left-table'];
                 randCode++;
                 var newID = 'new-add-' + randCode;
-                var newData = {'id': newID, 'documentCategory': '', 'documentCategoryShortName': '', 'fileCategory': []}
+                var newData = {'id': newID, 'documentCategory': '', 'documentCategoryShortName': '', 'fileCategory': []};
                 tableData.push(newData);
                 table.reload('left-table', {
                     data: tableData
@@ -216,7 +216,7 @@
                 if (obj.event === 'del') {
                     obj.del();
                 }
-            })
+            });
 
             // 保存按钮的点击
             $("#save-btn").on("click", function() {
@@ -236,7 +236,7 @@
                                 dfds.push(addDfd);
                             } else {
                                 var modDfd = modifyDocCat(item);
-                                dfds.push(dfds);
+                                dfds.push(modDfd);
                             }
                             return false; // 相当于实现layui.each的break
                         }
@@ -262,7 +262,7 @@
                 });
 
                 
-            })
+            });
 
             // 将案卷类别转化为表格数据
             function fileCategoryDataTran(data) {
@@ -303,9 +303,13 @@
                 console.log("add:");
                 console.log(data);
                 var addDfd = $.ajax({
-                    url: '../../DocumentCategory/addDocumentCategory',
+                    url: '../../../DocumentCategory/addDocumentCategory',
                     type: 'post',
-                    data: data,
+                    data: {
+                        documentCategory: data.documentCategory,
+                        documentCategoryShortName: data.documentCategoryShortName,
+                        fileCategory: JSON.stringify(data.fileCategory)
+                    },
                     cache: false,
                     error: function(xhr, textStatus, errorThrown) {
                         layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
@@ -319,7 +323,7 @@
                 console.log("mod:");
                 console.log(data);
                 var modDfd = $.ajax({
-                    url: '../../DocumentCategory/modifyDocumentCategory',
+                    url: '../../../DocumentCategory/modifyDocumentCategory',
                     type: 'post',
                     data: data,
                     cache: false,
@@ -333,7 +337,7 @@
             // 删除档案
             function delDocCat(id, obj) {
                 $.ajax({
-                    url: '../../DocumentCategory/deleteDocumentCategory',
+                    url: '../../../DocumentCategory/deleteDocumentCategory',
                     type: 'post',
                     data: {id: id},
                     success: function(res) {
@@ -351,7 +355,7 @@
                 return false;
                 }
                 // 先比较长度 
-                if (array1.length != array2.length)
+                if (array1.length !== array2.length)
                     return false;
 
                 for (var i = 0, l=array1.length; i < l; i++) {
@@ -360,7 +364,7 @@
                         // 递归比较数组
                         if (!arrayEquals(array1[i],array2[i]))
                             return false;       
-                    } else if (array1[i] != array2[i]) { //标量比较 
+                    } else if (array1[i] !== array2[i]) { //标量比较
                         return false;   
                     }           
                 }       
