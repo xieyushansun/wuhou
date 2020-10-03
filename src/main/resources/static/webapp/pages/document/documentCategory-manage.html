@@ -94,32 +94,7 @@
             
             var modified = new Set(),
                 randCode = 0,
-                tableData = [
-                    {
-                        "id": "5f6deda62aa5f210980f3845",
-                        "documentCategory": "就业创业补助资金",
-                        "documentCategoryShortName": "jb",
-                        "fileCategory": [
-                            "类别1",
-                            "类别2",
-                            "类别3",
-                            "类别4",
-                            "类别5"
-                        ]
-                    },
-                    {
-                        "id": "5f6deda62aa5f210980f3846",
-                        "documentCategory": "事业保险金基金类",
-                        "documentCategoryShortName": "sy",
-                        "fileCategory": [
-                            "类别1",
-                            "类别2",
-                            "类别3",
-                            "类别4",
-                            "类别5"
-                        ]
-                    }
-                ];
+                tableData = [];
 
             var currDocId = '';
             
@@ -173,6 +148,8 @@
                     }
                 });
             }
+
+            getData();
 
             
 
@@ -278,6 +255,7 @@
                     layer.close(layIndex);
                     if(errs.length === 0) {
                         layer.msg("保存成功", {time: 0.7 * 1000});
+                        getData();
                     } else {
                         layer.alert(errs.join(), {title: '错误', icon:2});
                     }
