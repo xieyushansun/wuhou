@@ -3,7 +3,7 @@ package com.example.wuhou.controller;
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DocumentRecord;
-import com.example.wuhou.entity.PageUtil;
+import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.service.DocumentRecordService;
 import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;
@@ -252,7 +252,7 @@ public class DocumentRecordController {
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/normalFindDocumentRecord")
     @ApiParam("普通查询档案记录, 0:默认是精确，1:模糊")
-    public ResultUtil<PageUtil> normalFindDocumentRecord(
+    public PageUtil normalFindDocumentRecord(
             @ApiParam(value = "案卷题名1") @RequestParam(required = false, defaultValue = "") String fileName,
             @ApiParam(value = "档号") @RequestParam(required = false, defaultValue = "") String documentNumber,
             @ApiParam(value = "全宗号1") @RequestParam(required = false, defaultValue = "") String recordGroupNumber,
@@ -319,20 +319,22 @@ public class DocumentRecordController {
         if (!recordTime.isEmpty()){
             findKeyWordMap.put("recordTime", recordTime);
         }
+        PageUtil pageUtil;
         try {
-
+            pageUtil = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        PageUtil pageUtil = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！", pageUtil);
+        pageUtil.setCode(ResponseConstant.ResponseCode.FAILURE);
+        pageUtil.setMessage("查询成功");
+        return pageUtil;
     }
 
     //一般查询
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/generalFindDocumentRecord")
     @ApiParam("一般查询档案记录, 0:默认是精确，1:模糊")
-    public ResultUtil<PageUtil> generalFindDocumentRecord(
+    public PageUtil generalFindDocumentRecord(
             @ApiParam(value = "需要查询的多个关键字，空格隔开") @RequestParam(defaultValue = "") String multiKeyWord,
             @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
             @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
@@ -342,9 +344,11 @@ public class DocumentRecordController {
         try {
             pageUtil = documentRecordService.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！", pageUtil);
+        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
+        pageUtil.setMessage("查询成功！");
+        return pageUtil;
     }
 
     //删除档案记录对应文件

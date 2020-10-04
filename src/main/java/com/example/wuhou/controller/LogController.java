@@ -2,7 +2,7 @@ package com.example.wuhou.controller;
 
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
-import com.example.wuhou.entity.PageUtil;
+import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.service.LogService;
 import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;

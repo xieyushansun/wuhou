@@ -1,20 +1,16 @@
 package com.example.wuhou.Dao;
 
-import com.example.wuhou.constant.DataConstant;
 import com.example.wuhou.entity.DocumentRecord;
-import com.example.wuhou.entity.PageUtil;
+import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.exception.NotExistException;
-import com.example.wuhou.util.FileOperationUtil;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

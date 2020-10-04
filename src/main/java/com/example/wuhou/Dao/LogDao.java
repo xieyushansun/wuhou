@@ -1,9 +1,7 @@
 package com.example.wuhou.Dao;
 
-import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.entity.Log;
-import com.example.wuhou.entity.PageUtil;
-import com.example.wuhou.util.FileOperationUtil;
+import com.example.wuhou.util.PageUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
