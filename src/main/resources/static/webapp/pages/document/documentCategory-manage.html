@@ -120,7 +120,7 @@
                 data: [],
                 cols: [[
                     {type: 'numbers', title: '编号', fixed: 'left'},
-                    {field: 'fileCategory', title: "档案类别", edit: 'text'},
+                    {field: 'fileCategory', title: "案卷类别", edit: 'text'},
                     {title: '操作', toolbar: '#toolBar2'}
                 ]],
                 done: function() {
@@ -142,6 +142,7 @@
                                 data: []
                             }); // 情况右边的案卷类别表
                             currDocId = "";
+                            $("#docCat").text("");
                         } else {
                             layui.alert(res.message, {icon: 5});
                         }
@@ -150,8 +151,6 @@
             }
 
             getData();
-
-            
 
             table.on('edit(left-table)', function(obj) {
                 var data = obj.data;
@@ -227,13 +226,12 @@
                     return;
                 }
                 var dfds = [];
-                var addDfd;
                 var layIndex = layer.load();
                 modified.forEach(function(value1, value2) {
                     layui.each(currTableData, function(index, item) {
                         if (item.id === value1) {
                             if (item.id.indexOf('new-add') !== -1) {
-                                addDfd = addDocCat(item);
+                                var addDfd = addDocCat(item);
                                 dfds.push(addDfd);
                             } else {
                                 var modDfd = modifyDocCat(item);
@@ -257,8 +255,17 @@
                         layer.msg("保存成功", {time: 0.7 * 1000});
                         getData();
                     } else {
-                        layer.alert(errs.join(), {title: '错误', icon:2});
+                        layer.alert(errs.join(), {title: '错误', icon: 2});
                     }
+                }).fail(function() {
+                    var errs = [];
+                    for (var i = 0, l = arguments.length; i < l; i++) {
+                        var arg = arguments[i];
+                        if (arg.code !== 0) {
+                            errs.push(arg.message);
+                        }
+                    }
+                    layer.alert(errs.join(';'), {title: '错误', icon: 2});
                 }).always(function() {
                     layer.close(layIndex);
                 });
@@ -300,38 +307,43 @@
 
             // 创建新的档案类别,返回一个jq延迟对象
             function addDocCat(data) {
-                var addDfd = $.ajax({
+                var addDfd = new $.Deferred()
+                $.ajax({
                     url: '../../../DocumentCategory/addDocumentCategory',
                     type: 'post',
                     data: {
                         documentCategory: data.documentCategory,
                         documentCategoryShortName: data.documentCategoryShortName,
-                        fileCategory: JSON.stringify(data.fileCategory)
+                        fileCategory: data.fileCategory
                     },
+                    traditional: true,
                     cache: false,
-                    // success: function(res) {
-                    //     addDfd.resolve(res);
-                    // },
+                    success: function(res) {
+                        addDfd.resolve(res);
+                    },
                     error: function(xhr, textStatus, errorThrown) {
-                        layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
+                        addDfd.reject([textStatus, xhr.statusText].join(':'))
+                        // layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
                     }
                 });
-                return addDfd;
+                return addDfd.promise();
             }
 
             // 修改档案类别, 返回一个jq延迟对象
             function modifyDocCat(data) {
-                var modDfd = new $.Deferred();
+                var modDfd = new $.Deferred(); 
                 $.ajax({
                     url: '../../../DocumentCategory/modifyDocumentCategory',
                     type: 'post',
                     data: data,
+                    traditional: true,
                     cache: false,
                     success: function(res) {
                         modDfd.resolve(res);
                     },
                     error: function(xhr, textStatus, errorThrown) {
-                        layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
+                        modDfd.reject([textStatus, xhr.statusText].join(':'))
+                        // layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
                     }
                 });
                 return modDfd.promise();
@@ -339,10 +351,6 @@
 
             // 删除档案
             function delDocCat(id, obj) {
-                if (id.indexOf('new-add') !== -1) {
-                    obj.del();
-                    return;
-                }
                 $.ajax({
                     url: '../../../DocumentCategory/deleteDocumentCategory',
                     type: 'post',
@@ -353,7 +361,7 @@
                             obj.del();
                         }
                     }
-                });
+                })
             }
 
             // 判断两个数组是否相等
