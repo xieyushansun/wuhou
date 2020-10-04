@@ -1,6 +1,8 @@
 package com.example.wuhou.Dao;
 
+import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.entity.Log;
+import com.example.wuhou.entity.PageUtil;
 import com.example.wuhou.util.FileOperationUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -59,11 +61,14 @@ public class LogDao {
     }
 
     //分页获取所有日志内容
-    public List<Log> getAllLog(Integer currentPage, Integer pageSize){
+    public PageUtil getAllLog(Integer currentPage, Integer pageSize){
         Query query = new Query();
+        PageUtil pageUtil = new PageUtil();
+        pageUtil.setTotalElement((int) mongoTemplate.count(query, Log.class));
         query.skip((currentPage - 1) * pageSize);
         query.limit(pageSize);
-        return mongoTemplate.findAll(Log.class);
+        pageUtil.setBody(mongoTemplate.find(query, Log.class));
+        return pageUtil;
     }
 
     public void deleteAllLogBeforDate(String date) {

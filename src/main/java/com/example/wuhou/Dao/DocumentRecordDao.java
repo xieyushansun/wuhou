@@ -2,6 +2,7 @@ package com.example.wuhou.Dao;
 
 import com.example.wuhou.constant.DataConstant;
 import com.example.wuhou.entity.DocumentRecord;
+import com.example.wuhou.entity.PageUtil;
 import com.example.wuhou.exception.NotExistException;
 import com.example.wuhou.util.FileOperationUtil;
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +36,7 @@ public class DocumentRecordDao {
         return documentRecordReturn.getId();
     }
     //查询案卷号对应的文件清单
-    public String[] findFileListByDocumentRecordId(String DocumentRecordId) throws Exception {
+    public List<String> findFileListByDocumentRecordId(String DocumentRecordId) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(DocumentRecordId));
         query.addCriteria(criteria);
@@ -42,13 +44,21 @@ public class DocumentRecordDao {
         if (documentRecord == null){
             throw new Exception("没有这条记录！");
         }
+
         String recordPath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
         File file = new File(recordPath);
-        String[] fileList = null;
+        List<String> fileList = null;
         if (file.isDirectory()){
 //            fileList = list.get(0).getFilelist();
-            fileList = file.list();
+            fileList = Arrays.asList(file.list());
         }
+
+        //把filelist所有元素都加上路径
+//        for (int i = 0; i < fileList.size(); i++){
+//            String filename = fileList.get(i);
+//            String filepath = recordPath + "\\" + filename;
+//            fileList.set(i, filepath);
+//        }
         return fileList;
     }
     //删除文件记录
@@ -99,9 +109,9 @@ public class DocumentRecordDao {
 ////        FileOutputStream fileOutputStream = FileOperationUtil.bytesToFile(documentFile.getFile(), documentFile.getDocumentName());
 ////        return fileOutputStream;
 //    }
-    public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
+    public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
 //        List<List<DocumentRecord>> lists = new ArrayList<>();
-        List<DocumentRecord> resultList = new ArrayList<>();
+        List<DocumentRecord> resultList;
         Query query = new Query();
         if (blurryFind.compareTo("0") == 0){ //精确
             for (String key : findKeyWordMap.keySet()) {
@@ -114,15 +124,71 @@ public class DocumentRecordDao {
                 query.addCriteria(criteria);
             }
         }
-        DataConstant.TOTAL_NUMBER = (int) mongoTemplate.count(query, DocumentRecord.class);
+        PageUtil pageUtil = new PageUtil();
+        pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
         query.skip((currentPage - 1) * pageSize);
         query.limit(pageSize);
+//        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
         resultList = mongoTemplate.find(query, DocumentRecord.class);
+        pageUtil.setBody(resultList);
         // 将二维lists转为一维resultList
 //        for (List<DocumentRecord> list : lists) {
 //            resultList.addAll(list);
 //        }
-        return resultList;
+        return pageUtil;
+    }
+    // 一般查询
+    //
+    public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
+        PageUtil pageUtil = new PageUtil();
+
+        // 用空格隔开的各个关键字
+        String keyWord[] = multiKeyWord.split(" ");
+        Query query = new Query();
+        // 模糊查询
+        if (blurryFind.compareTo("1") == 0){
+            for (String s : keyWord) {
+                Criteria criteria = new Criteria();
+                criteria.orOperator(
+                        Criteria.where("documentNumber").regex(".*?" + s + ".*?"),
+                        Criteria.where("duration").regex(".*?" + s + ".*?"),
+                        Criteria.where("security").regex(".*?" + s + ".*?"),
+                        Criteria.where("responsible").regex(".*?" + s + ".*?"),
+                        Criteria.where("danwieCode").regex(".*?" + s + ".*?"),
+                        Criteria.where("danweiName").regex(".*?" + s + ".*?"),
+                        Criteria.where("position").regex(".*?" + s + ".*?"),
+                        Criteria.where("recorder").regex(".*?" + s + ".*?"),
+                        Criteria.where("recordTime").regex(".*?" + s + ".*?"),
+                        Criteria.where("storePath").regex(".*?" + s + ".*?")
+                );
+                query.addCriteria(criteria);
+            }
+        }
+        else { // 精确查询
+            for (String s : keyWord) {
+                Criteria criteria = new Criteria();
+                criteria.orOperator(
+                        Criteria.where("documentNumber").is(s),
+                        Criteria.where("duration").is(s),
+                        Criteria.where("security").is(s),
+                        Criteria.where("responsible").is(s),
+                        Criteria.where("danwieCode").is(s),
+                        Criteria.where("danweiName").is(s),
+                        Criteria.where("position").is(s),
+                        Criteria.where("recorder").is(s),
+                        Criteria.where("recordTime").is(s),
+                        Criteria.where("storePath").is(s)
+                );
+                query.addCriteria(criteria);
+            }
+        }
+        pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
+
+        query.skip((currentPage - 1) * pageSize);
+        query.limit(pageSize);
+
+        pageUtil.setBody(mongoTemplate.find(query, DocumentRecord.class));
+        return pageUtil;
     }
     // 判断案卷名是否有重复的
     public Boolean checkFileName(String fileName){

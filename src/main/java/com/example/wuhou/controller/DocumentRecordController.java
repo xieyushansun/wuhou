@@ -1,12 +1,16 @@
 package com.example.wuhou.controller;
 
+import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DocumentRecord;
+import com.example.wuhou.entity.PageUtil;
 import com.example.wuhou.service.DocumentRecordService;
 import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,22 +27,24 @@ import javax.servlet.http.HttpServletResponse;
 public class DocumentRecordController {
     @Autowired
     DocumentRecordService documentRecordService;
+
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_ADD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/adddocumentrecord")
     @ApiOperation("新增档案记录")
     public ResultUtil<String> addDocumentRecord(
-            @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "1") String fileName,
-            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
+            @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "fileName") String fileName,
+            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "documentNumber") String documentNumber,
             @ApiParam(value = "全宗号", required = true) @RequestParam(defaultValue = "129") String recordGroupNumber,
-            @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "1") String boxNumber,
-            @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "1") String year,
-            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
-            @ApiParam(value = "密级", required = false) @RequestParam(required = false, defaultValue = "") String security,
-            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
-            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
-            @ApiParam(value = "责任者", required = false) @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danwieCode,
-            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
-            @ApiParam(value = "档案室中的存放位置", required = false) @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "boxNumber") String boxNumber,
+            @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "2020") String year,
+            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "duration") String duration,
+            @ApiParam(value = "密级") @RequestParam(required = false, defaultValue = "") String security,
+            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "documentCategory") String documentCategory,
+            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "fileCategory") String fileCategory,
+            @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
+            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "danwieCode") String danwieCode,
+            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "danweiName") String danweiName,
+            @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime
 //            @ApiParam(value = "所在盘符路径", required = true) @RequestParam(defaultValue = "1") String diskPath,
@@ -89,6 +95,7 @@ public class DocumentRecordController {
     }
 
     //删除档案
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_DELETE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deletedocumentrecord")
     @ApiOperation("删除档案记录")
     public ResultUtil<String> deleteDocumentRecord(
@@ -104,6 +111,7 @@ public class DocumentRecordController {
 
 
     //添加档案对应的几个文件
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_ADD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/adddocumentrecordfile")
     @ApiOperation("新增档案记录关联文件")
     public ResultUtil<String> addDocumentRecordFile(
@@ -118,6 +126,7 @@ public class DocumentRecordController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
     //下载档案文件
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_FILE_DOWNLOAD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/downLoadDocumentRecordFile")
     @ApiOperation("下载档案文件")
     public ResultUtil<String> downLoadDocumentRecordFile(
@@ -128,7 +137,7 @@ public class DocumentRecordController {
         try {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
             String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
-            File file = new File(filepath);
+//            File file = new File(filepath);
             InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
@@ -171,6 +180,7 @@ public class DocumentRecordController {
     }
 
     //预览档案文件
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/previewDocumentRecordFile")
     @ApiOperation("预览文件")
     public ResultUtil<String> previewDocumentRecordFile(
@@ -223,43 +233,43 @@ public class DocumentRecordController {
 //      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
     //根据档案记录Id查询路径下对应的文件清单名
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/findFileListByDocumentRecordId")
     @ApiOperation("查找档案记录关联文件")
-    public ResultUtil<String[]> findFileListByDocumentRecordId(
+    public ResultUtil<List<String>> findFileListByDocumentRecordId(
             @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId
     ){
-        String[] fileList;
+        List<String> fileList;
         try {
             fileList = documentRecordService.findFileListByDocumentRecordId(documentRecordId);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
         }
-        ResultUtil<String[]> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！");
-        resultUtil.setBody(fileList);
-        return resultUtil;
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！", fileList);
     }
 
     //普通查询
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/normalFindDocumentRecord")
-    @ApiParam("查询档案记录, 0:默认是精确，1:模糊")
-    public ResultUtil<List<DocumentRecord>> normalFindDocumentRecord(
-            @ApiParam(value = "案卷题名", required = false) @RequestParam(required = false, defaultValue = "") String fileName,
-            @ApiParam(value = "档号", required = false) @RequestParam(required = false, defaultValue = "") String documentNumber,
-            @ApiParam(value = "全宗号", required = false) @RequestParam(required = false, defaultValue = "") String recordGroupNumber,
-            @ApiParam(value = "盒号", required = false) @RequestParam(required = false, defaultValue = "") String boxNumber,
-            @ApiParam(value = "年份", required = false) @RequestParam(required = false, defaultValue = "") String year,
-            @ApiParam(value = "保管期限", required = false) @RequestParam(required = false, defaultValue = "") String duration,
-            @ApiParam(value = "密级", required = false) @RequestParam(required = false, defaultValue = "") String security,
-            @ApiParam(value = "档案类别", required = false) @RequestParam(required = false, defaultValue = "") String documentCategory,
-            @ApiParam(value = "案卷类型", required = false) @RequestParam(required = false, defaultValue = "") String fileCategory,
-            @ApiParam(value = "责任者", required = false) @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = false) @RequestParam(required = false, defaultValue = "") String danwieCode,
-            @ApiParam(value = "单位名称", required = false) @RequestParam(required = false, defaultValue = "") String danweiName,
-            @ApiParam(value = "档案室中的存放位置", required = false) @RequestParam(required = false, defaultValue = "") String position,
-            @ApiParam(value = "著录人", required = false) @RequestParam(required = false, defaultValue = "") String recorder,
-            @ApiParam(value = "著录时间", required = false) @RequestParam(required = false, defaultValue = "") String recordTime,
-            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "0") String blurryFind,
-            @ApiParam(value = "当前显示页", required = false) @RequestParam(defaultValue = "1") Integer currentPage,
+    @ApiParam("普通查询档案记录, 0:默认是精确，1:模糊")
+    public ResultUtil<PageUtil> normalFindDocumentRecord(
+            @ApiParam(value = "案卷题名1") @RequestParam(required = false, defaultValue = "") String fileName,
+            @ApiParam(value = "档号") @RequestParam(required = false, defaultValue = "") String documentNumber,
+            @ApiParam(value = "全宗号1") @RequestParam(required = false, defaultValue = "") String recordGroupNumber,
+            @ApiParam(value = "盒号1") @RequestParam(required = false, defaultValue = "") String boxNumber,
+            @ApiParam(value = "年份1") @RequestParam(required = false, defaultValue = "") String year,
+            @ApiParam(value = "保管期限") @RequestParam(required = false, defaultValue = "") String duration,
+            @ApiParam(value = "密级") @RequestParam(required = false, defaultValue = "") String security,
+            @ApiParam(value = "档案类别1") @RequestParam(required = false, defaultValue = "") String documentCategory,
+            @ApiParam(value = "案卷类型1") @RequestParam(required = false, defaultValue = "") String fileCategory,
+            @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
+            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danwieCode,
+            @ApiParam(value = "单位名称") @RequestParam(required = false, defaultValue = "") String danweiName,
+            @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "著录人") @RequestParam(required = false, defaultValue = "") String recorder,
+            @ApiParam(value = "著录时间") @RequestParam(required = false, defaultValue = "") String recordTime,
+            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
+            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
             @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
 
     ){
@@ -309,15 +319,36 @@ public class DocumentRecordController {
         if (!recordTime.isEmpty()){
             findKeyWordMap.put("recordTime", recordTime);
         }
+        try {
 
-        ResultUtil<List<DocumentRecord>> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！");
-        List<DocumentRecord> documentRecordList = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
-        resultUtil.setBody(documentRecordList);
-        resultUtil.setTotalElements(documentRecordList.size());
-        return resultUtil;
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        PageUtil pageUtil = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！", pageUtil);
+    }
+
+    //一般查询
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @GetMapping("/generalFindDocumentRecord")
+    @ApiParam("一般查询档案记录, 0:默认是精确，1:模糊")
+    public ResultUtil<PageUtil> generalFindDocumentRecord(
+            @ApiParam(value = "需要查询的多个关键字，空格隔开") @RequestParam(defaultValue = "") String multiKeyWord,
+            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
+            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
+            @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
+    ){
+        PageUtil pageUtil;
+        try {
+            pageUtil = documentRecordService.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！", pageUtil);
     }
 
     //删除档案记录对应文件
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_DELETE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteDocumentRecordFile")
     @ApiOperation("删除档案记录文件")
     public ResultUtil<String> deleteDocumentRecordFile(
@@ -335,6 +366,7 @@ public class DocumentRecordController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
 
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_MODIFY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/modifyDocumentRecord")
     @ApiOperation("修改档案记录")
     public ResultUtil<String> modifyDocumentRecord(
@@ -344,13 +376,13 @@ public class DocumentRecordController {
             @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "1") String boxNumber,
             @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "1") String year,
             @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
-            @ApiParam(value = "密级", required = false) @RequestParam(required = false, defaultValue = "") String security,
+            @ApiParam(value = "密级") @RequestParam(required = false, defaultValue = "") String security,
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
             @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
-            @ApiParam(value = "责任者", required = false) @RequestParam(required = false, defaultValue = "") String responsible,
+            @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
             @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danwieCode,
             @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
-            @ApiParam(value = "档案室中的存放位置", required = false) @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime,
             @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId

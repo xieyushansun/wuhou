@@ -11,8 +11,9 @@ public class WuhouApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(WuhouApplication.class, args);
-        Logger logger = LoggerFactory.getLogger(User.class);
-        logger.info("测试用户日志");
+//        Logger logger = LoggerFactory.getLogger(User.class);
+//        logger.info("测试用户日志");
+
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class RoleDao {
@@ -19,6 +20,7 @@ public class RoleDao {
     MongoTemplate mongoTemplate;
     @Autowired
     LogDao logDao;
+
     //添加角色
     public void addRole(Role role) throws Exception {
         Query query = new Query();
@@ -60,7 +62,10 @@ public class RoleDao {
     public void userRoleAuthorize(String userId, String roleId) throws Exception {
         Update update = new Update();
         Query query = new Query();
-        query.addCriteria(Criteria.where("_id").is(new ObjectId(userId)));
+//        Criteria criteria = Criteria.where("_id").is(new ObjectId(userId));
+//        query.addCriteria(criteria);
+        Criteria criteria = Criteria.where("userId").is(userId);
+        query.addCriteria(criteria);
         update.set("roleId", new ObjectId(roleId));
         mongoTemplate.updateFirst(query, update, User.class);
         logDao.inserLog("role", "修改", "为用户 " + userId + "添加角色id > " + roleId);
@@ -73,5 +78,15 @@ public class RoleDao {
         update.set("roleId", "guest");
         mongoTemplate.updateFirst(query, update, User.class);
         logDao.inserLog("role", "修改", "将用户 " + userId + "角色置为guest");
+    }
+    //获取角色下所有权限
+    public Set<String> getRolePermissions(String roleId){
+        Query query = new Query();
+        Criteria criteria = Criteria.where("_id").is(new ObjectId(roleId));
+        query.addCriteria(criteria);
+
+        Role role = mongoTemplate.findOne(query, Role.class);
+
+        return role.getPermissions();
     }
 }

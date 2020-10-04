@@ -4,6 +4,7 @@ import com.example.wuhou.Dao.DocumentRecordDao;
 import com.example.wuhou.Dao.LogDao;
 import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.entity.DocumentRecord;
+import com.example.wuhou.entity.PageUtil;
 import com.example.wuhou.exception.NotExistException;
 import com.example.wuhou.util.FileOperationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class DocumentRecordService {
 //    public DocumentFile downLoadDocumentRecordFile(String fileId){
 //        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
 //    }
-    public String[] findFileListByDocumentRecordId(String fileCategory) throws Exception {
+    public List<String> findFileListByDocumentRecordId(String fileCategory) throws Exception {
         return documentRecordDao.findFileListByDocumentRecordId(fileCategory);
     }
     public DocumentRecord getDocumentRecordByDocumentRecordId(String documentRecordId) throws Exception {
@@ -88,8 +89,11 @@ public class DocumentRecordService {
         }
         return documentRecord;
     }
-    public List<DocumentRecord> normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
+    public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
         return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
+    }
+    public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
+        return documentRecordDao.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
     }
     public void deleteDocumentRecordFile(File file, String documentRecordId) throws Exception {
         if (file.exists()){
@@ -97,7 +101,6 @@ public class DocumentRecordService {
         }
         logDao.inserLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
-
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
         //初始化新记录的存储路径set
         String storePath = newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()

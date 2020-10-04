@@ -227,12 +227,13 @@
                     return;
                 }
                 var dfds = [];
+                var addDfd;
                 var layIndex = layer.load();
                 modified.forEach(function(value1, value2) {
                     layui.each(currTableData, function(index, item) {
                         if (item.id === value1) {
                             if (item.id.indexOf('new-add') !== -1) {
-                                var addDfd = addDocCat(item);
+                                addDfd = addDocCat(item);
                                 dfds.push(addDfd);
                             } else {
                                 var modDfd = modifyDocCat(item);
@@ -244,7 +245,7 @@
                 });
                 
                 // success后的回调
-                $.when(dfds).done(function() {
+                $.when.apply(this, dfds).done(function() {
                     var errs = [];
                     for (var i = 0, l = arguments.length; i < l; i++) {
                         var arg = arguments[i];
@@ -252,16 +253,15 @@
                             errs.push(arg.message);
                         }
                     }
-                    layer.close(layIndex);
                     if(errs.length === 0) {
                         layer.msg("保存成功", {time: 0.7 * 1000});
                         getData();
                     } else {
                         layer.alert(errs.join(), {title: '错误', icon:2});
                     }
+                }).always(function() {
+                    layer.close(layIndex);
                 });
-
-                
             });
 
             // 将案卷类别转化为表格数据
@@ -300,8 +300,6 @@
 
             // 创建新的档案类别,返回一个jq延迟对象
             function addDocCat(data) {
-                console.log("add:");
-                console.log(data);
                 var addDfd = $.ajax({
                     url: '../../../DocumentCategory/addDocumentCategory',
                     type: 'post',
@@ -311,6 +309,9 @@
                         fileCategory: JSON.stringify(data.fileCategory)
                     },
                     cache: false,
+                    // success: function(res) {
+                    //     addDfd.resolve(res);
+                    // },
                     error: function(xhr, textStatus, errorThrown) {
                         layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
                     }
@@ -320,22 +321,28 @@
 
             // 修改档案类别, 返回一个jq延迟对象
             function modifyDocCat(data) {
-                console.log("mod:");
-                console.log(data);
-                var modDfd = $.ajax({
+                var modDfd = new $.Deferred();
+                $.ajax({
                     url: '../../../DocumentCategory/modifyDocumentCategory',
                     type: 'post',
                     data: data,
                     cache: false,
+                    success: function(res) {
+                        modDfd.resolve(res);
+                    },
                     error: function(xhr, textStatus, errorThrown) {
                         layer.alert([textStatus, xhr.statusText].join(':'), {icon: 2});
                     }
                 });
-                return modDfd;
+                return modDfd.promise();
             }
 
             // 删除档案
             function delDocCat(id, obj) {
+                if (id.indexOf('new-add') !== -1) {
+                    obj.del();
+                    return;
+                }
                 $.ajax({
                     url: '../../../DocumentCategory/deleteDocumentCategory',
                     type: 'post',
@@ -346,7 +353,7 @@
                             obj.del();
                         }
                     }
-                })
+                });
             }
 
             // 判断两个数组是否相等

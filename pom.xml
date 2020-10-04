@@ -64,6 +64,24 @@
             <version>1.5.1</version>
         </dependency>
 
+        <!-- redis依赖 -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--        </dependency>-->
+
+        <!-- 引入shiro和ehcache -->
+<!--        <dependency>-->
+<!--            <groupId>org.apche.shiro</groupId>-->
+<!--            <artifactId>shiro-ehcache</artifactId>-->
+<!--            <version>1.5.1</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>org.apache.shiro</groupId>-->
 <!--            <artifactId>shiro-core</artifactId>-->
@@ -85,6 +103,20 @@
 <!--            <artifactId>log4j</artifactId>-->
 <!--            <version>1.2.17</version>-->
 <!--        </dependency>-->
+
+        <!-- POI依赖 -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

@@ -1,5 +1,6 @@
 package com.example.wuhou.controller;
 
+import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.User;
 import com.example.wuhou.service.UserService;
@@ -11,6 +12,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,12 +63,22 @@ public class UserController {
         UsernamePasswordToken token = new UsernamePasswordToken(userId, password);
         try {
             subject.login(token);
+            //设置30分钟后登陆超时
+            SecurityUtils.getSubject().getSession().setTimeout(1800000);
         }catch (UnknownAccountException e){ //用户名不存在
             return new ResultUtil<>(ResponseConstant.ResponseCode.EXIST_ERROR, "用户不存在");
         }catch (IncorrectCredentialsException e){ //密码错误
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "密码错误");
         }
+
+        if (subject.isAuthenticated()){
+            subject.hasRole("test");
+//            System.out.println(subject.hasRole("role1"));
+//            System.out.println(subject.hasAllRoles(Arrays.asList("role1", "role2")));
+        }
+
         ResultUtil<User> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "登录成功啦！");
+
 //        resultUtil.setBody(user1);
         return resultUtil;
     }
@@ -83,8 +96,10 @@ public class UserController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "退出登录成功！");
     }
 
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/addUser")
     @ApiOperation("新增用户")
+//    @RequiresRoles(value = {"ss"}, logical = Logical.OR)  //OR表示满足一个条件即可，AND表示所有条件都需要满足
     public ResultUtil<String> addUser(
             @ApiParam(value = "用户名", required = true) @RequestParam(defaultValue = "10010") String userId,
             @ApiParam(value = "密码", required = true) @RequestParam(defaultValue = "123") String password,
@@ -101,12 +116,16 @@ public class UserController {
 //        String userame = userfind.getUserName();
     }
 
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteUser")
     @ApiOperation("删除用户")
     public ResultUtil<String> deleteUser(
             @ApiParam(value = "用户名", required = true) @RequestParam() String userId
     ){
         try {
+            if (userId.equals("admin")){
+                return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "不可以删除超级管理员！");
+            }
             userService.deleteUser(userId);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
@@ -123,6 +142,7 @@ public class UserController {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "", "登录状态异常!");
         }
     }
+
     @PostMapping("/changePassword")
     @ApiOperation("修改密码")
     public ResultUtil<String> changePassword(
@@ -138,6 +158,8 @@ public class UserController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "修改成功！");
     }
+
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/resetPassword")
     @ApiOperation("重置密码")
     public ResultUtil<String> resetPassword(
@@ -150,6 +172,7 @@ public class UserController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "重置成功！新密码为：12345678");
     }
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/getAllUser")
     @ApiOperation("获取所有用户")
     public ResultUtil<List<User>> getAllUser(){

@@ -1,5 +1,6 @@
 package com.example.wuhou.controller;
 
+import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DocumentCategory;
 
@@ -8,6 +9,8 @@ import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ public class DocumentCategoryController {
     @Autowired
     DocumentCategoryService documentCategoryService;
 
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_CATEGORY_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/addDocumentCategory")
     @ApiOperation("新增案卷类别")
     public ResultUtil<String> addDocumentCategoryService(
@@ -35,6 +39,7 @@ public class DocumentCategoryController {
 
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_CATEGORY_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteDocumentCategory")
     @ApiOperation("删除档案类别")
     public ResultUtil<String> deleteDocumentCategory(
@@ -48,6 +53,7 @@ public class DocumentCategoryController {
 
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_CATEGORY_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/modifyDocumentCategory")
     @ApiOperation("修改档案类别数据")
     public ResultUtil<String> modifyDocumentCategory(
@@ -63,7 +69,7 @@ public class DocumentCategoryController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "修改成功！");
     }
-
+//    @RequiresRoles(value = {PermissionConstant.DOCUMENT_CATEGORY_MANAGE})
     @GetMapping("/FindAllDocumentCategory")
     @ApiOperation("查找所有档案类别数据")
     public ResultUtil<List<DocumentCategory>> FindAllDocumentCategory(){

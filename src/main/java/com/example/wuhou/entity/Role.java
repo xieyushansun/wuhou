@@ -6,8 +6,11 @@ import java.util.Set;
 
 @Repository
 public class Role {
-    String id;
-    String roleName;
+    // 初始化用戶roleId为guest
+    // 当第一次给用户赋角色以后，用户roleId就是角色表里角色的id
+
+    private String id;
+    private String roleName;
     private Set<String> permissions;
 
     public Role(){
