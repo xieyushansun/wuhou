@@ -1,0 +1,119 @@
+<!--
+ * @Author: liyan
+ * @Date: 2020-10-05 15:43:36
+ * @LastEditTime: 2020-10-05 17:19:13
+ * @LastEditors: liyan
+ * @Description: 修改角色
+ * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
+ * @liyan@cilab@uestc
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加角色</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/public.css">
+    <style>
+        /* div[lay-id='permission-table'] {
+            margin: 0 auto;
+        } */
+    </style>
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <fieldset class="table-search-fieldset">
+                <div style="margin: 10p;">
+                    <div class="layui-form layui-form-pane">
+                        <div class="layui-form-item">
+                            <label for="rolename" class="layui-form-label">角色名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="rolename" id="rolename" autocomplete="off" class=layui-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div style="text-align:center">
+                <div class="layui-inline layui-form" lay-filter='table-form' style="margin: 10px 0;">
+                    <table id="permission-table" lay-filter="permission-table"></table>
+                </div>
+            </div>
+            <!-- <button type="button" class="layui-btn" id="save" style="margin-left: 20px;">确定</button> -->
+            
+        </div>
+    </div>
+
+    <script type="text/html" id="checkboxTpl">
+        <input type="checkbox" name="{{d.permission}}" title="选择" lay-filter="lockDemo" {{ d.has ? "checked" : ""}}>
+    </script>
+      
+    <!-- <script src="../../js/jquery.min.js" charset="utf-8"></script> -->
+    <script src="../../layui/layui.all.js" charset="utf-8"></script>
+    <script src="../../js/permissions.js"></script>
+    <script>
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            layer = layui.layer;
+
+        function renderTable(rolename, hasPermissions) {
+            $("#rolename").val(rolename);
+            var allPermissions = dataTrans(permissions, hasPermissions);
+            table.render({
+                elem: '#permission-table',
+                id: 'permission-table',
+                data: allPermissions,
+                cols: [[
+                {field: 'permission_name', title: '权限名称', width: 200, unresize: true, align: 'center'},
+                {title:'赋予权限', width:110, templet: '#checkboxTpl', unresize: true, align: 'center'}
+                ]]
+            });
+        }
+
+        function modRole(id) {
+            var roleName = $("#rolename").val();
+            if (roleName === "") {
+                layer.tips('请填写角色名', '#rolename');
+                return;
+            }
+            var hasPermissions = Object.keys(form.val('table-form'));
+            $.ajax({
+                url: '../../../role/modifyRole',
+                type: 'post',
+                data: {
+                    roleId: id,
+                    roleName: roleName,
+                    permissionList: hasPermissions
+                },
+                traditional: true,
+                success: function(res) {
+                    if (res.code === 0) {
+                        parent.layer.msg('修改成功', {time: 0.7 * 1000});
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    } else {
+                        layer.msg(res.message);
+                    }
+                }, error: function(jqxhr, textStatus, errorThrown) {
+                    layer.confirm([textStatus, jqxhr.statusText].join(':'), {icon: 2});
+                }
+            });
+        }
+
+        function dataTrans(allPermissions, hasPermissions) {
+            layui.each(allPermissions, function(index, item) {
+                if (hasPermissions.indexOf(item.permission) !== -1) {
+                    item['has'] = true;
+                } else {
+                    item['has'] = false;
+                }
+            });
+            return allPermissions;
+        }
+        
+    </script>
+</body>
+</html>

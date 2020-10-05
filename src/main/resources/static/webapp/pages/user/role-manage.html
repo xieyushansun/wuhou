@@ -1,0 +1,140 @@
+<!--
+ * @Author: liyan
+ * @Date: 2020-10-04 15:24:14
+ * @LastEditTime: 2020-10-05 17:13:03
+ * @LastEditors: liyan
+ * @Description: 
+ * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\role-manage.html
+ * @liyan@cilab@uestc
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="../../layui/css/layui.css">
+    <link rel="stylesheet" href="../../css/layuimini.css">
+    <link rel="stylesheet" href="../../css/public.css">
+    <style>
+        div[lay-id='role-table'] {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <table id="role-table" lay-filter="role-table"></table>
+        </div>
+    </div>
+    <script id="topToolBar" type="text/html">
+        <!-- <div class="layui-btn-container"> -->
+            <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <!-- </div> -->
+    </script>
+    <script id="rowToolBar" type="text/html">
+        <a class="layui-btn layui-btn-noraml layui-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</a>
+    </script>
+
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../layui/layui.all.js"></script>
+    <script>
+        var table = layui.table,
+            layer = layui.layer;
+        table.render({
+            elem: '#role-table',
+            id: 'role-table',
+            // url: '../../../role/getAllRole',
+            data: [{id: 1, roleName: 'xxx', permissions:[]}],
+            toolbar: '#topToolBar',
+            defaultToolbar: [],
+            cols: [[
+                {field: 'roleName', title: '角色名'},
+                {title: '操作', minWidth: 150, toolbar: '#rowToolBar', align: 'center'}
+            ]],
+            width: 500
+        });
+
+        table.on('toolbar(role-table)', function(obj) {
+            if (obj.event = 'add') {
+                var index = layer.open({
+                    title: '添加角色',
+                    type: 2,
+                    shade: 0.2,
+                    btn: ['确定', '取消'],
+                    area: ['500px', '80%'],
+                    content: './add-role.html',
+                    // success: function(layero, index) {
+                    //     var iframeWin = window[layero.find('iframe')[0]['name']];
+                    //     iframeWin.renderTable([]);
+                    // },
+                    yes: function(index, layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        iframeWin.addRole();
+                    }
+                });
+                $(window).on('resize', function() {
+                    layer.full(index);
+                    
+                });
+                return false;
+            }
+        });
+
+        // 监听表格行工具
+        table.on('tool(role-table)', function(obj) {
+            var data = obj.data;
+            var event = obj.event;
+            if (event === 'edit') {
+                var index = layer.open({
+                    title: '编辑角色',
+                    type: 2,
+                    shade: 0.2,
+                    btn: ['确定', '取消'],
+                    area: ['500px', '80%'],
+                    content: './mod-role.html',
+                    success: function(layero, index) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        iframeWin.renderTable(data.roleName, data.permissions);
+                    },
+                    yes: function(index, layero) {
+                        var iframeWin = window[layero.find('iframe')[0]['name']];
+                        iframeWin.modRole(data.id);
+                    }
+                });
+                $(window).on('resize', function() {
+                    layer.full(index);
+                });
+                return false;
+            } else if (event === 'delete') {
+                layer.confirm('确定删除角色：' + data.roleName + '?', {icon: 3}, function(index) {
+                    delRole(obj);
+                });
+            }
+        });
+
+        function delRole(obj) {
+            $.ajax({
+                url: '../../../role/deleteRole',
+                type: 'post',
+                data: {roleId: obj.data.id},
+                success: function(res) {
+                    if (res.code === 0) {
+                        obj.del();
+                        layer.msg('删除成功', {time: 0.5 * 1000});
+                    } else {
+                        layer.msg(res.message, {time: 0.5 * 1000});
+                    }
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.confirm([textStatus, jqxhr.statusText].join(':'), {icon: 2});
+                }
+            })
+        }
+   
+    </script>    
+</body>
+</html>

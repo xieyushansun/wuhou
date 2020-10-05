@@ -52,6 +52,12 @@
               "target": "_self"
             },
             {
+              "title": "角色管理",
+              "href": "pages/user/role-manage.html",
+              "icon": "fa fa-user-secret",
+              "target": "_self"
+            },
+            {
               "title": "档案类别管理",
               "href": "pages/document/documentCategory-manage.html",
               "icon": "fa fa-tasks",
