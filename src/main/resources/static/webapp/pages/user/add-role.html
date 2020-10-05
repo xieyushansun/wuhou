@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 17:52:53
- * @LastEditTime: 2020-10-05 17:18:37
+ * @LastEditTime: 2020-10-05 17:48:20
  * @LastEditors: liyan
  * @Description: 添加角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\add-role.html
@@ -102,6 +102,7 @@
                         parent.layer.msg('添加成功', {time: 0.7 * 1000});
                         var index = parent.layer.getFrameIndex(window.name);
                         parent.layer.close(index);
+                        parent.table.reload('role-table');
                     } else {
                         layer.msg(res.message);
                     }

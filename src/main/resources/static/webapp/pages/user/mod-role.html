@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-05 15:43:36
- * @LastEditTime: 2020-10-05 17:19:13
+ * @LastEditTime: 2020-10-05 17:48:37
  * @LastEditors: liyan
  * @Description: 修改角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
@@ -94,6 +94,7 @@
                         parent.layer.msg('修改成功', {time: 0.7 * 1000});
                         var index = parent.layer.getFrameIndex(window.name);
                         parent.layer.close(index);
+                        parent.table.reload('role-table');
                     } else {
                         layer.msg(res.message);
                     }
