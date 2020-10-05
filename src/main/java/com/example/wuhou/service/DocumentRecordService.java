@@ -6,6 +6,7 @@ import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.util.FileOperationUtil;
+import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,7 +74,7 @@ public class DocumentRecordService {
             out.flush();
             out.close();
         }
-        logDao.inserLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件: " + Arrays.toString(filelist));
+        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件: " + Arrays.toString(filelist));
     }
 //    public DocumentFile downLoadDocumentRecordFile(String fileId){
 //        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
@@ -88,17 +89,24 @@ public class DocumentRecordService {
         }
         return documentRecord;
     }
+    // 普通查询
     public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
         return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
     }
+    // 一般查询
     public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
         return documentRecordDao.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
     }
+    //组合查询
+    public PageUtil combinationFindDocumentRecord(JSONArray jsonArray, String blurryFind, Integer currentPage, Integer pageSize) throws Exception {
+        return documentRecordDao.combinationFindDocumentRecord(jsonArray, blurryFind, currentPage, pageSize);
+    }
+
     public void deleteDocumentRecordFile(File file, String documentRecordId) throws Exception {
         if (file.exists()){
             file.delete();
         }
-        logDao.inserLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
+        logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
         //初始化新记录的存储路径set
@@ -111,7 +119,6 @@ public class DocumentRecordService {
 
         DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
         String oldPath = oldDocumentRecord.getDiskPath() + "\\" + oldDocumentRecord.getStorePath();
-
 
         // 判断新旧文件夹路径是否一样
         if (!oldPath.equals(newPath)){

@@ -35,7 +35,7 @@ public class LogDao {
         return formatter.format(date);
     }
 
-    public void inserLog(String table, String operationType, String msg) throws Exception {
+    public void insertLog(String table, String operationType, String msg) throws Exception {
         Log log = new Log();
         log.setOperationTime(getTime());
         log.setOperatorId(getCurrentUserId());

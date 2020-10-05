@@ -1,5 +1,6 @@
 package com.example.wuhou.controller;
 
+import com.example.wuhou.Dao.LogDao;
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.User;
@@ -27,13 +28,14 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
-
+    @Autowired
+    LogDao logDao;
     @PostMapping("/login")
     @ApiOperation("登录")
     public ResultUtil<User> Login(
             @ApiParam(value = "用户名", required = true) @RequestParam() String userId,
             @ApiParam(value = "密码", required = true) @RequestParam() String password
-    ){
+    ) throws Exception {
 //        Boolean isLogin = false;
 //        User user;
 //        try {
@@ -65,6 +67,7 @@ public class UserController {
             subject.login(token);
             //设置30分钟后登陆超时
             SecurityUtils.getSubject().getSession().setTimeout(1800000);
+            logDao.insertLog("登录操作", "登录", "用户名为: " + userId + " 的用户登录系统");
         }catch (UnknownAccountException e){ //用户名不存在
             return new ResultUtil<>(ResponseConstant.ResponseCode.EXIST_ERROR, "用户不存在");
         }catch (IncorrectCredentialsException e){ //密码错误
