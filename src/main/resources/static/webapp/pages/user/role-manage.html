@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 15:24:14
- * @LastEditTime: 2020-10-05 17:30:33
+ * @LastEditTime: 2020-10-05 17:46:04
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\role-manage.html
@@ -55,7 +55,16 @@
                 {field: 'roleName', title: '角色名'},
                 {title: '操作', minWidth: 150, toolbar: '#rowToolBar', align: 'center'}
             ]],
-            width: 500
+            width: 500,
+            parseData: function(res) {
+                return {
+                    "code": res.code,
+                    "msg": res.message,
+                    "data": res.body,
+                    "count": res.body.length
+                }
+            } 
+
         });
 
         table.on('toolbar(role-table)', function(obj) {
