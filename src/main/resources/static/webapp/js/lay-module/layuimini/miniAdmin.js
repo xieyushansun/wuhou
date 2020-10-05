@@ -185,7 +185,7 @@ layui.define(["jquery", "miniMenu", "element","miniTab", "miniTheme"], function 
         renderDevice: function () {
             if (miniAdmin.checkMobile()) {
                 $('.layuimini-tool i').attr('data-side-fold', 1);
-                $('.layuimini-tool i').attr('class', 'fa fa-outdent');
+                $('.layuimini-tool i').attr('class', 'layui-icon layui-icon-prev');
                 $('.layui-layout-body').removeClass('layuimini-mini');
                 $('.layui-layout-body').addClass('layuimini-all');
             }

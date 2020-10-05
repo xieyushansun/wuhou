@@ -38,7 +38,7 @@ layui.define(["jquery", "layer"], function (exports) {
                     tabActiveColor: '#1e9fff', //tab选项卡选中颜色,
                 },
                 {
-                    headerRightBg: '#23262e', //头部右侧背景色
+                    headerRightBg: '#191e29', //头部右侧背景色
                     headerRightBgThis: '#0c0c0c', //头部右侧选中背景色,
                     headerRightColor: 'rgba(255,255,255,.7)', //头部右侧字体颜色,
                     headerRightChildColor: '#676767', //头部右侧下拉字体颜色,
@@ -47,7 +47,7 @@ layui.define(["jquery", "layer"], function (exports) {
                     headerRightNavMoreBg: '#1aa094', //头部右侧更多下拉列表选中背景色,
                     headerRightNavMoreColor: '#ffffff', //头部右侧更多下拉列表字体色,
                     headerRightToolColor: '#bbe3df', //头部缩放按钮样式,
-                    headerLogoBg: '#0c0c0c', //logo背景颜色,
+                    headerLogoBg: '#23262e', //logo背景颜色,
                     headerLogoColor: '#ffffff', //logo字体颜色,
                     leftMenuNavMore: 'rgb(191, 187, 187)', //左侧菜单更多下拉样式,
                     leftMenuBg: '#23262e', //左侧菜单背景,
@@ -430,9 +430,6 @@ layui.define(["jquery", "layer"], function (exports) {
                     '<ul>\n' + bgColorHtml + '</ul>\n' +
                     '</div>\n' +
                     '<div class="more-menu-list">\n' +
-                    '<a class="more-menu-item" href="http://layuimini.99php.cn/docs/index.html" target="_blank"><i class="layui-icon layui-icon-read" style="font-size: 19px;"></i> 开发文档</a>\n' +
-                    '<a class="more-menu-item" href="https://github.com/zhongshaofa/layuimini" target="_blank"><i class="layui-icon layui-icon-tabs" style="font-size: 16px;"></i> 开源地址</a>\n' +
-                    '<a class="more-menu-item" href="http://layuimini.99php.cn" target="_blank"><i class="layui-icon layui-icon-theme"></i> 官方网站</a>\n' +
                     '</div>' +
                     '</div>';
                 layer.open({
