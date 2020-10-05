@@ -187,12 +187,12 @@ layui.define(["element","laytpl" ,"jquery"], function (exports) {
                 var isShow = $('.layuimini-tool [data-side-fold]').attr('data-side-fold');
                 if (isShow == 1) { // 缩放
                     $('.layuimini-tool [data-side-fold]').attr('data-side-fold', 0);
-                    $('.layuimini-tool [data-side-fold]').attr('class', 'fa fa-indent');
+                    $('.layuimini-tool [data-side-fold]').attr('class', 'layui-icon layui-icon-next');
                     $('.layui-layout-body').removeClass('layuimini-all');
                     $('.layui-layout-body').addClass('layuimini-mini');
                 } else { // 正常
                     $('.layuimini-tool [data-side-fold]').attr('data-side-fold', 1);
-                    $('.layuimini-tool [data-side-fold]').attr('class', 'fa fa-outdent');
+                    $('.layuimini-tool [data-side-fold]').attr('class', 'layui-icon layui-icon-prev');
                     $('.layui-layout-body').removeClass('layuimini-mini');
                     $('.layui-layout-body').addClass('layuimini-all');
                     layer.close(window.openTips);
@@ -208,7 +208,7 @@ layui.define(["element","laytpl" ,"jquery"], function (exports) {
                 var isShow = $('.layuimini-tool [data-side-fold]').attr('data-side-fold');
                 if (isShow == 1) { // 缩放
                     $('.layuimini-tool [data-side-fold]').attr('data-side-fold', 0);
-                    $('.layuimini-tool [data-side-fold]').attr('class', 'fa fa-indent');
+                    $('.layuimini-tool [data-side-fold]').attr('class', 'layui-icon layui-icon-next');
                     $('.layui-layout-body').removeClass('layuimini-all');
                     $('.layui-layout-body').addClass('layuimini-mini');
                     // $(".menu-li").each(function (idx,el) {
@@ -217,7 +217,7 @@ layui.define(["element","laytpl" ,"jquery"], function (exports) {
 
                 } else { // 正常
                     $('.layuimini-tool [data-side-fold]').attr('data-side-fold', 1);
-                    $('.layuimini-tool [data-side-fold]').attr('class', 'fa fa-outdent');
+                    $('.layuimini-tool [data-side-fold]').attr('class', 'layui-icon layui-icon-prev');
                     $('.layui-layout-body').removeClass('layuimini-mini');
                     $('.layui-layout-body').addClass('layuimini-all');
                     // $(".menu-li").each(function (idx,el) {
