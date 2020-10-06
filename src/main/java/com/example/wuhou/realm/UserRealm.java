@@ -38,13 +38,13 @@ public class UserRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         if (!roleId.equals("guest")){
             permissionSet = roleService.getRolePermissions(roleId);
-            for (String permission:permissionSet){
-                simpleAuthorizationInfo.addRole(permission);
+            // 如果用户所属角色被删除，则查出来为空
+            if (permissionSet != null){
+                for (String permission:permissionSet){
+                    simpleAuthorizationInfo.addRole(permission);
+                }
             }
         }
-
-
-
         //根据主身份信息获取角色和权限信息
 //        if ("10010".equals(primaryPrincipal)){
 //            SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();

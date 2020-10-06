@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试Map</title>
+</head>
+<body>
+<button name="测试" onclick="test()">测试</button>
+<script src="../js/jquery.min.js"></script>
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+    function test() {
+        var list = [
+            {
+            "filedName": "year",
+            "filedContent": "2001",
+            "operator":"gt",
+            "joiner": "AND"},
+            {
+                "filedName": "recordTime",
+                "filedContent": "20210101",
+                "operator":"lt",
+                "joiner": "AND"}
+            // {
+            // "username": "小柒2013",
+            // "mobile": "17762289999"}
+        ];
+        $.ajax({
+            url: '../../document/combinationFindDocumentRecord',
+            type: 'post',
+            data: {list: JSON.stringify(list)},
+            traditional: true,
+            success: function(res) {
+                // if (res.code === 0) {
+                //     layer.msg('密码修改成功', {icon: 6});
+                // } else {
+                //     layer.msg('error: ' + res.message);
+                // }
+                if (res.code == 0){
+
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

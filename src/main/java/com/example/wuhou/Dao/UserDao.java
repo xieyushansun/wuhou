@@ -45,7 +45,7 @@ public class UserDao {
             throw new Exception("插入失败");
         }
 
-        logDao.inserLog("user", "添加", "添加userId为：" + user.getUserId() + " 的用户");
+        logDao.insertLog("user", "添加", "添加userId为：" + user.getUserId() + " 的用户");
 
 //        LogUtil.addDB("插入用户 " + user.getUserId());
 
@@ -54,14 +54,13 @@ public class UserDao {
         Query query = new Query();
         Criteria criteria = Criteria.where("userId").is(userId);
         query.addCriteria(criteria);
-
         User dbuser = mongoTemplate.findOne(query, User.class);
         if (dbuser == null){
             throw new NotExistException(userId + ":没有该用户\n");
         }
         mongoTemplate.remove(query, User.class);
 //        LogUtil.delteDB("删除用户 " + userId);
-        logDao.inserLog("user", "删除", "删除用户 " + userId);
+        logDao.insertLog("user", "删除", "删除用户 " + userId);
     }
 
     public void changePassword(String newPassword, String userId) throws Exception {
@@ -70,7 +69,7 @@ public class UserDao {
         try {
             mongoTemplate.updateFirst(query, update, User.class);
 //            LogUtil.modifyDB("修改用户 " + userId + " 的密码");
-            logDao.inserLog("user", "修改", "修改用户 " + userId + " 的密码");
+            logDao.insertLog("user", "修改", "修改用户 " + userId + " 的密码");
         }catch (Exception e){
             throw new Exception("修改失败!");
         }
@@ -82,7 +81,7 @@ public class UserDao {
         try {
             mongoTemplate.updateFirst(query, update, User.class);
 //            LogUtil.modifyDB("重置用户 " + userId + " 的密码为12345678");
-            logDao.inserLog("user", "修改", "重置用户 " + userId + " 的密码为12345678" );
+            logDao.insertLog("user", "修改", "重置用户 " + userId + " 的密码为12345678" );
         }catch (Exception e){
             throw new Exception("重置失败!");
         }

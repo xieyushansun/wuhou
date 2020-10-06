@@ -2,6 +2,7 @@ package com.example.wuhou.controller;
 
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
+
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.service.DocumentRecordService;
@@ -9,6 +10,8 @@ import com.example.wuhou.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -351,6 +354,31 @@ public class DocumentRecordController {
         return pageUtil;
     }
 
+    //组合查询
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @PostMapping("/combinationFindDocumentRecord")
+    @ApiParam("一般查询档案记录, 0:默认是精确，1:模糊")
+    public PageUtil combinationFindDocumentRecord(
+            @ApiParam(value = "需要查询的多内容") @RequestParam() String list,
+            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
+            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
+            @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
+    ){
+        PageUtil pageUtil;
+        try {
+            JSONArray jsonArray = JSONArray.fromObject(list);
+//            for (int i = 0; i < jsonArray.size(); i++) {
+//                JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                System.out.println("json数组传递过来的参数为:" + "第" + i + "条:" + "\n" + jsonObject.get("id"));
+//            }
+            pageUtil = documentRecordService.combinationFindDocumentRecord(jsonArray, blurryFind, currentPage, pageSize);
+        }catch (Exception e){
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+        }
+        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
+        pageUtil.setMessage("查询成功！");
+        return pageUtil;
+    }
     //删除档案记录对应文件
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_DELETE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteDocumentRecordFile")

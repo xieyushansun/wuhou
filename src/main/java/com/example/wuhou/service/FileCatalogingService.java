@@ -109,6 +109,6 @@ public class FileCatalogingService {
         if (!file.exists()){
            throw new Exception("导出失败");
         }
-        logDao.inserLog("档案导出操作", "导出", "导出档案记录中档号为: " + documentNumber + " 的档案编目");
+        logDao.insertLog("档案导出操作", "导出", "导出档案记录中档号为: " + documentNumber + " 的档案编目");
     }
 }

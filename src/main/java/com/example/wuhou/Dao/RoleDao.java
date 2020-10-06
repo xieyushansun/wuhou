@@ -31,14 +31,13 @@ public class RoleDao {
         }
         mongoTemplate.insert(role);
 //        LogUtil.addDB("添加角色 > " + role.getRoleName());
-        logDao.inserLog("role", "添加",  "添加角色 > " + role.getRoleName());
+        logDao.insertLog("role", "添加",  "添加角色 > " + role.getRoleName());
 
     }
     //删除角色
     public void deleteRole(String id) throws Exception {
         Query query = new Query();
-        Criteria criteria = Criteria.where("_id").is(new ObjectId(id));
-        query.addCriteria(criteria);
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(id)));
 
         Role role = mongoTemplate.findOne(query, Role.class);
         if (role == null){
@@ -46,12 +45,20 @@ public class RoleDao {
         }
         mongoTemplate.remove(query, Role.class);
 //        LogUtil.delteDB("删除角色 > " + role.getRoleName());
-        logDao.inserLog("role", "删除", "删除角色 > " + role.getRoleName());
+
+        Query query1 = new Query();
+        query.addCriteria(Criteria.where("roleId").is(new ObjectId(id)));
+        Update update = new Update();
+        update.set("roleId", "guest");
+        mongoTemplate.updateMulti(query1, update, User.class);
+
+        logDao.insertLog("role", "删除", "删除角色 > " + role.getRoleName());
     }
     //修改角色
     public void modifyRole(Role role, String id) throws Exception {
         //首先删除要修改的角色数据
         deleteRole(id);
+        role.setId(id);
         addRole(role);
     }
     //获取所有角色
@@ -68,7 +75,7 @@ public class RoleDao {
         query.addCriteria(criteria);
         update.set("roleId", new ObjectId(roleId));
         mongoTemplate.updateFirst(query, update, User.class);
-        logDao.inserLog("role", "修改", "为用户 " + userId + "添加角色id > " + roleId);
+        logDao.insertLog("role", "修改", "为用户 " + userId + "添加角色id > " + roleId);
     }
     //删除用户角色，默认回到guest，没有任何权限
     public void removeUserRoleAuthorize(String userId) throws Exception {
@@ -77,7 +84,7 @@ public class RoleDao {
         query.addCriteria(Criteria.where("_id").is(new ObjectId(userId)));
         update.set("roleId", "guest");
         mongoTemplate.updateFirst(query, update, User.class);
-        logDao.inserLog("role", "修改", "将用户 " + userId + "角色置为guest");
+        logDao.insertLog("role", "修改", "将用户 " + userId + "角色置为guest");
     }
     //获取角色下所有权限
     public Set<String> getRolePermissions(String roleId){
@@ -86,7 +93,9 @@ public class RoleDao {
         query.addCriteria(criteria);
 
         Role role = mongoTemplate.findOne(query, Role.class);
-
+        if (role == null){
+            return null;
+        }
         return role.getPermissions();
     }
 }

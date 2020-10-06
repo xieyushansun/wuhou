@@ -3,6 +3,8 @@ package com.example.wuhou.Dao;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.exception.NotExistException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +31,7 @@ public class DocumentRecordDao {
         if (documentRecordReturn == null){
             throw new Exception("插入失败");
         }
-        logDao.inserLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
+        logDao.insertLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
         return documentRecordReturn.getId();
     }
     //查询案卷号对应的文件清单
@@ -67,7 +70,7 @@ public class DocumentRecordDao {
             throw new NotExistException(documentRecordId + ":没有该条档案记录\n");
         }
         mongoTemplate.remove(query, DocumentRecord.class);
-        logDao.inserLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
+        logDao.insertLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
         //返回档案记录对应的文件，在service层删除
         return documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
     }
@@ -186,6 +189,109 @@ public class DocumentRecordDao {
         pageUtil.setBody(mongoTemplate.find(query, DocumentRecord.class));
         return pageUtil;
     }
+    // 组合查询
+    // keywordList: 字段名，字段内容，运算符，连接符
+    public PageUtil combinationFindDocumentRecord(JSONArray jsonArray, String blurryFind, Integer currentPage, Integer pageSize) throws Exception {
+        PageUtil pageUtil = new PageUtil();
+
+        /**
+        * jsonArray
+         * filedName : 字段名
+         * filedContent : 字段内容
+         * operator :
+         * {
+         *      $gt:大于
+         *      $lt:小于
+         *      $gte:大于或等于
+         *      $lte:小于或等于
+         * }
+         * joiner : AND/OR
+        * */
+
+//        "fileName" : "20120102张三就业创业补助资金",
+//        "documentNumber" : "129-2020-10年.jb.3-001",
+//        "recordGroupNumber" : "129",
+//        "boxNumber" : "001",
+//        "year" : "2020",
+//        "duration" : "10年",
+//        "security" : "绝密",
+//        "documentCategory" : "就业创业补助资金",
+//        "fileCategory" : "类别4",
+//        "responsible" : "",
+//        "danwieCode" : "danwieCode",
+//        "danweiName" : "张三",
+//        "position" : "",
+//        "recorder" : "杉杉",
+//        "recordTime" : "20201002",
+//        "diskPath" : "E:\\wuhoudocument",
+//        "storePath" : "129\\就业创业补助资金\\2020\\类别4\\001\\20120102张三就业创业补助资金",
+
+        Query query = new Query();
+        List<Criteria> criteriaAndList = new ArrayList<>();
+        List<Criteria> criteriaOrList = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String filedName = jsonObject.get("filedName").toString();
+            String filedContent = jsonObject.get("filedContent").toString();
+            String operator = jsonObject.get("operator").toString();
+            String joiner = jsonObject.get("joiner").toString();
+
+            if (joiner.compareTo("AND") == 0){
+                // 判断是否是创建日期
+                if (filedName.equals("recordTime") || filedName.compareTo("year") == 0){
+                    switch (operator){
+                        case "gt": criteriaAndList.add(Criteria.where(filedName).gt(filedContent)); break;
+                        case "lt": criteriaAndList.add(Criteria.where(filedName).lt(filedContent)); break;
+                        case "gte": criteriaAndList.add(Criteria.where(filedName).gte(filedContent)); break;
+                        case "lte": criteriaAndList.add(Criteria.where(filedName).lte(filedContent)); break;
+                        case "is": criteriaAndList.add(Criteria.where(filedName).is(filedContent)); break;
+                        default: throw new Exception("操作符传递出错");
+                    }
+                }else {
+                    criteriaAndList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
+                }
+            }else if (joiner.compareTo("OR") == 0){
+                // 判断是否是创建日期
+                if (filedName.equals("recordTime") || filedName.equals("year")){
+                    switch (operator){
+                        case "gt": criteriaOrList.add(Criteria.where(filedName).gt(filedContent)); break;
+                        case "lt": criteriaOrList.add(Criteria.where(filedName).lt(filedContent)); break;
+                        case "gte": criteriaOrList.add(Criteria.where(filedName).gte(filedContent)); break;
+                        case "lte": criteriaOrList.add(Criteria.where(filedName).lte(filedContent)); break;
+                        case "is": criteriaOrList.add(Criteria.where(filedName).is(filedContent)); break;
+                        default: throw new Exception("操作符传递出错");
+                    }
+                } else {
+                    criteriaOrList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
+                }
+            }
+        }
+        if (criteriaAndList.size() != 0){
+            Criteria criteriaAnd = new Criteria();
+            Criteria criteria[] = new Criteria[criteriaAndList.size()];
+            criteriaAndList.toArray(criteria);
+            criteriaAnd.andOperator(criteria);
+            query.addCriteria(criteriaAnd);
+        }
+        if (criteriaOrList.size() != 0){
+            Criteria criteriaOr = new Criteria();
+            Criteria criteria[] = new Criteria[criteriaOrList.size()];
+            criteriaOrList.toArray(criteria);
+            criteriaOr.andOperator(criteria);
+            query.addCriteria(criteriaOr);
+        }
+
+        // 获取总数
+        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
+        pageUtil.setTotalElement(n);
+        // 分页查询
+        query.skip((currentPage - 1) * pageSize);
+        query.limit(pageSize);
+        List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
+        pageUtil.setBody(documentRecordList);
+        return pageUtil;
+    }
+
     // 判断案卷名是否有重复的
     public Boolean checkFileName(String fileName){
         Query query = new Query();
@@ -200,8 +306,8 @@ public class DocumentRecordDao {
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecord.getId()));
         query.addCriteria(criteria);
         mongoTemplate.remove(query, DocumentRecord.class);
-        logDao.inserLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
+        logDao.insertLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
         mongoTemplate.insert(documentRecord);
-        logDao.inserLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
+        logDao.insertLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
     }
 }
