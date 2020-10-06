@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:27:22
- * @LastEditTime: 2020-09-24 09:43:19
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-10-06 10:21:51
+ * @LastEditors: liyan
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-form.html
 -->
@@ -44,6 +44,15 @@
             <button class="layui-btn layui-btn-danger" id="set-password">设置默认密码</button>
         </div>
     </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">角色</label>
+        <div class="layui-input-inline">
+          <select name="role" lay-filter="role" lay-search=""></select>
+          <!-- <input autocomplete="off" type="text" class="layui-input" id="textvalue" placeholder="输入文件夹名称" name="dirName"  z-index: 1> -->
+        </div>
+      </div>
+    </div>
     <div class="layui-form-item" style="padding-left: 50px;">
       <input type="button" class="layui-btn" lay-submit lay-filter="form-submit" id="form-submit" value="确认">
     </div>
@@ -59,8 +68,50 @@
         form.val('user-form', {
             password: '12345678',
         });
-        layer.msg('设置默认密码为“12345678”');
+        layer.msg('设置默认密码为“12345678”', {time: 0.8 * 1000});
     });
+
+    $.ajax({
+      url: "../../../role/getAllRole",
+      type: "get",
+      success: function(res) {
+        if (res.code === 0) {
+          var option_list = makeOption(res.body);
+          changeOption('role', option_list);
+        } else {
+          layer.msg(res.message, {icon: 2, time: 0.8 * 1000});
+        }
+      },
+      error: function(jqxhr, textStatus, errorThrown) {
+        layer.alert([textStatus, jqxhr.statusText].join(':'), {icon: 2});
+      }
+    });
+
+    function makeOption(data_list) {
+      if (!Array.isArray(data_list)) {
+          return [];
+      }
+      var option_list = [{val: '', text: ''}];
+      for (var indexList = 0; indexList < data_list.length; indexList++) {
+          var item = data_list[indexList];
+          option_list.push({"val": item.id, "text": item.roleName});
+      }
+      return option_list;
+    }
+
+    // 根据lay-filter修改select的option
+    function changeOption(filter, option_list){
+        var selector = "[lay-filter="+filter+"]";
+        $(selector).empty();
+        if (!(option_list instanceof Array)) {
+            return;
+        }
+        if(option_list)
+            for(var i = 0, len = option_list.length; i < len; i++){
+                var option = $("<option>").val(option_list[i].val).text(option_list[i].text).data('abbr', 'xs');
+                $(selector).append(option);
+            }
+    }
 
     form.on('submit(form-submit)', function(data) {
         $.ajax({
@@ -72,7 +123,11 @@
                     layer.msg('添加成功', {icon: 6});
                     var index = parent.layer.getFrameIndex(window.name);
                     parent.layer.close(index);
+                } else {
+                  layer.msg(res.message, {icon: 2, time: 0.8*1000});
                 }
+            }, error: function(jqxhr, textStatus, errorThrown) {
+              layer.confirm([textStatus, jqxhr.statusText].join(':'), {icon: 2});
             }
         });
     });
