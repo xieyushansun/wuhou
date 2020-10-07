@@ -13,4 +13,5 @@ public class PermissionConstant {
     public static final String GUEST = "GUEST";
     public static final String SUPERADMIN = "SUPERADMIN";
     public static final String FILE_CATALOG = "FILE_CATALOG";
+    public static final String DOCUMENT_TRANSFER_MANAGE = "DOCUMENTTRANSFER_MANAGE";
 }

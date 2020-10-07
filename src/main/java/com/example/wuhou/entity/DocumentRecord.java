@@ -38,6 +38,10 @@ public class DocumentRecord {
     //盘符下的存储路径
     String storePath;
 
+    public DocumentRecord(){
+        this.id = null;
+    }
+
     public String getId() {
         return id;
     }

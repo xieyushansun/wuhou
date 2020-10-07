@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -108,6 +109,7 @@ public class DocumentRecordDao {
 ////        FileOutputStream fileOutputStream = FileOperationUtil.bytesToFile(documentFile.getFile(), documentFile.getDocumentName());
 ////        return fileOutputStream;
 //    }
+    //普通查询
     public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
 //        List<List<DocumentRecord>> lists = new ArrayList<>();
         List<DocumentRecord> resultList;
@@ -139,63 +141,225 @@ public class DocumentRecordDao {
     // 一般查询
     //
     public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
+//        PageUtil pageUtil = new PageUtil();
+//
+//        // 用空格隔开的各个关键字
+//        String keyWord[] = multiKeyWord.split(" ");
+//        Query query = new Query();
+//        // 模糊查询
+//        if (blurryFind.compareTo("1") == 0){
+//            Criteria criteria = new Criteria();
+//            for (String s : keyWord) {
+//                criteria.orOperator(
+//                        Criteria.where("documentNumber").regex(".*?" + s + ".*?"),
+//                        Criteria.where("duration").regex(".*?" + s + ".*?"),
+//                        Criteria.where("security").regex(".*?" + s + ".*?"),
+//                        Criteria.where("responsible").regex(".*?" + s + ".*?"),
+//                        Criteria.where("danwieCode").regex(".*?" + s + ".*?"),
+//                        Criteria.where("danweiName").regex(".*?" + s + ".*?"),
+//                        Criteria.where("position").regex(".*?" + s + ".*?"),
+//                        Criteria.where("recorder").regex(".*?" + s + ".*?"),
+//                        Criteria.where("recordTime").regex(".*?" + s + ".*?"),
+//                        Criteria.where("storePath").regex(".*?" + s + ".*?")
+//                );
+//                query.addCriteria(criteria);
+//            }
+//        }
+//        else { // 精确查询
+//            for (String s : keyWord) {
+//                Criteria criteria = new Criteria();
+//                criteria.orOperator(
+//                        Criteria.where("documentNumber").is(s),
+//                        Criteria.where("duration").is(s),
+//                        Criteria.where("security").is(s),
+//                        Criteria.where("responsible").is(s),
+//                        Criteria.where("danwieCode").is(s),
+//                        Criteria.where("danweiName").is(s),
+//                        Criteria.where("position").is(s),
+//                        Criteria.where("recorder").is(s),
+//                        Criteria.where("recordTime").is(s),
+//                        Criteria.where("storePath").is(s)
+//                );
+//                query.addCriteria(criteria);
+//            }
+//        }
+//        pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
+//
+//        query.skip((currentPage - 1) * pageSize);
+//        query.limit(pageSize);
+//
+//        pageUtil.setBody(mongoTemplate.find(query, DocumentRecord.class));
+//        return pageUtil;
         PageUtil pageUtil = new PageUtil();
 
         // 用空格隔开的各个关键字
         String keyWord[] = multiKeyWord.split(" ");
-        Query query = new Query();
+//        Query query = new Query();
+        StringBuilder sqlStart = new StringBuilder("{$and:[");
+        String sqlEnd = "]}";
+
         // 模糊查询
         if (blurryFind.compareTo("1") == 0){
             for (String s : keyWord) {
-                Criteria criteria = new Criteria();
-                criteria.orOperator(
-                        Criteria.where("documentNumber").regex(".*?" + s + ".*?"),
-                        Criteria.where("duration").regex(".*?" + s + ".*?"),
-                        Criteria.where("security").regex(".*?" + s + ".*?"),
-                        Criteria.where("responsible").regex(".*?" + s + ".*?"),
-                        Criteria.where("danwieCode").regex(".*?" + s + ".*?"),
-                        Criteria.where("danweiName").regex(".*?" + s + ".*?"),
-                        Criteria.where("position").regex(".*?" + s + ".*?"),
-                        Criteria.where("recorder").regex(".*?" + s + ".*?"),
-                        Criteria.where("recordTime").regex(".*?" + s + ".*?"),
-                        Criteria.where("storePath").regex(".*?" + s + ".*?")
-                );
-                query.addCriteria(criteria);
+                String temp = "{$or: [" +
+                        "{documentNumber: /" + s + "/}," +
+                        "{duration: /" + s + "/}," +
+                        "{security: /" + s + "/}," +
+                        "{responsible: /" + s + "/}," +
+                        "{danwieCode: /" + s + "/}," +
+                        "{danweiName: /" + s + "/}," +
+                        "{position: /" + s + "/}," +
+                        "{recorder: /" + s + "/}," +
+                        "{recordTime: /" + s + "/}," +
+                        "{storePath: /" + s + "/}]}";
+                sqlStart.append(temp);
             }
+            sqlStart.append(sqlEnd);
         }
         else { // 精确查询
             for (String s : keyWord) {
-                Criteria criteria = new Criteria();
-                criteria.orOperator(
-                        Criteria.where("documentNumber").is(s),
-                        Criteria.where("duration").is(s),
-                        Criteria.where("security").is(s),
-                        Criteria.where("responsible").is(s),
-                        Criteria.where("danwieCode").is(s),
-                        Criteria.where("danweiName").is(s),
-                        Criteria.where("position").is(s),
-                        Criteria.where("recorder").is(s),
-                        Criteria.where("recordTime").is(s),
-                        Criteria.where("storePath").is(s)
-                );
-                query.addCriteria(criteria);
+                String temp = "{$or: [" +
+                        "{documentNumber: " + s + "}," +
+                        "{duration: " + s + "}," +
+                        "{security: " + s + "}," +
+                        "{responsible: " + s + "}," +
+                        "{danwieCode: " + s + "}," +
+                        "{danweiName: " + s + "}," +
+                        "{position: " + s + "}," +
+                        "{recorder: " + s + "}," +
+                        "{recordTime: " + s + "}," +
+                        "{storePath: " + s + "}]}";
+                sqlStart.append(temp);
             }
+            sqlStart.append(sqlEnd);
         }
-        pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
 
-        query.skip((currentPage - 1) * pageSize);
-        query.limit(pageSize);
+        BasicQuery basicQuery = new BasicQuery(sqlStart.toString());
 
-        pageUtil.setBody(mongoTemplate.find(query, DocumentRecord.class));
+        pageUtil.setTotalElement((int) mongoTemplate.count(basicQuery, DocumentRecord.class));
+
+        basicQuery.skip((currentPage - 1) * pageSize);
+        basicQuery.limit(pageSize);
+
+        pageUtil.setBody(mongoTemplate.find(basicQuery, DocumentRecord.class));
         return pageUtil;
     }
     // 组合查询
     // keywordList: 字段名，字段内容，运算符，连接符
     public PageUtil combinationFindDocumentRecord(JSONArray jsonArray, String blurryFind, Integer currentPage, Integer pageSize) throws Exception {
+//        PageUtil pageUtil = new PageUtil();
+//
+//        /**
+//        * jsonArray
+//         * filedName : 字段名
+//         * filedContent : 字段内容
+//         * operator :
+//         * {
+//         *      $gt:大于
+//         *      $lt:小于
+//         *      $gte:大于或等于
+//         *      $lte:小于或等于
+//         * }
+//         * joiner : AND/OR
+//        * */
+////        "fileName" : "20120102张三就业创业补助资金",
+////        "documentNumber" : "129-2020-10年.jb.3-001",
+////        "recordGroupNumber" : "129",
+////        "boxNumber" : "001",
+////        "year" : "2020",
+////        "duration" : "10年",
+////        "security" : "绝密",
+////        "documentCategory" : "就业创业补助资金",
+////        "fileCategory" : "类别4",
+////        "responsible" : "",
+////        "danwieCode" : "danwieCode",
+////        "danweiName" : "张三",
+////        "position" : "",
+////        "recorder" : "杉杉",
+////        "recordTime" : "20201002",
+////        "diskPath" : "E:\\wuhoudocument",
+////        "storePath" : "129\\就业创业补助资金\\2020\\类别4\\001\\20120102张三就业创业补助资金",
+//        Query query = new Query();
+//        List<Criteria> criteriaAndList = new ArrayList<>();
+//        List<Criteria> criteriaOrList = new ArrayList<>();
+//        for (int i = 0; i < jsonArray.size(); i++){
+//            JSONObject jsonObject = jsonArray.getJSONObject(i);
+//            String filedName = jsonObject.get("filedName").toString();
+//            String filedContent = jsonObject.get("filedContent").toString();
+//            String operator = jsonObject.get("operator").toString();
+//            String joiner = jsonObject.get("joiner").toString();
+//
+//            if (joiner.compareTo("AND") == 0){
+//                // 判断是否是创建日期
+//                if (filedName.equals("recordTime") || filedName.compareTo("year") == 0){
+//                    switch (operator){
+//                        case "gt": criteriaAndList.add(Criteria.where(filedName).gt(filedContent)); break;
+//                        case "lt": criteriaAndList.add(Criteria.where(filedName).lt(filedContent)); break;
+//                        case "gte": criteriaAndList.add(Criteria.where(filedName).gte(filedContent)); break;
+//                        case "lte": criteriaAndList.add(Criteria.where(filedName).lte(filedContent)); break;
+//                        case "is": criteriaAndList.add(Criteria.where(filedName).is(filedContent)); break;
+//                        default: throw new Exception("操作符传递出错");
+//                    }
+//                }else {
+//                    criteriaAndList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
+//                }
+//            }else if (joiner.compareTo("OR") == 0){
+//                // 判断是否是创建日期
+//                if (filedName.equals("recordTime") || filedName.equals("year")){
+//                    switch (operator){
+//                        case "gt": criteriaOrList.add(Criteria.where(filedName).gt(filedContent)); break;
+//                        case "lt": criteriaOrList.add(Criteria.where(filedName).lt(filedContent)); break;
+//                        case "gte": criteriaOrList.add(Criteria.where(filedName).gte(filedContent)); break;
+//                        case "lte": criteriaOrList.add(Criteria.where(filedName).lte(filedContent)); break;
+//                        case "is": criteriaOrList.add(Criteria.where(filedName).is(filedContent)); break;
+//                        default: throw new Exception("操作符传递出错");
+//                    }
+//                } else {
+//                    criteriaOrList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
+//                }
+//            }
+//        }
+//        if (criteriaAndList.size() != 0 && criteriaOrList.size() != 0){
+//
+//            Criteria criteriaOr = new Criteria();
+//            Criteria criteria1[] = new Criteria[criteriaOrList.size()];
+//            criteriaOrList.toArray(criteria1);
+//            criteriaOr.orOperator(criteria1);
+//
+//            Criteria criteriaAnd = new Criteria();
+//            Criteria criteria2[] = new Criteria[criteriaAndList.size() + 1];
+//            criteriaAndList.add(criteriaOr);
+//            criteriaAndList.toArray(criteria2);
+//            criteriaAnd.andOperator(criteria2);
+//
+//            query.addCriteria(criteriaAnd);
+//
+//        }else if (criteriaAndList.size() != 0){
+//            Criteria criteriaAnd = new Criteria();
+//            Criteria criteria[] = new Criteria[criteriaAndList.size()];
+//            criteriaAndList.toArray(criteria);
+//            criteriaAnd.andOperator(criteria);
+//            query.addCriteria(criteriaAnd);
+//        }else if (criteriaOrList.size() != 0){
+//            Criteria criteriaOr = new Criteria();
+//            Criteria criteria[] = new Criteria[criteriaOrList.size()];
+//            criteriaOrList.toArray(criteria);
+//            criteriaOr.orOperator(criteria);
+//            query.addCriteria(criteriaOr);
+//        }
+//
+//        // 获取总数
+//        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
+//        pageUtil.setTotalElement(n);
+//        // 分页查询
+//        query.skip((currentPage - 1) * pageSize);
+//        query.limit(pageSize);
+//        List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
+//        pageUtil.setBody(documentRecordList);
+//        return pageUtil;
         PageUtil pageUtil = new PageUtil();
-
         /**
-        * jsonArray
+         * jsonArray
          * filedName : 字段名
          * filedContent : 字段内容
          * operator :
@@ -206,8 +370,7 @@ public class DocumentRecordDao {
          *      $lte:小于或等于
          * }
          * joiner : AND/OR
-        * */
-
+         * */
 //        "fileName" : "20120102张三就业创业补助资金",
 //        "documentNumber" : "129-2020-10年.jb.3-001",
 //        "recordGroupNumber" : "129",
@@ -225,69 +388,81 @@ public class DocumentRecordDao {
 //        "recordTime" : "20201002",
 //        "diskPath" : "E:\\wuhoudocument",
 //        "storePath" : "129\\就业创业补助资金\\2020\\类别4\\001\\20120102张三就业创业补助资金",
+        String lastSql = "";
+        String currentSql = "";
 
-        Query query = new Query();
-        List<Criteria> criteriaAndList = new ArrayList<>();
-        List<Criteria> criteriaOrList = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++){
+        for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String filedName = jsonObject.get("filedName").toString();
             String filedContent = jsonObject.get("filedContent").toString();
             String operator = jsonObject.get("operator").toString();
             String joiner = jsonObject.get("joiner").toString();
-
-            if (joiner.compareTo("AND") == 0){
-                // 判断是否是创建日期
-                if (filedName.equals("recordTime") || filedName.compareTo("year") == 0){
-                    switch (operator){
-                        case "gt": criteriaAndList.add(Criteria.where(filedName).gt(filedContent)); break;
-                        case "lt": criteriaAndList.add(Criteria.where(filedName).lt(filedContent)); break;
-                        case "gte": criteriaAndList.add(Criteria.where(filedName).gte(filedContent)); break;
-                        case "lte": criteriaAndList.add(Criteria.where(filedName).lte(filedContent)); break;
-                        case "is": criteriaAndList.add(Criteria.where(filedName).is(filedContent)); break;
-                        default: throw new Exception("操作符传递出错");
-                    }
-                }else {
-                    criteriaAndList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
-                }
-            }else if (joiner.compareTo("OR") == 0){
-                // 判断是否是创建日期
-                if (filedName.equals("recordTime") || filedName.equals("year")){
-                    switch (operator){
-                        case "gt": criteriaOrList.add(Criteria.where(filedName).gt(filedContent)); break;
-                        case "lt": criteriaOrList.add(Criteria.where(filedName).lt(filedContent)); break;
-                        case "gte": criteriaOrList.add(Criteria.where(filedName).gte(filedContent)); break;
-                        case "lte": criteriaOrList.add(Criteria.where(filedName).lte(filedContent)); break;
-                        case "is": criteriaOrList.add(Criteria.where(filedName).is(filedContent)); break;
+            if (filedName.equals("recordTime") || filedName.compareTo("year") == 0) {
+                if (i == 0) {
+                    switch (operator) {
+                        case "gt": currentSql = String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent);break;
+                        case "lt": currentSql = String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent);break;
+                        case "gte": currentSql = String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent);break;
+                        case "lte": currentSql = String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent);break;
+                        case "is": currentSql = String.format("{ %s:\"%s\"}", filedName, filedContent);break;
                         default: throw new Exception("操作符传递出错");
                     }
                 } else {
-                    criteriaOrList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
+                    if (joiner.equals("AND")) {
+                        switch (operator) {
+                            case "gt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "lt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "gte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "lte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "is": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", filedName, filedContent) + "]}";break;
+                            default: throw new Exception("操作符传递出错");
+                        }
+                    }else {
+                        switch (operator) {
+                            case "gt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "lt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "gte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "lte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent) + "]}";break;
+                            case "is": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", filedName, filedContent) + "]}";break;
+                            default: throw new Exception("操作符传递出错");
+                        }
+                    }
+                }
+            } else {
+                if (i == 0) {
+                    if(blurryFind.equals("1")){
+                        currentSql = String.format("{%s: /%s/}", filedName, filedContent);
+                    }else {
+                        currentSql = String.format("{%s: \"%s\"}", filedName, filedContent);
+                    }
+                } else {
+                    if (joiner.equals("AND")) {
+                        if (blurryFind.equals("1")){
+                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: /%s/}", filedName, filedContent) + "]}";
+                        }else {
+                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: \"%s\"}", filedName, filedContent) + "]}";
+                        }
+
+                    } else {
+                        if (blurryFind.equals("1")){
+                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: /%s/}", filedName, filedContent) + "]}";
+                        }else {
+                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: \"%s\"}", filedName, filedContent) + "]}";
+                        }
+                    }
                 }
             }
+            lastSql = currentSql;
         }
-        if (criteriaAndList.size() != 0){
-            Criteria criteriaAnd = new Criteria();
-            Criteria criteria[] = new Criteria[criteriaAndList.size()];
-            criteriaAndList.toArray(criteria);
-            criteriaAnd.andOperator(criteria);
-            query.addCriteria(criteriaAnd);
-        }
-        if (criteriaOrList.size() != 0){
-            Criteria criteriaOr = new Criteria();
-            Criteria criteria[] = new Criteria[criteriaOrList.size()];
-            criteriaOrList.toArray(criteria);
-            criteriaOr.andOperator(criteria);
-            query.addCriteria(criteriaOr);
-        }
-
+//        String s = "{$and:[{$or:[{ year:\"2021\"}, { year:\"2020\"}]}, {recorder: \"杉杉\"}]}";
+        BasicQuery basicQuery = new BasicQuery(currentSql);
         // 获取总数
-        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
+        int n = (int) mongoTemplate.count(basicQuery, DocumentRecord.class);
         pageUtil.setTotalElement(n);
         // 分页查询
-        query.skip((currentPage - 1) * pageSize);
-        query.limit(pageSize);
-        List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
+        basicQuery.skip((currentPage - 1) * pageSize);
+        basicQuery.limit(pageSize);
+        List<DocumentRecord> documentRecordList = mongoTemplate.find(basicQuery, DocumentRecord.class);
         pageUtil.setBody(documentRecordList);
         return pageUtil;
     }
