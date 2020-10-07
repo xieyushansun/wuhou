@@ -428,6 +428,10 @@
                 } else {
                     layer.alert(res.message, {icon: 2});
                 }
+            },
+            error: function(jqxhr, textStatus, errorThrown) {
+                layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                console.log('error: modify document record request error');
             }
         });
         
@@ -488,6 +492,10 @@
                     layer.msg(res.message);
                     successful = false;
                 }
+            },
+            error: function(jqxhr, textStatus, errorThrown) {
+                layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                console.log('error: delete document record file request error');
             }
         });
         return successful;
@@ -502,7 +510,13 @@
                 if (res.code === 0) {
                     uploadedFiles = res.body;
                     fileTable(uploadedFiles);
+                } else {
+                    layer.msg(res.msg, {time: 0.8*1000});
                 }
+            },
+            error: function(jqxhr, textStatus, errorThrown) {
+                layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                console.log('error: find file list by document recordId request error');
             }
         })
     }

@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>layui</title>
+    <title>添加档案</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../css/layuimini.css" media="all">
     <link rel="stylesheet" href="../../css/public.css" media="all">
     <style>
         body {
@@ -238,9 +239,7 @@
         
 
         $(document).ready(function(){
-            
             selectInit(documentCategoryData, add=true);
-            
             form.val("add-form", {
                 //
                 "documentCategory": documentCategory,
@@ -422,6 +421,10 @@
                     } else {
                         layer.alert(res.message, {icon: 2});
                     }
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                    console.log('error: add document record request error');
                 }
             });
             
@@ -474,9 +477,13 @@
                         layer.msg('删除成功');
                         successful = true
                     } else {
-                        layer.msg(res.message);
+                        layer.msg(res.message, {time: 0.8*1000});
                         successful = false;
                     }
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                    console.log('error: delete document record file request error');
                 }
             });
             return successful;

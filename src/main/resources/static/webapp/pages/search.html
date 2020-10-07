@@ -195,8 +195,6 @@
                     layer.full(index);
                 });
                 return false;
-            } else if (layEvent === 'edit') {
-                // edit
             } else if (layEvent === 'delete') {
                 layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {
                     $.ajax({
@@ -211,9 +209,13 @@
                             } else {
                                 layer.msg(res.message, {icon: 2});
                             }
+                        },
+                        error: function(jqxhr, textStatus, errorThrown) {
+                            layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                            console.log('error: delete document record request error');
                         }
-                    })
-                })
+                    });
+                });
             }
         });
 

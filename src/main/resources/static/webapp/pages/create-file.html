@@ -1,10 +1,10 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-10-04 11:56:46
+ * @LastEditTime: 2020-10-07 20:22:39
  * @LastEditors: liyan
  * @Description: 创建档案页面的查询页面
- * @FilePath: \archives-management\archives-management\src\main\webapp\pages\create-file.html
+ * @FilePath: \wuhou\src\main\resources\static\webapp\pages\create-file.html
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -86,14 +86,20 @@
                             documentCategoryData = res.body;
                             selectInit(documentCategoryData); // 初始化渲染select
                             form.render('select');
+                        } else {
+                            layer.msg(res.message, {time: 0.8*1000});
                         }
+                    },
+                    error: function(jqxhr, textStatus, errorThrown) {
+                        layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                        console.log('error: find all document category request error');
                     }
                 })
             })(); // 获取档案类别
         });
         
-        selectInit(documentCategoryData);
-        form.render('select');
+        // selectInit(documentCategoryData);
+        // form.render('select');
         var documentCategory = '',
             fileCategory = '';
 
@@ -212,8 +218,6 @@
                     layer.full(index);
                 });
                 return false;
-            } else if (layEvent === 'edit') {
-                // edit
             } else if (layEvent === 'delete') {
                 layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {
                     $.ajax({
@@ -228,6 +232,10 @@
                             } else {
                                 layer.msg(res.message, {icon: 2});
                             }
+                        },
+                        error: function(jqxhr, textStatus, errorThrown) {
+                            layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                            console.log('error: delete document record request error');
                         }
                     })
                 })

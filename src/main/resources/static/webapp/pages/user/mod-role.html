@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-05 15:43:36
- * @LastEditTime: 2020-10-05 17:48:37
+ * @LastEditTime: 2020-10-07 20:17:52
  * @LastEditors: liyan
  * @Description: 修改角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
@@ -99,7 +99,7 @@
                         layer.msg(res.message);
                     }
                 }, error: function(jqxhr, textStatus, errorThrown) {
-                    layer.confirm([textStatus, jqxhr.statusText].join(':'), {icon: 2});
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                 }
             });
         }

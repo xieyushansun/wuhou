@@ -146,6 +146,10 @@
                         } else {
                             layui.alert(res.message, {icon: 5});
                         }
+                    },
+                    error: function(jqxhr, textStatus, errorThrown) {
+                        layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                        console.log('error: find all documentCategory request error');
                     }
                 });
             }
@@ -302,7 +306,7 @@
                             modified.add(currDocId);
                         }
                     }
-                })
+                });
             }
 
             // 创建新的档案类别,返回一个jq延迟对象
@@ -359,9 +363,15 @@
                         if (res.code === 0) {
                             layer.msg('删除成功', {time: 0.6*1000});
                             obj.del();
+                        } else {
+                            layer.msg(res.message, {time: 0.8*1000});
                         }
+                    },
+                    error: function(jqxhr, textStatus, errorThrown) {
+                        layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                        console.log('error: delete documentCategory request error');
                     }
-                })
+                });
             }
 
             // 判断两个数组是否相等

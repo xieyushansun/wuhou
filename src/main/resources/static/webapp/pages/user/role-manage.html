@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 15:24:14
- * @LastEditTime: 2020-10-05 17:46:04
+ * @LastEditTime: 2020-10-07 20:18:38
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\role-manage.html
@@ -139,7 +139,7 @@
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
-                    layer.confirm([textStatus, jqxhr.statusText].join(':'), {icon: 2});
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                 }
             })
         }
