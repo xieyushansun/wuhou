@@ -1,10 +1,10 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-27 14:03:16
- * @LastEditTime: 2020-09-29 14:39:58
+ * @LastEditTime: 2020-10-07 20:01:31
  * @LastEditors: liyan
  * @Description: In User Settings Edit
- * @FilePath: \wuhou\src\main\resources\static\webapp\pages\query\class-query.html
+ * @FilePath: \wuhou\src\main\resources\static\webapp\pages\query\query.html
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +14,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../../layui/css/layui.css">
-    <link rel="stylesheet" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <style>
+        .cond-icon {
+            float: left;
+            width: 38px;
+            height: 38px;
+            line-height: 32px;
+            text-align: center;
+        }
+        .cond-icon i {
+            display: block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            border-radius: 32px;
+            text-align: center;
+            color: #196159;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -26,11 +44,18 @@
                 <li>组合查询</li>
             </ul>
             <div class="layui-tab-content">
-                <div class="layui-tab-item layui-show">
+                <div class="layui-tab-item layui-show" id="general-query-tab">
                     <div class="layui-form" lay-filter="general-query">
                         <div class="layui-form-item">
-                            <div class="layui-input-block" style="margin-left: 0px;">
-                                <input type="text" class="layui-input" name="keywords" required lay-verify="required" placeholder="请输入关键词">
+                            <label class="layui-form-label">精确查询</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="blurryFind" lay-skin="switch" value="0" lay-text="ON|OFF">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-block">
+                                <input type="text" class="layui-input" name="multiKeyWord" required lay-verify="required" placeholder="多个关键词用空格隔开">
                             </div>
                         </div>
                         <!-- <div class="layui-form-item">
@@ -38,8 +63,14 @@
                         </div> -->
                     </div>
                 </div>
-                <div class="layui-tab-item">
+                <div class="layui-tab-item" id="class-query-tab">
                     <div class="layui-form" lay-filter="class-query">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">精确查询</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="blurryFind" lay-skin="switch" value="0" lay-text="ON|OFF">
+                            </div>
+                        </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">档号</label>
                             <div class="layui-input-block">
@@ -153,23 +184,265 @@
                         </div> -->
                     </div>
                 </div>
-                <div class="layui-tab-item">
-                    <div class="layui-form" lay-filter="combined-query">
-                        <!-- <div class="layui-form-item">
-                            <button class="layui-btn" type="submit" lay-submit lay-filter="combined-btn"><i class="fa fa-search"></i>搜索</button>
-                        </div> -->
+                <div class="layui-tab-item" id="combined-query-tab">
+                    <div class="layui-form" lay-filter="blurryFind">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">精确查询</label>
+                            <div class="layui-input-inline" style="width: 60px;">
+                                <input type="checkbox" name="blurryFind" lay-skin="switch" value="0" lay-text="ON|OFF">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">非精确查询时“等于”操作实为“包含”</div>
+                        </div>
+                    </div>
+                    <div class="layui-form" lay-filter="combined-query-1">
+                        <input type="text" name="joiner" class="layui-hide" value="">
+                        <div class="layui-form-item" style="margin-left: 95px;">
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="fieldName" class="field">
+                                    <option value="documentNumber">档号</option>
+                                    <option value="boxNumber">盒号</option>
+                                    <option value="year">年度</option>
+                                    <option value="duration">保管期限</option>
+                                    <option value="security">密级</option>
+                                    <option value="documentCategory">档案类型</option>
+                                    <option value="fileCategory">案卷类型</option>
+                                    <option value="responsible">责任者</option>
+                                    <option value="danweiCode">单位代码</option>
+                                    <option value="danweiName">单位名称</option>
+                                    <option value="fileName">案卷题名</option>
+                                    <option value="recorder">著录人</option>
+                                    <option value="recordTime">著录时间</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="operator" class="operator" disabled>
+                                    <option value="is">等于</option>
+                                    <option value="gt">大于</option>
+                                    <option value="lt">小于</option>
+                                    <option value="gte">大于等于</option>
+                                    <option value="lte">小于等于</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" class="layui-input" name="fieldContent" autocomplete="off">
+                            </div>
+                            <!-- <div class="layui-btn-group" style="padding: 5px 0;">
+                                <button class="layui-btn layui-btn-primary layui-btn-sm mod-btn add-btn" type="button">
+                                    <i class="layui-icon layui-icon-addition"></i>
+                                </button>
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="layui-form" lay-filter="combined-query-2">
+                        <div class="layui-form-item" style="margin-left: 15px;">
+                            <div class="layui-input-inline" style="width: 70px;">
+                                <select name="joiner">
+                                    <option value="AND">并且</option>
+                                    <option value="OR">或者</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="fieldName" class="field">
+                                    <option value="documentNumber">档号</option>
+                                    <option value="boxNumber">盒号</option>
+                                    <option value="year">年度</option>
+                                    <option value="duration">保管期限</option>
+                                    <option value="security">密级</option>
+                                    <option value="documentCategory">档案类型</option>
+                                    <option value="fileCategory">案卷类型</option>
+                                    <option value="responsible">责任者</option>
+                                    <option value="danweiCode">单位代码</option>
+                                    <option value="danweiName">单位名称</option>
+                                    <option value="fileName">案卷题名</option>
+                                    <option value="recorder">著录人</option>
+                                    <option value="recordTime">著录时间</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="operator" class="operator" disabled>
+                                    <option value="is">等于</option>
+                                    <option value="gt">大于</option>
+                                    <option value="lt">小于</option>
+                                    <option value="gte">大于等于</option>
+                                    <option value="lte">小于等于</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline" style="width: 250px;">
+                                <input type="text" class="layui-input" name="fieldContent" autocomplete="off">
+                            </div>
+                            <div class="layui-btn-group second-line" style="padding: 5px 0;">
+                                <button class="layui-btn layui-btn-primary layui-btn-sm mod-btn sub-btn layui-hide" type="button">
+                                    <i class="layui-icon layui-icon-subtraction"></i>
+                                </button>
+                                <button class="layui-btn layui-btn-primary layui-btn-sm mod-btn add-btn" type="button">
+                                    <i class="layui-icon layui-icon-addition"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script type="text/html" id="query-condition">
+        <div class="layui-form" lay-filter="combined-query-{{d}}">
+            <div class="layui-form-item" style="margin-left: 15px;">
+                <div class="layui-input-inline" style="width: 70px;">
+                    <select name="joiner">
+                        <option value="AND">并且</option>
+                        <option value="OR">或者</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <select name="fieldName" class="field">
+                        <option value="documentNumber">档号</option>
+                        <option value="boxNumber">盒号</option>
+                        <option value="year">年度</option>
+                        <option value="duration">保管期限</option>
+                        <option value="security">密级</option>
+                        <option value="documentCategory">档案类型</option>
+                        <option value="fileCategory">案卷类型</option>
+                        <option value="responsible">责任者</option>
+                        <option value="danweiCode">单位代码</option>
+                        <option value="danweiName">单位名称</option>
+                        <option value="fileName">案卷题名</option>
+                        <option value="recorder">著录人</option>
+                        <option value="recordTime">著录时间</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <select name="operator" class="operator" disabled>
+                        <option value="is">等于</option>
+                        <option value="gt">大于</option>
+                        <option value="lt">小于</option>
+                        <option value="gte">大于等于</option>
+                        <option value="lte">小于等于</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline" style="width: 250px;">
+                    <input type="text" class="layui-input" name="fieldContent" autocomplete="off">
+                </div>
+                <div class="layui-btn-group" style="padding: 5px 0;">
+                    <button class="layui-btn layui-btn-primary layui-btn-sm mod-btn sub-btn" type="button">
+                        <i class="layui-icon layui-icon-subtraction"></i>
+                    </button>
+                    <button class="layui-btn layui-btn-primary layui-btn-sm mod-btn add-btn" type="button">
+                        <i class="layui-icon layui-icon-addition"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </script>
     <script src="../../js/jquery.min.js"></script>
     <script src="../../layui/layui.js"></script>
     <script src="../../js/document-category-render.js"></script>
     <script>
-        layui.use(['element', 'form'], function() {
+        layui.use(['element', 'form', 'laytpl'], function() {
             var element = layui.element,
-                form = layui.form;
+                form = layui.form,
+                laytpl = layui.laytpl;
+            var documentCategoryData = [],
+                documentCategory = '',
+                fileCategory = '';
+            $(document).ready(function() {
+                (function() {
+                    $.ajax({
+                        url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
+                        type: "get",
+                        success: function(res) {
+                            if (res.code == 0) {
+                                documentCategoryData = res.body;
+                                selectInit(documentCategoryData); // 初始化渲染select
+                                form.render('select');
+                            } else {
+                                layui.msg(res.message, {time: 0.8*1000});
+                            }
+                        }, 
+                        error: function(jqxhr, textStatus, errorThrown) {
+                            layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                            console.log('error: get documentCategory error');
+                        }
+                    });
+                })(); // 获取档案类别
+            });
+            
+            form.on('select(documentCategory)', function(data) {
+                documentCategory = data.value;
+                fileCategory = '';
+                fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+                changeOption('fileCategory', makeOption(fileCategoryList));
+                form.render('select', 'class-query');
+            });
+            
+            var idx = 3;
+            var getTpl = $("#query-condition").html();
+            $("#combined-query-tab").on("click", ".mod-btn", function() {
+                var that = this,
+                    formDom = $(that).parents(".layui-form"),
+                    btn = $(that),
+                    btnGroup = btn.parent();
+                if(btn.hasClass('add-btn')) {
+                    // 点击了加号
+                    btn.addClass('layui-hide'); // 把+隐藏
+                    laytpl(getTpl).render(idx, function(html) {
+                        formDom.after(html); // form 的后面添加新的HTML
+                        form.render(null, 'combined-query-' + idx); // 重新渲染新增的form
+                        idx++;
+                    });
+                    if (btnGroup.hasClass('second-line')) {
+                        // 点击的是第二行，把-显示
+                        btn.prev().removeClass('layui-hide');
+                    }
+                } else {
+                    // 点击了减号
+                    if (formDom.next().length === 0) {
+                        // 如果是最后一个,则把上一个的+显示
+                        var prevBtnGroup = formDom.prev().find('.layui-btn-group');
+                        prevBtnGroup.find('.add-btn').removeClass('layui-hide'); // 显示+
+                        if (prevBtnGroup.hasClass('second-line')) {
+                            // 如果上一行是第二行，删去最后一行只剩两行，把第二行的-隐藏
+                            prevBtnGroup.find('.sub-btn').addClass('layui-hide'); // 隐藏-
+                        }
+                    } else if(btnGroup.hasClass('second-line')) {
+                        // 该行不是最后一行，且是第二行，则删除后后面一行变为第二行
+                        formDom.next().find('.layui-btn-group').addClass('second-line'); // 给后面的btnGroup加上第二行标识 
+                        if (formDom.nextAll().length === 1) {
+                            // 后面只剩一行，即删除后只剩两行，则把新的第二行的-隐藏
+                            formDom.next().find('.sub-btn').addClass('layui-hide');
+                        }
+                    }
+                    formDom.remove(); // 删除该行
+                }
+            });
+
+            // 监听select的选择
+            form.on('select', function(data) {
+                if (!$(data.elem).hasClass('field')) {
+                    return;
+                }
+                var dom = $(data.elem), // 字段select
+                    fieldName = data.value, // 选中的值
+                    idx = dom.data()['idx'], // idx
+                    filter = "oper-" + idx, // operator的filter
+                    formDom = dom.parents('.layui-form'), // 该行所在form
+                    formFilter = formDom.attr('lay-filter'), // form 的filter
+                    operDom = formDom.find('.operator');
+
+                if (fieldName === 'year' || fieldName === 'recordTime') {
+                    // 字段是年或著录时间，可以修改operator进行大小比较
+                    operDom.removeAttr('disabled'); // 取消下拉禁用
+                    form.render('select', formFilter);
+                } else {
+                    if (operDom.attr('disabled')) {
+                        // 已禁用，不用再操作，节省渲染时间
+                        return;
+                    }
+                    operDom.attr('disabled', 'disabled'); // 禁用下拉
+                    operDom.val('is');
+                    form.render('select', formFilter);
+                }
+            });
         });
     </script>
 </body>

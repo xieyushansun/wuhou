@@ -86,23 +86,58 @@
             layer.open({
                 type: 2,
                 content: "./query/query.html",
-                area: ["600px", "80%"],
+                area: ["700px", "80%"],
                 btn: ['提交', '取消'],
+                title: '查询',
+                resize: false,
                 yes: function(index, layero) {
-                    var formCurr = layer.getChildFrame('.layui-tab-item.layui-show', index).find('.layui-form').attr("lay-filter");
+                    var tabCurr = layer.getChildFrame('.layui-tab-item.layui-show', index),
+                        tabId = tabCurr.attr('id');
                     var iframeWin = window[layero.find('iframe')[0]['name']];
-                    var formData = iframeWin.layui.form.val(formCurr);
-                    if (formCurr === 'general-query') {
-                        // 
-                    } else if (formCurr === 'class-query') {
+                    var formData = {};
+                    if (tabId !== 'combined-query-tab') {
+                        // 一般查询或分类查询
+                        var formFilter = tabCurr.find(".layui-form").attr("lay-filter");
+                        formData = iframeWin.layui.form.val(formFilter);
+                    } else {
+                        // 组合查询
+                        var list = [];
+                        var forms = tabCurr.find(".layui-form");
+                        layui.each(forms, function(index, item) {
+                            var formFilter = $(item).attr("lay-filter");
+                            if (formFilter === "blurryFind") {
+                                // 是否模糊查询
+                                formData['blurryFind'] = iframeWin.layui.form.val(formFilter).blurryFind;
+                            } else {
+                                list.push(iframeWin.layui.form.val(formFilter));
+                            }
+                        })
+                        formData['list'] = JSON.stringify(list);
+                    }
+                    if (formData.blurryFind === undefined) {
+                        formData.blurryFind = '1';
+                    }
+                    console.log(tabId);
+                    console.log(formData);
+                    if (tabId === 'general-query-tab') {
+                        table.reload('search-table', {
+                            url: '../../document/generalFindDocumentRecord',
+                            where: formData
+                        })
+                    } else if (tabId === 'class-query-tab') {
                         // 分类查询
-                        table.reload('search-render', {
+                        table.reload('search-table', {
                             url: '../../document/normalFindDocumentRecord',
                             where: formData
                         });
-                    } else if (formCurr === 'combined-query') {
-                        //
+                    } else if (tabId === 'combined-query-tab') {
+                        // 组合查询
+                        table.reload('search-table', {
+                            url: '../../document/combinationFindDocumentRecord',
+                            where: formData
+                        });
                     }
+                    layer.close(index);
                 }
             });
         });
