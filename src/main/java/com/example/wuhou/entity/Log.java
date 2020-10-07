@@ -14,6 +14,10 @@ public class Log {
     // 操作内容
     String msg;
 
+    public Log(){
+        this.id = null;
+    }
+
     public String getId() {
         return id;
     }

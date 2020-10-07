@@ -16,10 +16,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import static javax.security.auth.Subject.getSubject;
 
 @Configuration
 public class ShiroConfig {
@@ -28,13 +35,14 @@ public class ShiroConfig {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
         //设置安全管理器
         bean.setSecurityManager(defaultWebSecurityManager);
+
         //添加shiro的内置过滤器，拦截
         Map<String, String> filterMap = new LinkedHashMap<>();
         filterMap.put("/webapp/index.html", "authc");
         filterMap.put("/webapp/pages/*", "authc");
 
-        //接口拦截
-        filterMap.put("/user/addUser", "authc");
+//        //接口拦截
+//        filterMap.put("/user/addUser", "authc");
         bean.setFilterChainDefinitionMap(filterMap);
         //设置登录失败的跳转页面
 //        bean.setLoginUrl("/webapp/pages/403.html");
@@ -88,4 +96,5 @@ public class ShiroConfig {
         return authorizationAttributeSourceAdvisor;
 
     }
+
 }
