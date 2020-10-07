@@ -62,6 +62,12 @@
               "href": "pages/document/documentCategory-manage.html",
               "icon": "fa fa-tasks",
               "target": "_self"
+            },
+            {
+              "title": "日志管理",
+              "href": "pages/log-manage.html",
+              "icon": "fa fa-file-text",
+              "target": "_self"
             }
           ]
         }
