@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-07 20:43:17
- * @LastEditTime: 2020-10-07 22:12:39
+ * @LastEditTime: 2020-10-07 22:46:27
  * @LastEditors: liyan
  * @Description: 日志管理
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\log-manage.html
@@ -123,7 +123,19 @@
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
-            page: true
+            page: true,
+            parseData: function(res) {
+                return {
+                    "code": res.code,
+                    "msg": res.message,
+                    "data": res.body,
+                    "count": res.totalElement
+                }
+            },
+            request: {
+                pageName: 'currentPage',
+                limitName: 'pageSize'
+            }
         });
 
 
