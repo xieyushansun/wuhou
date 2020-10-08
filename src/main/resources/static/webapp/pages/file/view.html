@@ -177,8 +177,9 @@
                   <table class="layui-table">
                     <thead>
                       <tr><th>文件名</th>
+                      <th>预览</th>
                       <th>状态</th>
-                      <th>操作</th>
+                      <th style="width: 150px;">操作</th>
                     </tr></thead>
                     <tbody id="fileList"></tbody>
                   </table>
@@ -187,6 +188,11 @@
               </div> 
         </div>
     </div>
+
+    <div class="layui-hide">
+        <ul id="images">
+        </ul>
+    </div>    
 
 <script src="../../js/jquery.min.js"></script>
 <script src="../../js/viewer.min.js"></script>
@@ -197,6 +203,7 @@
     var form = layui.form,
         layer = layui.layer,
         upload = layui.upload;
+    var Viewer = window.Viewer;
 
     var documentCategoryData = parent.documentCategoryData; // 档案类别的数据
     var documentCatAbbr = getDocCatAbbr(documentCategoryData); // 档案类别缩写；
@@ -206,11 +213,30 @@
         fileCategory = parent.fileCategory; // 当前的文档类别
     var fileListView = $('#fileList'); // 文件列表的展示元素
 
-    var uploadedFiles = [];
-    
+    var durationDict = {
+            '10年': 'D',
+            '30年': 'Z',
+            '50年': 'C',
+            '100年': 'H',
+            '永久': 'Y'
+        };
+
+    var uploadedFiles = [],
+        choosedFiles = [],
+        imgList = [];
+
     var documentRecordId = 3;
 
     var username = $.cookie("nickname");
+
+    // 创建图片预览实例
+    var viewer = new Viewer(document.getElementById('images'), {
+            toolbar: true,
+            viewed() {
+                viewer.zoomTo(1);
+            }
+        }), 
+            imgIdx = 0;
 
     $(document).ready(function(){
         selectInit(documentCategoryData, add=true);
@@ -246,51 +272,66 @@
 
     function fileTable(files) {
         files = files.sort();
+        imgIdx = 0;
+        $("#images").empty();
+        imgList = [];
         layui.each(files, function(index, file) {
             if (file === undefined || file === null) {
                 return;
             }
             var downloadUrl = '../../../document/downLoadDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
             var previewUrl = '../../../document/previewDocumentRecordFile?documentRecordId=' + documentRecordId + '&fileName=' + file;
-            var tr = $([
-                '<tr id="upload-' + index + '">', 
-                    '<td>' + file + '</td>', 
-                    '<td>已上传</td>', 
-                    '<td>', 
-                        '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn">查看</button>', 
-                        '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\">下载</a>', 
-                        '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
-                    '</td>', 
-                '</tr>'].join(''));
-            if (!(file.endsWith('jpg') || file.endsWith('.png') || file.endsWith('.jpeg'))) {
-                tr.find('.view-file').addClass('layui-hide');
+            var tr = "";
+            if (!(file.endsWith('jpg') || file.endsWith('.png') || file.endsWith('.jpeg') || file.endsWith('.bmp') || file.endsWith('.gif'))) {
+                tr = $([
+                    '<tr id="upload-' + index + '">', 
+                        '<td>' + file + '</td>', 
+                        '<td></td>',
+                        '<td>已上传</td>', 
+                        '<td>', 
+                            '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\">下载</a>', 
+                            '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
+                        '</td>', 
+                    '</tr>'].join(''));
+            } else {
+                // 该文件是图片，则需要预览图，查看按钮，添加img 的li
+                tr = $([
+                    '<tr id="upload-' + index + '">', 
+                        '<td>' + file + '</td>', 
+                        '<td class="view-td"><div><img src="' + previewUrl + '" style="width: 30px; height:30px;"></div></td>',
+                        '<td>已上传</td>', 
+                        '<td>', 
+                            '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file + '">查看</button>', 
+                            '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\">下载</a>', 
+                            '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
+                        '</td>', 
+                    '</tr>'].join(''));
+                $("#images").append("<li><img src='" + previewUrl + "' alt='" + file + "'></li>");
+                viewer.update();
+                imgIdx++;
             }
+
+            // 预览图片
             tr.find('.view-file').on('click', function() {
-                layer.open({
-                    type: 1,
-                    title: '图片预览',
-                    content: '<div id=\"show\"><img id=\"image\" src=\"' + previewUrl + '\" alt=\"' + file + '\">',
-                    area: ['80%', '80%'],
-                    zIndex: 200,
-                    success: function(layero, index) {
-                        $('body').on('click', '#show', function() {
-                            const viewer = new Viewer(document.getElementById('image'), {
-                                inline: false,
-                                viewed() {
-                                    viewer.zoomTo(1);
-                                },
-                            });
-                        });
-                    },
-                    end: function() {
-                        $('body').off('click', '#show');
-                    }
-                });
+                var filename = $(this).data()['name'],
+                    index = imgList.indexOf(filename);
+                viewImg(index);
             });
+            
+            // 删除文件
             tr.find('.delete-file').on('click', function() {
+                var thatIdx = index;
+                var filename = $(this).data()['name'];
                 if(deleteFile(file)) {
+                    // 文件删除成功: 移除表格行、从uploade删除、从img ul删除、从imgList删除
                     tr.remove();
-                    delete uploadedFiles[index];
+                    delete uploadedFiles[thatIdx];
+                    $('#images').find('li img[alt="' + filename+ '"]').remove(); // 删除ul中的li
+                    viewer.update();
+                    var imgIdxx = imgList.indexOf(filename);
+                    if (imgIdxx > -1) {
+                        imgList.splice(imgIdxx, 1); // 从imgList中删除该文件
+                    }
                 }
             });
             fileListView.append(tr);
@@ -351,9 +392,32 @@
                         layer.msg('已上传过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已上传重名文件
                         delete files[index];
                         return;
+                    } else if (choosedFiles.indexOf(file.name) !== -1) {
+                        layer.msg('已选择过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已选择重名文件
+                        delete files[index];
+                        return;
                     }
 
-                    var tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>', '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', '<td>等待上传</td>', '<td>', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+                    choosedFiles.push(file.name);
+                    var tr = '';
+                    if (file.type.split('/')[0] === 'image') {
+                            tr = $([
+                                '<tr id="upload-' + index + '">', 
+                                    '<td>' + file.name + '</td>',
+                                    '<td><div><img src="' + result + '" style="width: 30px; height:30px;"></div></td>', 
+                                    '<td>等待上传</td>', 
+                                    '<td>', 
+                                        '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file.name + '">查看</button>',
+                                        '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', 
+                                        '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete" data-name="' + file.name + '">删除</button>', 
+                                    '</td>', 
+                                '</tr>'].join(''));
+                            $("#images").append("<li><img src='" + result + "' alt='" + file.name + "'></li>");
+                            imgList.push(file.name);
+                            viewer.update();
+                        } else {
+                            tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>','<td>' + file.type + '</td>' , '<td>等待上传</td>', '<td>','', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+                        }
 
                     //单个重传
                     tr.find('.demo-reload').on('click', function() {
@@ -362,7 +426,9 @@
 
                     //删除
                     tr.find('.demo-delete').on('click', function() {
+                        var filename = $(this).data()['name'];
                         var uploadedIdx = -1;
+                        var thatIdx = index;
                         if ((uploadedIdx = uploadedFiles.indexOf(files[index].filename)) !== -1) {
                             if (deleteFile(files[index].filename)) { // 删除成功
                                 uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
@@ -374,7 +440,22 @@
                             tr.remove();
                             uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                         }
+                        $('#images').find('li img[alt="' + filename+ '"]').remove(); // 删除ul中的li
+                        viewer.update(); // 因为从ul中删除，更新viewer；
+                        var imgIdxx = imgList.indexOf(filename);
+                        if (imgIdxx > -1) {
+                            imgList.splice(imgIdxx, 1); // 从imgList中删除该文件
+                        }
                         
+                        imgidxx = choosedFiles.indexOf(filename);
+                        if (imgIdxx > -1) {
+                            choosedFiles.splice(imgIdxx, 1); // 从choosedFiles中删除
+                        } 
+                    });
+
+                    tr.find('.view-file').on('click', function() {
+                        var index = $(this).data()['id'];
+                        viewer['view'](index);
                     });
 
                     fileListView.append(tr);

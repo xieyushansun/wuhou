@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
     <link rel="stylesheet" href="../../css/layuimini.css" media="all">
     <link rel="stylesheet" href="../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../css/viewer.min.css">
+
     <style>
         body {
             background-color: #ffffff;
@@ -174,9 +176,9 @@
                   <table class="layui-table">
                     <thead>
                       <tr><th>文件名</th>
-                      <th>大小</th>
+                      <th>预览</th>
                       <th>状态</th>
-                      <th>操作</th>
+                      <th style="width: 150px;">操作</th>
                     </tr></thead>
                     <tbody id="fileList"></tbody>
                   </table>
@@ -185,6 +187,10 @@
               </div> 
         </div>
     </div>
+
+    <div class="layui-hide">
+        <ul id="images"></ul>
+    </div>    
 
 <!-- <script type="text/html" id="uploadTpl">
     <table class="layui-table">
@@ -211,14 +217,17 @@
 </script> -->
 <script src="../../js/jquery.min.js"></script>
 <script src="../../js/jquery.cookie.js"></script>
+<script src="../../js/viewer.min.js"></script>
 <script src="../../layui/layui.js" charset="utf-8"></script>
 <script src="../../js/document-category-render.js"></script>
+<script src="../../js/get-user.js"></script>
 <script>
     layui.use(['form', 'layer', 'upload', 'util'], function () {
         var form = layui.form,
             layer = layui.layer,
             upload = layui.upload,
             util = layui.util;
+        var Viewer = window.Viewer;
 
         var documentCategoryData = parent.documentCategoryData;
         var documentCatAbbr = getDocCatAbbr(documentCategoryData);
@@ -236,15 +245,22 @@
         };
         
         var username = $.cookie("nickname");
-        
+        var viewer = new Viewer(document.getElementById('images'), {
+            toolbar: true,
+            viewed() {
+                viewer.zoomTo(1);
+            }
+        }), 
+            imgIdx = 0;
 
         $(document).ready(function(){
             selectInit(documentCategoryData, add=true);
+            var user = getUser();
             form.val("add-form", {
                 //
                 "documentCategory": documentCategory,
                 "fileCategory": fileCategory,
-                "recorder": $.cookie('nickname'),
+                "recorder": user.username,
                 "recordTime": getDate()
             });
             form.render('select');
@@ -314,10 +330,10 @@
 
         // 提交后才能挂载文件
         $('#mount-btn').on('click', function() {
-            if ($(this).hasClass('layui-disabled')) {
-                layer.tips('请先保存档案再挂载文档', '#mount-btn', {time: 1*1000});
-                return;
-            }
+            // if ($(this).hasClass('layui-disabled')) {
+            //     layer.tips('请先保存档案再挂载文档', '#mount-btn', {time: 1*1000});
+            //     return;
+            // }
             // laytpl(uploadTpl.innerHTML).render(fileList, function(html) {
             //     $("#file-list").html(html);
             // });
@@ -328,6 +344,7 @@
 
         var choosedFiles = [];
         var uploadedFiles = [];
+        var imgList = [];
         // 上传按钮和列表
         var fileListView = $('#fileList');
             uploadListIns = upload.render({
@@ -345,33 +362,75 @@
                             layer.msg('已上传过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已上传重名文件
                             delete files[index];
                             return;
+                        } else if (choosedFiles.indexOf(file.name) !== -1) {
+                            layer.msg('已选择过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已选择重名文件
+                            delete files[index];
+                            return;
                         }
+                        choosedFiles.push(file.name);
 
-                        var tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>', '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>', '<td>等待上传</td>', '<td>', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+                        var tr = '';
+                        if (file.type.split('/')[0] === 'image') {
+                            tr = $([
+                                '<tr id="upload-' + index + '">', 
+                                    '<td>' + file.name + '</td>',
+                                    '<td><div><img src="' + result + '" style="width: 30px; height:30px;"></div></td>', 
+                                    '<td>等待上传</td>', 
+                                    '<td>', 
+                                        '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file.name + '">查看</button>',
+                                        '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', 
+                                        '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete" data-name="' + file.name + '">删除</button>', 
+                                    '</td>', 
+                                '</tr>'].join(''));
+                            $("#images").append("<li><img src='" + result + "' alt='" + file.name + "'></li>");
+                            imgIdx++;
+                            imgList.push(file.name);
+                            viewer.update();
+                        } else {
+                            tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>','<td>' + file.type + '</td>' , '<td>等待上传</td>', '<td>','', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
+                        }
 
                         //单个重传
                         tr.find('.demo-reload').on('click', function() {
                             obj.upload(index, file);
                         });
 
+                        // 图片预览
+                        tr.find('.view-file').on('click', function() {
+                            var filename = $(this).data()['name'],
+                                index = imgList.indexOf(filename);
+                            viewImg(index);
+                        });
+
                         //删除
                         tr.find('.demo-delete').on('click', function() {
+                            var filename = $(this).data()['name'];
                             var uploadedIdx = -1;
-                            if ((uploadedIdx = uploadedFiles.indexOf(files[index].filename)) !== -1) {
-                                if (deleteFile(documentRecordId, files[index].filename)) { // 删除成功
+                            var thatIdx = index;
+                            if ((uploadedIdx = uploadedFiles.indexOf(files[thatIdx].filename)) !== -1) {
+                                if (deleteFile(documentRecordId, files[thatIdx].filename)) { // 删除成功
                                     uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
                                     tr.remove();
                                     uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                                 }
                             } else {
-                                delete files[index]; // 该文件未上传，只从上传列表删除对应的文件
+                                delete files[thatIdx]; // 该文件未上传，只从上传列表删除对应的文件
                                 tr.remove();
                                 uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
                             }
+                            $('#images').find('li img[alt="' + filename+ '"]').remove(); // 删除ul中的li
+                            viewer.update(); // 因为从ul中删除，更新viewer；
+                            var imgIdxx = imgList.indexOf(filename);
+                            if (imgIdxx > -1) {
+                                imgList.splice(imgIdxx, 1); // 从imgList中删除该文件
+                            }
                             
+                            imgidxx = choosedFiles.indexOf(filename);
+                            if (imgIdxx > -1) {
+                                choosedFiles.splice(imgIdxx, 1); // 从choosedFiles中删除
+                            } 
                         });
-
-                        fileListView.append(tr);
+                        fileListView.append(tr); 
                     });
                 },
                 done: function(res, index, upload) {
@@ -452,6 +511,10 @@
                     "documentNumber": documentNumber
                 });
             }
+        }
+
+        function viewImg(idx) {
+            viewer['view'](idx.toString());
         }
         
         // 获取格式为yyyymmdd的日期
