@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:27:22
- * @LastEditTime: 2020-10-07 20:19:04
+ * @LastEditTime: 2020-10-08 20:36:53
  * @LastEditors: liyan
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-form.html
@@ -78,8 +78,12 @@
         if (res.code === 0) {
           var option_list = makeOption(res.body);
           changeOption('role', option_list);
+        } else if (res.code === 12) {
+          layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+              top.location.href = '../../login.html';
+          });
         } else {
-          layer.msg(res.message, {icon: 2, time: 0.8 * 1000});
+          layer.msg(res.message, {time: 0.8*1000, icon: 2});
         }
       },
       error: function(jqxhr, textStatus, errorThrown) {
@@ -123,8 +127,12 @@
                     layer.msg('添加成功', {icon: 6});
                     var index = parent.layer.getFrameIndex(window.name);
                     parent.layer.close(index);
+                } else if (res.code === 12) {
+                    layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                        top.location.href = '../../login.html';
+                    });
                 } else {
-                  layer.msg(res.message, {icon: 2, time: 0.8*1000});
+                    layer.msg(res.message, {time: 0.8*1000, icon: 2});
                 }
             }, error: function(jqxhr, textStatus, errorThrown) {
               layer.alert([textStatus, errorThrown].join(':'), {icon: 2});

@@ -198,11 +198,19 @@
                             } else {
                                 layer.msg(res.message);
                             }
+                        }, 
+                        error: function(jqxhr, textStatus, errorThrown) {
+                            layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                            console.log('error: add document transfer request error');
                         }
                     });
                 } else {
                     layer.msg(res.message);
                 }
+            },
+            error: function(jqxhr, textStatus, errorThrown) {
+                layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                console.log('error: add document transfer request error');
             }
         });
         return false;

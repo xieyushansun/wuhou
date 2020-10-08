@@ -143,7 +143,17 @@
                             layer.msg('退出登录成功', {time: 700}, function () {
                                 window.location = 'login.html';
                             });
+                        } else if (res.code === 12) {
+                            layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                                top.location.href = './login.html';
+                            });
+                        } else {
+                            layer.msg(res.message, {time: 0.8*1000, icon: 2});
                         }
+                    },
+                    error: function(jqxhr, textStatus, errorThrown) {
+                        layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                        console.log('error: add document transfer request error');
                     }
                 });
 

@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-10-08 09:17:23
+ * @LastEditTime: 2020-10-08 20:33:59
  * @LastEditors: liyan
  * @Description: 创建档案页面的查询页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\create-file.html
@@ -86,8 +86,12 @@
                             documentCategoryData = res.body;
                             selectInit(documentCategoryData); // 初始化渲染select
                             form.render('select');
+                        } else if (res.code === 12) {
+                            layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                                top.location.href = '../login.html';
+                            });
                         } else {
-                            layer.msg(res.message, {time: 0.8*1000});
+                            layer.msg(res.message, {time: 0.8*1000, icon: 2});
                         }
                     },
                     error: function(jqxhr, textStatus, errorThrown) {
@@ -229,8 +233,12 @@
                                 layer.close(index);
                                 layer.msg('删除成功！', {icon: 1});
                                 obj.del();
+                            } else if (res.code === 12) {
+                                layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                                    top.location.href = '../login.html';
+                                });
                             } else {
-                                layer.msg(res.message, {icon: 2});
+                                layer.msg(res.message, {time: 0.8*1000, icon: 2});
                             }
                         },
                         error: function(jqxhr, textStatus, errorThrown) {

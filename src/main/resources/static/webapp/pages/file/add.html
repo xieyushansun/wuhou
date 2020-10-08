@@ -477,12 +477,16 @@
                         uploadListIns.reload({ // 重载上传实例
                             data: {documentRecordId: documentRecordId}
                         });
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../../login.html';
+                        });
                     } else {
-                        layer.alert(res.message, {icon: 2});
+                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
-                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                     console.log('error: add document record request error');
                 }
             });
@@ -539,13 +543,17 @@
                     if (res.code === 0) {
                         layer.msg('删除成功');
                         successful = true
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../../login.html';
+                        });
                     } else {
-                        layer.msg(res.message, {time: 0.8*1000});
+                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
                         successful = false;
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
-                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                     console.log('error: delete document record file request error');
                 }
             });
