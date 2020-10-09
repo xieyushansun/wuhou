@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-07 20:43:17
- * @LastEditTime: 2020-10-08 20:33:04
+ * @LastEditTime: 2020-10-09 15:16:56
  * @LastEditors: liyan
  * @Description: 日志管理
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\log-manage.html
@@ -35,7 +35,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">操作类型</label>
                             <div class="layui-input-inline">
-                                <select name="opertionType">
+                                <select name="operationType">
                                     <option value=""></option>
                                     <option value="登录">登录</option>
                                     <option value="添加">添加</option>
@@ -123,7 +123,9 @@
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
-            page: true,
+            page: {
+                layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
+            },
             parseData: function(res) {
                 return {
                     "code": res.code,

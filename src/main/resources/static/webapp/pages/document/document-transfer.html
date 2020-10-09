@@ -211,7 +211,7 @@
                     $.ajax({
                         url: '../../../DocumentTransfer/returnDocumentTransfer',
                         type: 'post',
-                        data: {id: data.id},
+                        data: {id: data._id},
                         success: function(res) {
                             if (res.code === 0) {
                                 layer.msg('归还成功', {time: 0.6*1000, icon: 1});
@@ -237,7 +237,7 @@
                     $.ajax({
                         url: '../../../DocumentTransfer/delteDocumentTransfer',
                         type: 'post',
-                        data: {id: data.id},
+                        data: {id: data._id},
                         success: function(res) {
                             if (res.code === 0) {
                                 layer.msg('删除成功！', {time: 0.6*1000, icon: 1});

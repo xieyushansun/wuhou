@@ -247,9 +247,6 @@
         var username = $.cookie("nickname");
         var viewer = new Viewer(document.getElementById('images'), {
             toolbar: true,
-            viewed() {
-                viewer.zoomTo(1);
-            }
         }), 
             imgIdx = 0;
 
@@ -330,10 +327,10 @@
 
         // 提交后才能挂载文件
         $('#mount-btn').on('click', function() {
-            // if ($(this).hasClass('layui-disabled')) {
-            //     layer.tips('请先保存档案再挂载文档', '#mount-btn', {time: 1*1000});
-            //     return;
-            // }
+            if ($(this).hasClass('layui-disabled')) {
+                layer.tips('请先保存档案再挂载文档', '#mount-btn', {time: 1*1000});
+                return;
+            }
             // laytpl(uploadTpl.innerHTML).render(fileList, function(html) {
             //     $("#file-list").html(html);
             // });
