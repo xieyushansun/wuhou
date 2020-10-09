@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 17:52:53
- * @LastEditTime: 2020-10-08 20:37:41
+ * @LastEditTime: 2020-10-08 21:18:00
  * @LastEditors: liyan
  * @Description: 添加角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\add-role.html
@@ -44,7 +44,7 @@
     </div>
 
     <script type="text/html" id="checkboxTpl">
-        <input type="checkbox" name="{{d.permission}}" title="选择" lay-filter="lockDemo">
+        <input type="checkbox" name="{{d.permission}}" title="选择" lay-filter="lockDemo" data-pre="{{ d.pre_permission? d.pre_permission : ''}}">
     </script>
       
     <!-- <script src="../../js/jquery.min.js" charset="utf-8"></script> -->
@@ -77,8 +77,14 @@
                 {field: 'permission_name', title: '权限名称', width: 200, unresize: true, align: 'center'},
                 {title:'赋予权限', width:110, templet: '#checkboxTpl', unresize: true, align: 'center'}
             ]],
-            width: 313
+            width: 313,
+            limit: [20]
         });
+
+        // form.on('checkbox', function(data) {
+        //     if (data.elem.name  === "")
+        //     console.log(data.value);
+        // })
 
         $("#save").on('click', addRole);
 

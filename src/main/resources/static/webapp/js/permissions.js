@@ -1,10 +1,10 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-05 10:01:06
- * @LastEditTime: 2020-10-05 10:53:19
+ * @LastEditTime: 2020-10-08 21:09:32
  * @LastEditors: liyan
  * @Description: 权限列表
- * @FilePath: \wuhou\src\main\resources\static\webapp\js\permissinos.js
+ * @FilePath: \wuhou\src\main\resources\static\webapp\js\permissions.js
  * @liyan@cilab@uestc
  */
 var permissions = [
@@ -24,11 +24,12 @@ var permissions = [
         "permission_name": "档案修改",
         "permission": "DOCUMENT_RECORD_MODIFY"
     }, {
-        "permission_name": "档案文件下载",
-        "permission": "DOCUMENT_RECORD_FILE_DOWNLOAD"
-    }, {
         "permission_name": "档案查看",
         "permission": "DOCUMENT_RECORD_CHECK"
+    }, {
+        "permission_name": "档案文件下载",
+        "permission": "DOCUMENT_RECORD_FILE_DOWNLOAD",
+        "pre_permission": "DOCUMENT_RECORD_CHECK"
     }, {
         "permission_name": "档案类别管理",
         "permission": "DOCUMENT_CATEGORY_MANAGE"
@@ -44,5 +45,8 @@ var permissions = [
     }, {
         "permission_name": "案卷编目",
         "permission": "FILE_CATALOG"
+    }, {
+        "permission_name": "调卷登记",
+        "permission": "DOCUMENT_TRANSFER_MANAGE",
     }
 ]

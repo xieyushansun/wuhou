@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-27 14:03:16
- * @LastEditTime: 2020-10-08 20:38:05
+ * @LastEditTime: 2020-10-09 09:14:47
  * @LastEditors: liyan
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\query\query.html
@@ -348,7 +348,7 @@
             $(document).ready(function() {
                 (function() {
                     $.ajax({
-                        url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
+                        url: "../../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
                         type: "get",
                         success: function(res) {
                             if (res.code == 0) {
