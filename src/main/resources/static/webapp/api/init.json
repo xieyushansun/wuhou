@@ -24,7 +24,7 @@
         {
           "title": "新建档案",
           "href": "pages/create-file.html",
-          "icon": "fa fa-file-text",
+          "icon": "fa fa-pencil-square-o",
           "target": "_self"
         },
         {
@@ -60,13 +60,19 @@
             {
               "title": "档案类别管理",
               "href": "pages/document/documentCategory-manage.html",
-              "icon": "fa fa-tasks",
+              "icon": "fa fa-th",
               "target": "_self"
             },
             {
               "title": "日志管理",
               "href": "pages/log-manage.html",
               "icon": "fa fa-file-text",
+              "target": "_self"
+            },
+            {
+              "title": "磁盘管理",
+              "href": "pages/disk-manage.html",
+              "icon": "fa fa-server",
               "target": "_self"
             }
           ]
