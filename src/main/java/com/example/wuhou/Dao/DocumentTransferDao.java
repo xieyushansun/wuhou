@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -89,7 +90,7 @@ public class DocumentTransferDao {
     public PageUtil findAllDocumentTransfer(Integer currentPage, Integer pageSize){
         PageUtil pageUtil = new PageUtil();
         Query query = new Query();
-        mongoTemplate.count(query, DocumentTransfer.class);
+        query.with(Sort.by(Sort.Order.desc("borrowDate")));
         pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentTransfer.class));
 
         query.skip((currentPage - 1) * pageSize);
@@ -104,7 +105,7 @@ public class DocumentTransferDao {
 //        return mongoTemplate.find(query, DocumentTransfer.class);
 //    }
     //一般查询调卷
-    public PageUtil normalFindDocumentTransfer(Map<String, String> findKeyWordMap, Integer currentPage, Integer pageSize){
+    public PageUtil normalFindDocumentTransfer(Map<String, String> findKeyWordMap, Integer currentPage, Integer pageSize, String blurryFind){
         List<DocumentTransfer> resultList;
         Query query = new Query();
         for (String key : findKeyWordMap.keySet()) {
@@ -118,13 +119,19 @@ public class DocumentTransferDao {
                 criteria.andOperator(Criteria.where("borrowDate").gte(startDate), Criteria.where("borrowDate").lte(endDate));
                 query.addCriteria(criteria);
             }else {
-                Criteria criteria = Criteria.where(key).regex(".*?" + findKeyWordMap.get(key) + ".*?");
+                Criteria criteria;
+                if (blurryFind.equals("1")){
+                    criteria = Criteria.where(key).regex(".*?" + findKeyWordMap.get(key) + ".*?");
+                }else {
+                    criteria = Criteria.where(key).is(findKeyWordMap.get(key));
+                }
                 query.addCriteria(criteria);
             }
         }
 
         PageUtil pageUtil = new PageUtil();
         pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentTransfer.class));
+        query.with(Sort.by(Sort.Order.desc("borrowDate")));
         query.skip((currentPage - 1) * pageSize);
         query.limit(pageSize);
         resultList = mongoTemplate.find(query, DocumentTransfer.class);
@@ -138,6 +145,7 @@ public class DocumentTransferDao {
         Query query = new Query();
         // 归还日期为空，说明还没有归还
         query.addCriteria(Criteria.where("returnDate").is(""));
+        query.with(Sort.by(Sort.Order.desc("borrowDate")));
         return mongoTemplate.find(query, DocumentTransfer.class);
     }
 }

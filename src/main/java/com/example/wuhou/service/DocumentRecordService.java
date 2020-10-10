@@ -1,8 +1,10 @@
 package com.example.wuhou.service;
 
+import com.example.wuhou.Dao.DiskManageDao;
 import com.example.wuhou.Dao.DocumentRecordDao;
 import com.example.wuhou.Dao.LogDao;
 import com.example.wuhou.constant.PathConstant;
+import com.example.wuhou.entity.DiskManage;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.util.FileOperationUtil;
@@ -24,17 +26,28 @@ public class DocumentRecordService {
     DocumentRecordDao documentRecordDao;
     @Autowired
     LogDao logDao;
-
+    @Autowired
+    DiskManageDao diskManageDao;
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
         if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
             throw new Exception("案卷题目重复！修改后创建创建！");
         }
-        String storePath = documentRecord.getRecordGroupNumber() + "\\" + documentRecord.getDocumentCategory() + "\\" + documentRecord.getYear()
+
+        if (PathConstant.DISK_NAME.isEmpty()){
+            DiskManage diskManage = diskManageDao.getCurrentDiskNameAndSpace();
+            if (diskManage != null){
+                PathConstant.DISK_NAME = diskManage.getDiskName();
+            }else {
+                throw new Exception("还未选择档案记录存储磁盘，请联系管理员设置存储磁盘！");
+            }
+        }
+        String storePath = PathConstant.STORE_FILENAME + "\\" + documentRecord.getRecordGroupNumber() + "\\" + documentRecord.getDocumentCategory() + "\\" + documentRecord.getYear()
                 + "\\" + documentRecord.getFileCategory() + "\\" + documentRecord.getBoxNumber() + "\\" + documentRecord.getFileName();
         documentRecord.setStorePath(storePath);
-        documentRecord.setDiskPath(PathConstant.DISKPATH);
+
+        documentRecord.setDiskPath(PathConstant.DISK_NAME);
         //创建这条记录对应的文件夹
-        String strPath = documentRecord.getDiskPath() + "\\" + storePath;
+        String strPath = documentRecord.getDiskPath() + ":\\" + storePath;
         File file = new File(strPath);
         if(!file.exists()){
             file.mkdirs();
@@ -54,7 +67,7 @@ public class DocumentRecordService {
         }
         //获取数据库中对应id的记录内容
         DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
-        String path = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
+        String path = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
         File file = new File(path);
         String[] fileName = file.list();
         List<String> list = new ArrayList<>();
@@ -67,7 +80,7 @@ public class DocumentRecordService {
             if (list.contains(multipartFile.getOriginalFilename())){
                 throw new Exception("存在重名文件:" + multipartFile.getOriginalFilename());
             }
-            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + multipartFile.getOriginalFilename();
+            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + multipartFile.getOriginalFilename();
             byte[] bytesfile = multipartFile.getBytes();
             FileOutputStream out = new FileOutputStream(new File(filepath));
             out.write(bytesfile);
@@ -110,15 +123,24 @@ public class DocumentRecordService {
     }
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
         //初始化新记录的存储路径set
+
+        if (PathConstant.DISK_NAME.isEmpty()){
+            DiskManage diskManage = diskManageDao.getCurrentDiskNameAndSpace();
+            if (diskManage != null){
+                PathConstant.DISK_NAME = diskManage.getDiskName();
+            }else {
+                throw new Exception("还未选择档案记录存储磁盘，请联系管理员设置存储磁盘！");
+            }
+        }
         String storePath = newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()
                 + "\\" + newDocumentRecord.getFileCategory() + "\\" + newDocumentRecord.getBoxNumber() + "\\" + newDocumentRecord.getFileName();
         newDocumentRecord.setStorePath(storePath);
-        newDocumentRecord.setDiskPath(PathConstant.DISKPATH);
+        newDocumentRecord.setDiskPath(PathConstant.DISK_NAME);
 
-        String newPath = newDocumentRecord.getDiskPath() + "\\" + storePath;
+        String newPath = newDocumentRecord.getDiskPath() + ":\\" + storePath;
 
         DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
-        String oldPath = oldDocumentRecord.getDiskPath() + "\\" + oldDocumentRecord.getStorePath();
+        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
 
         // 判断新旧文件夹路径是否一样
         if (!oldPath.equals(newPath)){

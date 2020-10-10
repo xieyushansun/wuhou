@@ -189,24 +189,23 @@ public class DocumentRecord {
     @Override
     public String toString() {
         return "DocumentRecord{" +
-                "id='" + id + '\'' +
-                ", fileName='" + fileName + '\'' +
-                ", documentNumber='" + documentNumber + '\'' +
-                ", recordGroupNumber='" + recordGroupNumber + '\'' +
-                ", boxNumber='" + boxNumber + '\'' +
-                ", year='" + year + '\'' +
-                ", duration='" + duration + '\'' +
-                ", security='" + security + '\'' +
-                ", documentCategory='" + documentCategory + '\'' +
-                ", fileCategory='" + fileCategory + '\'' +
-                ", responsible='" + responsible + '\'' +
-                ", danwieCode='" + danwieCode + '\'' +
-                ", danweiName='" + danweiName + '\'' +
-                ", position='" + position + '\'' +
-                ", recorder='" + recorder + '\'' +
-                ", recordTime='" + recordTime + '\'' +
-                ", diskPath='" + diskPath + '\'' +
-                ", storePath='" + storePath + '\'' +
+                "案卷题名='" + fileName + '\'' +
+                ", 档号='" + documentNumber + '\'' +
+                ", 全宗号='" + recordGroupNumber + '\'' +
+                ", 盒号='" + boxNumber + '\'' +
+                ", 年份='" + year + '\'' +
+                ", 保管期限='" + duration + '\'' +
+                ", 密级='" + security + '\'' +
+                ", 档案类别='" + documentCategory + '\'' +
+                ", 案卷类型='" + fileCategory + '\'' +
+                ", 责任者='" + responsible + '\'' +
+                ", 单位代码='" + danwieCode + '\'' +
+                ", 单位名称='" + danweiName + '\'' +
+                ", 存放位置='" + position + '\'' +
+                ", 著录人='" + recorder + '\'' +
+                ", 著录时间='" + recordTime + '\'' +
+                ", 所在盘符='" + diskPath + '\'' +
+                ", 盘符下的存储路径='" + storePath + '\'' +
                 '}';
     }
 }

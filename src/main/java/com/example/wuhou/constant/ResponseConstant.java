@@ -10,8 +10,8 @@ public class ResponseConstant {
         public static final int FORBIDDEN_ERROR = 2;
         // 已经存在或者不存在
         public static final int EXIST_ERROR = 3;
-        // 服务器错误
-        public static final int SERVER_ERROR = 4;
+        // 磁盘错误
+        public static final int DISK_ERROR = 4;
         // 数据库错误
         public static final int DB_ERROR = 5;
         // 未知错误

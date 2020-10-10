@@ -2,14 +2,18 @@ package com.example.wuhou;
 
 import com.example.wuhou.entity.Log;
 import com.example.wuhou.util.WorderToNewWordUtils;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import org.apache.poi.ooxml.POIXMLDocument;
+import com.mongodb.*;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.internal.MongoClientImpl;
 import org.apache.poi.xwpf.usermodel.*;
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoActionOperation;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 @SpringBootTest
 class WuhouApplicationTests {
@@ -132,20 +137,33 @@ class WuhouApplicationTests {
 //        for (Log log:logList) {
 //            System.out.println(log.toString());
 //        }*/
-        String sql1 = "{ operationTime:{ $lt: \"2020-09-30 10:37:02\" }, operationTime : { $gt : \"2020-09-25 10:37:02\" }}";
-        String sql2 = "{ \"$and\":[{\"operationTime\":{ \"$lt\": \"2020-09-30 10:37:02\" }}, {\"operationTime\" : { \"$gt\" : \"2020-09-25 10:37:02\" }}]}";
-        String sql3 = "{" +
-                "$and:["+
-                    "{$and: [{operationType: \"添加加\"}, {table: /操作/}]}, " +
-                    "{$and:[{operationTime:{ $lt: \"2020-10-03 10:37:02\" }}, {operationTime : { $gt: \"2020-09-25 10:37:02\" }}]}" +
-                "]"+
-                "}";
+        //测试1——通过
+//        String sql1 = "{ operationTime:{ $lt: \"2020-09-30 10:37:02\" }, operationTime : { $gt : \"2020-09-25 10:37:02\" }}";
+//        String sql2 = "{ \"$and\":[{\"operationTime\":{ \"$lt\": \"2020-09-30 10:37:02\" }}, {\"operationTime\" : { \"$gt\" : \"2020-09-25 10:37:02\" }}]}";
+//        String sql3 = "{" +
+//                "$and:["+
+//                    "{$and: [{operationType: \"添加加\"}, {table: /操作/}]}, " +
+//                    "{$and:[{operationTime:{ $lt: \"2020-10-03 10:37:02\" }}, {operationTime : { $gt: \"2020-09-25 10:37:02\" }}]}" +
+//                "]"+
+//                "}";
+//
+//        BasicQuery query = new BasicQuery(sql3);
+//        List<Log> result = mongoTemplate.find(query, Log.class);
+//        System.out.println(result.size());
+//        for (Log log:result) {
+//            System.out.println(log.toString());
+//        }
+//        String cmd = "mongodump -u root -p root -d wuhou2 -o C:\\Users\\DF\\Desktop";
+//        Runtime rt = Runtime.getRuntime();
+//        String[] command = new String[]{"cmd.exe" , "/C" , cmd};
+//        try {
+//            rt.exec(command);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        BasicQuery query = new BasicQuery(sql3);
-        List<Log> result = mongoTemplate.find(query, Log.class);
-        System.out.println(result.size());
-        for (Log log:result) {
-            System.out.println(log.toString());
-        }
+        File file = new File(".\\src\\main\\resources\\static\\webapp\\wordtemplate");
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(file.isDirectory());
     }
 }

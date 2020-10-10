@@ -103,9 +103,12 @@ public class FileCatalogingService {
         testMap.put("totalPage", String.valueOf(lastendnumber));
 
 
-        WorderToNewWordUtils.changWord(PathConstant.WORDTEMPLATE, PathConstant.FILE_CATALOG_OUTPUT_PATH, testMap, tableList);
+        String inputPath = PathConstant.WORD_TEMPLATE;
+        String outputPath = PathConstant.WORD_OUTPUT;
 
-        File file = new File(PathConstant.FILE_CATALOG_OUTPUT_PATH);
+        WorderToNewWordUtils.changWord(inputPath, outputPath, testMap, tableList);
+
+        File file = new File(outputPath);
         if (!file.exists()){
            throw new Exception("导出失败");
         }

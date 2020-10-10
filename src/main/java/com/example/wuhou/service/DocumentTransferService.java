@@ -34,8 +34,8 @@ public class DocumentTransferService {
 //        return documentTransferDao.findDocumentTransferByBorrower(borrower);
 //    }
     //普通查询
-    public PageUtil normalFindDocumentTransfer(Map<String, String> findKeyWordMap, Integer currentPage, Integer pageSize){
-        return documentTransferDao.normalFindDocumentTransfer(findKeyWordMap, currentPage, pageSize);
+    public PageUtil normalFindDocumentTransfer(Map<String, String> findKeyWordMap, Integer currentPage, Integer pageSize, String blurryFind){
+        return documentTransferDao.normalFindDocumentTransfer(findKeyWordMap, currentPage, pageSize, blurryFind);
     }
     //查找未归还调卷
     public List<DocumentTransfer> findDocumentTransferByNotReturned(){

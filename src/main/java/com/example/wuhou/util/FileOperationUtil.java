@@ -94,31 +94,33 @@ public class FileOperationUtil {
         }
     }
 
-    public static void wirteUserLog(String msg) {
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date(System.currentTimeMillis());
-
-        String path = PathConstant.DISKPATH + "\\" + "logfile";
-        String filepath = path + "\\" + formatter.format(date) + ".txt";
-
-        formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
-        String recordTime = formatter.format(date);
-        msg = recordTime + "--------" + msg;
-//        FileWriter fileWriter = new FileWriter(filepath, true);
-//        fileWriter.write(msg + "\r\n");
-//        fileWriter.close();
-//        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-//        RandomAccessFile randomFile = new RandomAccessFile(filepath, "rw");
-//        long fileLength = randomFile.length();
-//        randomFile.seek(fileLength);
-//        randomFile.writeBytes(msg + "\r\n");
-//        randomFile.close();
-
-
-
-
-//        bufferedWriter.write(msg + "\r\n");
-//        bufferedWriter.flush();
-//        bufferedWriter.close();
-    }
+//    public static void wirteUserLog(String msg) throws Exception {
+//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = new Date(System.currentTimeMillis());
+//        if (PathConstant.DISKNAME.isEmpty()){
+//            throw new Exception("磁盘空间不足");
+//        }
+//        String path = PathConstant.DISKNAME + "\\" + PathConstant.STORE_FILE_NAME + "\\" + "logfile";
+//        String filepath = path + "\\" + formatter.format(date) + ".txt";
+//
+//        formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
+//        String recordTime = formatter.format(date);
+//        msg = recordTime + "--------" + msg;
+////        FileWriter fileWriter = new FileWriter(filepath, true);
+////        fileWriter.write(msg + "\r\n");
+////        fileWriter.close();
+////        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+////        RandomAccessFile randomFile = new RandomAccessFile(filepath, "rw");
+////        long fileLength = randomFile.length();
+////        randomFile.seek(fileLength);
+////        randomFile.writeBytes(msg + "\r\n");
+////        randomFile.close();
+//
+//
+//
+//
+////        bufferedWriter.write(msg + "\r\n");
+////        bufferedWriter.flush();
+////        bufferedWriter.close();
+//    }
 }
