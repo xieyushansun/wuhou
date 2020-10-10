@@ -271,7 +271,10 @@
 
 
     function fileTable(files) {
-        files = files.sort();
+        if (files instanceof Array)
+            files = files.sort();
+        else 
+            files = [];
         imgIdx = 0;
         $("#images").empty();
         imgList = [];
@@ -382,6 +385,7 @@
             url: '../../../document/adddocumentrecordfile',
             accept: 'file',
             multiple: true,
+            data: documentRecordId,
             auto: false,
             bindAction: '#testListAction',
             choose: function(obj) {
@@ -504,9 +508,14 @@
             success: function(res) {
                 if (res.code == 0) {
                     layer.msg(res.message, {icon: 1}); // 保存成功，隐藏保存按钮，显示编辑按钮，重新渲染表格。
-                    $("#save").addClass("layui-hide").attr("disabled", "true");
+                    $("#save-btn").addClass("layui-hide").attr("disabled", "true");
                     $("#edit-btn").removeClass("layui-hide");
-                    getFileList()
+                    $("#upload-container").addClass('layui-hide');
+                    $(".doc-form").addClass('layui-disabled').attr({'readonly': 'true', 'disabled': 'true'});
+                    $("#testList").removeClass('layui-disabled');
+                    $("#testListAction").removeClass("layui-disabled");
+                    form.render('select');
+                    getFileList();
                 } else if (res.code === 12) {
                     layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                         top.location.href = '../../login.html';
