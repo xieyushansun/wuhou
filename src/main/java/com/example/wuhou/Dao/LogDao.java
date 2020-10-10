@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -104,6 +105,7 @@ public class LogDao {
 
         PageUtil pageUtil = new PageUtil();
         pageUtil.setTotalElement((int) mongoTemplate.count(query, Log.class));
+        query.with(Sort.by(Sort.Order.desc("operationTime")));
         query.skip((currentPage - 1) * pageSize);
         query.limit(pageSize);
         resultList = mongoTemplate.find(query, Log.class);

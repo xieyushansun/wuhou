@@ -86,7 +86,7 @@ public class DocumentTransferController {
     }
     //普通查询调卷记录
     @RequiresRoles(value = {PermissionConstant.SUPERADMIN, PermissionConstant.DOCUMENT_TRANSFER_MANAGE}, logical = Logical.OR)
-    @PostMapping("/normalFindDocumentTransfer")
+    @GetMapping("/normalFindDocumentTransfer")
     @ApiOperation("普通查询调卷记录")
     public PageUtil normalFindDocumentTransfer(
             @ApiParam(value = "盒号") @RequestParam(defaultValue = "") String boxNumber,

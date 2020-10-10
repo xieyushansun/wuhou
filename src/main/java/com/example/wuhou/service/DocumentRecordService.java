@@ -132,7 +132,7 @@ public class DocumentRecordService {
                 throw new Exception("还未选择档案记录存储磁盘，请联系管理员设置存储磁盘！");
             }
         }
-        String storePath = newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()
+        String storePath = PathConstant.STORE_FILENAME + "\\" + newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()
                 + "\\" + newDocumentRecord.getFileCategory() + "\\" + newDocumentRecord.getBoxNumber() + "\\" + newDocumentRecord.getFileName();
         newDocumentRecord.setStorePath(storePath);
         newDocumentRecord.setDiskPath(PathConstant.DISK_NAME);
@@ -147,7 +147,9 @@ public class DocumentRecordService {
             //1.创建新文件夹
             File newFile = new File(newPath);
             if (!newFile.exists()){
-                newFile.mkdirs();
+                if (!newFile.mkdirs()){
+                    throw new Exception("创建文件夹: " + newPath + " 失败");
+                }
             }
             //2.将旧文件夹下的文件移动到新文件夹下
             File oldFile = new File(oldPath);

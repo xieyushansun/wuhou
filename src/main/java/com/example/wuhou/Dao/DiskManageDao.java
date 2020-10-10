@@ -82,7 +82,7 @@ public class DiskManageDao {
                 //磁盘名
                 diskManage.setDiskName(diskName);
                 //设置已使用百分比
-                diskManage.setUsedPercent(String.format("%.0f", (restSpace/totalSpace)*100));
+                diskManage.setUsedPercent(String.format("%.0f", (usedSpace/totalSpace)*100));
                 return diskManage;
             }
         }
@@ -163,7 +163,7 @@ public class DiskManageDao {
             DiskManage d = getDiskUsedSituation(diskManageForDataBase.getDiskName());
             diskManage.setUsedPercent(d.getUsedPercent());
             diskManage.setTotalSpace(d.getTotalSpace());
-            diskManage.setUsedPercent(d.getUsedPercent());
+            diskManage.setUsedSpace(d.getUsedSpace());
             diskManage.setRestSpace(d.getRestSpace());
 
             returnDiskManageList.add(diskManage);
@@ -191,7 +191,7 @@ public class DiskManageDao {
         }else {
 
             Update update2 = new Update();
-            update2.set("isChoosed", 1);
+            update2.set("isChoosed", "1");
             //将新选择的置为1
             mongoTemplate.updateFirst(query, update2, DiskManageForDataBase.class);
         }

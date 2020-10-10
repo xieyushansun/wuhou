@@ -36,7 +36,7 @@ public class RoleController {
             Set<String> roleSet = new HashSet<>(permissionList);
             roleService.addRole(roleSet, roleName);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "添加失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
@@ -50,7 +50,7 @@ public class RoleController {
         try {
             roleService.deleteRole(roleId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
@@ -70,7 +70,7 @@ public class RoleController {
             role.setRoleName(roleName);
             roleService.modifyRole(role, roleId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "修改失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "修改成功！");
     }
@@ -82,7 +82,7 @@ public class RoleController {
         try {
             roleList = roleService.getAllRole();
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "获取失败: " + e.getMessage());
         }
         ResultUtil<List<Role>> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！");
         resultUtil.setBody(roleList);
@@ -95,7 +95,7 @@ public class RoleController {
         try {
             roleService.userRoleAuthorize(userId, roleId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "授权失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "角色授权成功！");
     }
@@ -107,7 +107,7 @@ public class RoleController {
         try {
             roleService.removeUserRoleAuthorize(userId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除角色成功！");
     }
