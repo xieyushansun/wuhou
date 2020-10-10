@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -76,7 +77,7 @@ public class DocumentRecordController {
             documentRecordId = documentRecordService.addDocumentRecord(documentRecord);
 
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "添加失败: " + e.getMessage());
         }
         ResultUtil<String> resultUtil = new ResultUtil<String>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
         //返回档案记录Id
@@ -107,7 +108,7 @@ public class DocumentRecordController {
         try {
             documentRecordService.deleteDocumentRecord(documentRecordId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
@@ -124,7 +125,7 @@ public class DocumentRecordController {
         try {
             documentRecordService.addDocumentRecordFile(documentRecordId, filelist);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "新增失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
@@ -139,20 +140,20 @@ public class DocumentRecordController {
     ) {
         try {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
-            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
+            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
 //            File file = new File(filepath);
             InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();
             response.reset();
-            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             toClient.write(buffer);
             toClient.flush();
             toClient.close();
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "下载失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "下载成功！");
 //        FileOutputStream fileOutputStream = null;
@@ -193,20 +194,20 @@ public class DocumentRecordController {
     ) {
         try {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
-            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
+            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
             File file = new File(filepath);
             InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();
             response.reset();
-            response.setHeader("Content-Disposition", "Filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            response.setHeader("Content-Disposition", "Filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             toClient.write(buffer);
             toClient.flush();
             toClient.close();
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "预览失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "预览成功！");
 //        FileOutputStream fileOutputStream = null;
@@ -246,7 +247,7 @@ public class DocumentRecordController {
         try {
             fileList = documentRecordService.findFileListByDocumentRecordId(documentRecordId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！", fileList);
     }
@@ -325,7 +326,7 @@ public class DocumentRecordController {
         try {
             pageUtil = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
         }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
         }
         pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
         pageUtil.setMessage("查询成功");
@@ -346,7 +347,7 @@ public class DocumentRecordController {
         try {
             pageUtil = documentRecordService.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
         }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
         }
         pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
         pageUtil.setMessage("查询成功！");
@@ -372,7 +373,7 @@ public class DocumentRecordController {
 //            }
             pageUtil = documentRecordService.combinationFindDocumentRecord(jsonArray, blurryFind, currentPage, pageSize);
         }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
         }
         pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
         pageUtil.setMessage("查询成功！");
@@ -388,11 +389,11 @@ public class DocumentRecordController {
     ) {
         try {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
-            String filepath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath() + "\\" + fileName;
+            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
             File file = new File(filepath);
             documentRecordService.deleteDocumentRecordFile(file, documentRecordId);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
@@ -441,7 +442,7 @@ public class DocumentRecordController {
             documentRecordService.modifyDocumentRecord(newDocumentRecord);
 
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "修改失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "档案记录修改成功！");
     }

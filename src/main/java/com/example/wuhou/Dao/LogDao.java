@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class LogDao {
@@ -47,10 +49,10 @@ public class LogDao {
     }
     // 清空日志
     public void deleteAllLog(){
-        mongoTemplate.remove(Log.class);
+        mongoTemplate.dropCollection("log");
     }
 
-    // 删除日志
+    // 删除某个日志
     public void deleteLog(String id){
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(id));
@@ -74,8 +76,42 @@ public class LogDao {
         Query query = new Query();
         Criteria criteria = Criteria.where("operationTime").lt(date);
         query.addCriteria(criteria);
-        List<Log> logList = mongoTemplate.find(query, Log.class);
-        logList.size();
+        mongoTemplate.remove(query, Log.class);
+    }
+
+    public PageUtil normalFindLog(Map<String, String> findKeyWordMap, Integer currentPage, Integer pageSize, String blurryFind){
+        List<Log> resultList;
+        Query query = new Query();
+        for (String key : findKeyWordMap.keySet()) {
+            if (key.equals("logDateFanwei")){
+                // 去空格
+//                String temp = findKeyWordMap.get(key).replace(" ", "");
+                String date[] = findKeyWordMap.get(key).split(" ~ ");
+                String startDate = date[0];
+                String endDate = date[1];
+                Criteria criteria = new Criteria();
+                criteria.andOperator(Criteria.where("operationTime").gte(startDate), Criteria.where("operationTime").lte(endDate));
+                query.addCriteria(criteria);
+            }else {
+                Criteria criteria;
+                if (blurryFind.equals("1")){
+                    criteria = Criteria.where(key).regex(".*?" + findKeyWordMap.get(key) + ".*?");
+                }else {
+                    criteria = Criteria.where(key).is(findKeyWordMap.get(key));
+                }
+                query.addCriteria(criteria);
+            }
+        }
+
+        PageUtil pageUtil = new PageUtil();
+        pageUtil.setTotalElement((int) mongoTemplate.count(query, Log.class));
+        query.with(Sort.by(Sort.Order.desc("operationTime")));
+        query.skip((currentPage - 1) * pageSize);
+        query.limit(pageSize);
+        resultList = mongoTemplate.find(query, Log.class);
+        pageUtil.setBody(resultList);
+
+        return pageUtil;
     }
 //    public static void delteDB(String msg) throws Exception {
 //        String addmsg = "用户<" + currentUserId + "> 执行删除操作：" + msg;

@@ -11,10 +11,10 @@ import io.swagger.annotations.ApiParam;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/log")
@@ -24,19 +24,21 @@ public class LogController {
     LogService logService;
 
     @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @PostMapping("/getAllLog")
+    @GetMapping("/getAllLog")
     @ApiOperation("分页获取所有日志")
-    public ResultUtil<PageUtil> getAllLog(
-            @ApiParam(value = "当前显示页", required = false) @RequestParam(defaultValue = "1") Integer currentPage,
-            @ApiParam(value = "页面大小", required = false) @RequestParam(defaultValue = "5") Integer pageSize
+    public PageUtil getAllLog(
+            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
+            @ApiParam(value = "页面大小") @RequestParam(defaultValue = "5") Integer pageSize
     ){
         PageUtil pageUtil;
         try {
             pageUtil = logService.getAllLog(currentPage, pageSize);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "获取失败: " + e.getMessage());
         }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查询成功！", pageUtil);
+        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
+        pageUtil.setMessage("查询成功！");
+        return pageUtil;
     }
     @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteAllLog")
@@ -45,12 +47,12 @@ public class LogController {
         try {
             logService.deleteAllLog();
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE,"删除失败: " +  e.getMessage());
         }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除成功");
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功");
     }
     @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @PostMapping("deleteAllLogBeforDate")
+    @PostMapping("/deleteAllLogBeforDate")
     @ApiOperation("清除某日期前的日志，不包括该日期")
     public ResultUtil deleteAllLogBeforDate(
             @ApiParam(value = "删除该日期前的所有日志，不包括该日期", required = true) @RequestParam() String date
@@ -58,8 +60,44 @@ public class LogController {
         try {
             logService.deleteAllLogBeforDate(date);
         }catch (Exception e){
-            return new ResultUtil(ResponseConstant.ResponseCode.SUCCESS, e.getMessage());
+            return new ResultUtil(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
-        return new ResultUtil(ResponseConstant.ResponseCode.FAILURE, "删除成功");
+        return new ResultUtil(ResponseConstant.ResponseCode.SUCCESS, "删除成功");
+    }
+
+    @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @GetMapping("/normalFindLog")
+    @ApiOperation("普通查询日志")
+    public PageUtil normalFindLog(
+            @ApiParam(value = "操作者ID") @RequestParam(defaultValue = "") String operatorId,
+            @ApiParam(value = "操作类型") @RequestParam(defaultValue = "") String operationType,
+            @ApiParam(value = "操作描述") @RequestParam(defaultValue = "") String msg,
+            @ApiParam(value = "日期范围, 包括日期开始和结束天") @RequestParam(defaultValue = "") String logDateFanwei,
+            @ApiParam(value = "是否模糊查询") @RequestParam(defaultValue = "1") String blurryFind,
+            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
+            @ApiParam(value = "页面大小") @RequestParam(defaultValue = "5") Integer pageSize
+    ){
+        Map<String, String> findKeyWordMap = new HashMap<>();
+        if (!operatorId.isEmpty()){
+            findKeyWordMap.put("operatorId", operatorId);
+        }
+        if (!operationType.isEmpty()){
+            findKeyWordMap.put("operationType", operationType);
+        }
+        if (!msg.isEmpty()){
+            findKeyWordMap.put("msg", msg);
+        }
+        if (!logDateFanwei.isEmpty()){
+            findKeyWordMap.put("logDateFanwei", logDateFanwei);
+        }
+        PageUtil pageUtil;
+        try {
+            pageUtil = logService.normalFindLog(findKeyWordMap, currentPage, pageSize, blurryFind);
+        }catch (Exception e){
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查询失败: " + e.getMessage());
+        }
+        pageUtil.setMessage("查询成功！");
+        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
+        return pageUtil;
     }
 }

@@ -1,12 +1,15 @@
 package com.example.wuhou.service;
 
+import com.example.wuhou.Dao.RoleDao;
 import com.example.wuhou.Dao.UserDao;
 import com.example.wuhou.entity.User;
 import com.example.wuhou.exception.NotExistException;
 import com.example.wuhou.util.SaltUtil;
+import io.swagger.annotations.ApiParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import java.util.List;
 public class UserService {
     @Autowired
     UserDao userDao;
+    @Autowired
+    RoleDao roleDao;
     public User login(String userId, String password) throws NotExistException {
 //        User user = userDao.findUserByUserId(userId);
 //        User user1 = new User();
@@ -28,7 +33,7 @@ public class UserService {
 //        }
         return null;
     }
-    public void addUser(String userId, String password, String nickName) throws Exception {
+    public void addUser(String userId, String password, String nickName, String roleId) throws Exception {
         User user = new User();
         user.setUserId(userId);
         String salt = SaltUtil.getSalt(8);
@@ -37,8 +42,14 @@ public class UserService {
         user.setPassword(md5Hash.toHex());
 
         user.setNickName(nickName);
-        user.setRoleId("guest");
-        userDao.addUser(user);
+        if (roleId.equals("")) {
+            user.setRoleId("guest");
+            userDao.addUser(user);
+        } else {
+            userDao.addUser(user);
+            roleDao.userRoleAuthorize(userId, roleId);
+        }
+
     }
     public void deleteUser(String userId) throws Exception {
         userDao.deleteUser(userId);

@@ -34,7 +34,7 @@ public class DocumentCategoryController {
         try {
             documentCategoryService.addDocumentCategory(documentCategory, documentCategoryShortName, fileCategory);
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "添加失败: " + e.getMessage());
         }
 
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
@@ -48,7 +48,7 @@ public class DocumentCategoryController {
         try {
             documentCategoryService.deleteDocumentCategory(id);
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
 
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
@@ -65,7 +65,7 @@ public class DocumentCategoryController {
         try {
             documentCategoryService.modifyDocumentCategory(id, documentCategory, documentCategoryShortName, fileCategory);;
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "修改失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "修改成功！");
     }
@@ -77,9 +77,9 @@ public class DocumentCategoryController {
         try {
             documentCategories = documentCategoryService.findAllDocumentCategory();
         } catch (Exception e) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
         }
-        ResultUtil<List<DocumentCategory>> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "返回成功！");
+        ResultUtil<List<DocumentCategory>> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！");
         resultUtil.setBody(documentCategories);
         return resultUtil;
     }

@@ -50,11 +50,11 @@ public class User{
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
-                ", password='" + password + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", salt='" + salt + '\'' +
-                ", roleId='" + roleId + '\'' +
+                "用户编号='" + userId + '\'' +
+                ", 用户密码='" + password + '\'' +
+                ", 用户昵称='" + nickName + '\'' +
+                ", 盐值='" + salt + '\'' +
+                ", 角色编号='" + roleId + '\'' +
                 '}';
     }
 }

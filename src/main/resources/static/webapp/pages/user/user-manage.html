@@ -101,7 +101,8 @@
                 },
                 // url: '../../../user/getAllUser',
                 data: [],
-                toolbar: '#toolbar', 
+                toolbar: '#toolbar',
+                defaultToolbar: [],
                 width: 700,  
                 cols: [[
                     {field: 'userId', title: '用户名'},
@@ -110,7 +111,7 @@
                         return roleDict[d.roleId];
                     }},
                     {title: '操作', minWidth: 300, toolbar: '#currentTableBar', align: "center", unresize: true}
-                ]],
+                ]]
                 // parseData: function(res) {
                 //     return {
                 //         "code": res.code,
@@ -121,28 +122,31 @@
                 // },
             });
 
-            $.ajax({
-                url: '../../../user/getAllUser',
-                type: 'get',
-                success: function(res) {
-                    if (res.code === 0) {
-                        var data = res.body;
-                        table.reload('user-table', {
-                            data: data
-                        });
-                    } else if (res.code === 12) {
-                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
-                            top.location.href = '../../login.html';
-                        });
-                    } else {
-                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+            function renderUser() {
+                $.ajax({
+                    url: '../../../user/getAllUser',
+                    type: 'get',
+                    success: function (res) {
+                        if (res.code === 0) {
+                            var data = res.body;
+                            table.reload('user-table', {
+                                data: data
+                            });
+                        } else if (res.code === 12) {
+                            layer.msg('登录已失效', {time: 0.8 * 1000, anim: 6}, function () {
+                                top.location.href = '../../login.html';
+                            });
+                        } else {
+                            layer.msg(res.message, {time: 0.8 * 1000, icon: 2});
+                        }
+                    },
+                    error: function (jqxhr, textStatus, errorThrown) {
+                        layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                        console.log('error: get all user request error');
                     }
-                }, 
-                error: function(jqxhr, textStatus, errorThrown) {
-                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
-                    console.log('error: get all user request error');
-                }
-            })
+                });
+            }
+            renderUser();
 
             
 
@@ -157,7 +161,7 @@
                         area: ['500px', '450px'],
                         content: './user-form.html',
                         end: function() {
-                            table.reload('user-table');
+                            renderUser();
                         }
                     });
                     return false;
@@ -247,7 +251,7 @@
                                 success: function(res) {
                                     if (res.code === 0) {
                                         layer.msg('修改成功!', {time: 0.5*1000});
-                                        table.reload('user-table');
+                                        renderUser();
                                     }  else if (res.code === 12) {
                                         layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                                             top.location.href = '../../login.html';

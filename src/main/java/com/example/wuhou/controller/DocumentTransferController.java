@@ -37,7 +37,7 @@ public class DocumentTransferController {
         try {
             documentTransferService.addDocumentTransfer(boxNumber, borrower);
         } catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "添加失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
     }
@@ -50,7 +50,7 @@ public class DocumentTransferController {
         try {
             documentTransferService.delteDocumentTransfer(id);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
@@ -63,7 +63,7 @@ public class DocumentTransferController {
         try {
             documentTransferService.returnDocumentTransfer(id);
         }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "归还失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "归还成功！");
     }
@@ -78,7 +78,7 @@ public class DocumentTransferController {
         try {
             pageUtil = documentTransferService.findAllDocumentTransfer(currentPage, pageSize);
         }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查询失败: " + e.getMessage());
         }
         pageUtil.setMessage("查找成功！");
         pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
@@ -86,7 +86,7 @@ public class DocumentTransferController {
     }
     //普通查询调卷记录
     @RequiresRoles(value = {PermissionConstant.SUPERADMIN, PermissionConstant.DOCUMENT_TRANSFER_MANAGE}, logical = Logical.OR)
-    @PostMapping("/normalFindDocumentTransfer")
+    @GetMapping("/normalFindDocumentTransfer")
     @ApiOperation("普通查询调卷记录")
     public PageUtil normalFindDocumentTransfer(
             @ApiParam(value = "盒号") @RequestParam(defaultValue = "") String boxNumber,
@@ -94,6 +94,7 @@ public class DocumentTransferController {
             @ApiParam(value = "借阅记录者") @RequestParam(defaultValue = "") String borrowRecorder,
             @ApiParam(value = "归还记录者") @RequestParam(defaultValue = "") String returnRecorder,
             @ApiParam(value = "日期范围, 包括日期开始和结束天") @RequestParam(defaultValue = "") String borrowDateFanwei,
+            @ApiParam(value = "是否模糊查询") @RequestParam(defaultValue = "1") String blurryFind,
             @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
             @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
     ){
@@ -115,9 +116,9 @@ public class DocumentTransferController {
         }
         PageUtil pageUtil;
         try {
-            pageUtil = documentTransferService.normalFindDocumentTransfer(findKeyWordMap, currentPage, pageSize);
+            pageUtil = documentTransferService.normalFindDocumentTransfer(findKeyWordMap, currentPage, pageSize, blurryFind);
         }catch (Exception e){
-            return new PageUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
+            return new PageUtil<>(ResponseConstant.ResponseCode.FAILURE, "查询失败: " + e.getMessage());
         }
         pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
         pageUtil.setMessage("查询成功！");

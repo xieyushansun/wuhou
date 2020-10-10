@@ -78,13 +78,12 @@ public class DocumentTransfer {
     @Override
     public String toString() {
         return "DocumentTransfer{" +
-                "_id='" + _id + '\'' +
-                ", boxNumber='" + boxNumber + '\'' +
-                ", borrower='" + borrower + '\'' +
-                ", borrowDate='" + borrowDate + '\'' +
-                ", returnDate='" + returnDate + '\'' +
-                ", borrowRecorder='" + borrowRecorder + '\'' +
-                ", returnRecorder='" + returnRecorder + '\'' +
+                "盒号='" + boxNumber + '\'' +
+                ", 借阅人='" + borrower + '\'' +
+                ", 借阅日期='" + borrowDate + '\'' +
+                ", 归还日期='" + returnDate + '\'' +
+                ", 借阅记录者='" + borrowRecorder + '\'' +
+                ", 归还记录者='" + returnRecorder + '\'' +
                 '}';
     }
 }

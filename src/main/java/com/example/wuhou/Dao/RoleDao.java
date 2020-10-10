@@ -27,7 +27,7 @@ public class RoleDao {
         Criteria criteria = Criteria.where("roleName").is(role.getRoleName());
         query.addCriteria(criteria);
         if (mongoTemplate.findOne(query, Role.class) != null){
-            throw new ExistException("已经存在该名称的权限，请重新输入！");
+            throw new Exception("已经存在该名称的权限，请重新输入！");
         }
         mongoTemplate.insert(role);
 //        LogUtil.addDB("添加角色 > " + role.getRoleName());
@@ -41,7 +41,10 @@ public class RoleDao {
 
         Role role = mongoTemplate.findOne(query, Role.class);
         if (role == null){
-            throw new ExistException("该角色不存在");
+            throw new Exception("该角色不存在");
+        }
+        if(role.getRoleName().equals("超级管理员")){
+            throw new ExistException("不可以删除超级管理员角色！");
         }
         mongoTemplate.remove(query, Role.class);
 //        LogUtil.delteDB("删除角色 > " + role.getRoleName());

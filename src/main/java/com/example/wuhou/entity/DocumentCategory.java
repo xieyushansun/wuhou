@@ -51,10 +51,9 @@ public class DocumentCategory {
     @Override
     public String toString() {
         return "DocumentCategory{" +
-                "id='" + id + '\'' +
-                ", documentCategory='" + documentCategory + '\'' +
-                ", documentCategoryShortName='" + documentCategoryShortName + '\'' +
-                ", fileCategory=" + Arrays.toString(fileCategory) +
+                "档案类别='" + documentCategory + '\'' +
+                ", 档案类别缩写='" + documentCategoryShortName + '\'' +
+                ", 案卷类别=" + Arrays.toString(fileCategory) +
                 '}';
     }
 }

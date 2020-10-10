@@ -45,7 +45,7 @@ public class DocumentRecordDao {
             throw new Exception("没有这条记录！");
         }
 
-        String recordPath = documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
+        String recordPath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
         File file = new File(recordPath);
         List<String> fileList = null;
         if (file.isDirectory()){
@@ -73,7 +73,7 @@ public class DocumentRecordDao {
         mongoTemplate.remove(query, DocumentRecord.class);
         logDao.insertLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
         //返回档案记录对应的文件，在service层删除
-        return documentRecord.getDiskPath() + "\\" + documentRecord.getStorePath();
+        return documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
     }
     //添加档案文件
     public DocumentRecord getDocumentRecordById(String documentRecordId){
