@@ -454,8 +454,9 @@
                     });
 
                     tr.find('.view-file').on('click', function() {
-                        var index = $(this).data()['id'];
-                        viewer['view'](index);
+                        var filename = $(this).data()['name'],
+                            index = imgList.indexOf(filename);
+                        viewImg(index);
                     });
 
                     fileListView.append(tr);
@@ -544,6 +545,10 @@
                 "documentNumber": documentNumber
             });
         }
+    }
+
+    function viewImg(idx) {
+        viewer['view'](idx.toString());
     }
     
     // 获取格式为yyyymmdd的日期

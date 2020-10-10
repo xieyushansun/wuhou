@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-10-08 20:35:53
+ * @LastEditTime: 2020-10-09 09:38:51
  * @LastEditors: liyan
  * @Description: 用户管理页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-manage.html
@@ -52,55 +52,55 @@
                 table = layui.table,
                 form = layui.form;
                 
-                var roles = [],
-                    roleDict = {},
-                    role_options = [];
-                
-                // 获取所有角色
-                $.ajax({
-                    url: "../../../role/getAllRole",
-                    type: "get",
-                    async: false,
-                    success: function(res) {
-                        if (res.code === 0) {
-                            roles = res.body;
-                            layui.each(roles, function(index, item) {
-                                roleDict[item.id] = item.roleName;
-                            });
-                            role_options = makeOption(res.body);
-                        } else if (res.code === 12) {
-                            layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
-                                top.location.href = '../../login.html';
-                            });
-                        } else {
-                            layer.msg(res.message, {time: 0.8*1000, icon: 2});
-                        }
-                    },
-                    error: function(jqxhr, textStatus, errorThrown) {
-                        layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+            var roles = [],
+                roleDict = {},
+                role_options = [];
+            
+            // 获取所有角色
+            $.ajax({
+                url: "../../../role/getAllRole",
+                type: "get",
+                async: false,
+                success: function(res) {
+                    if (res.code === 0) {
+                        roles = res.body;
+                        layui.each(roles, function(index, item) {
+                            roleDict[item.id] = item.roleName;
+                        });
+                        role_options = makeOption(res.body);
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../../login.html';
+                        });
+                    } else {
+                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
                     }
-                });
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                }
+            });
 
-                function makeOption(data_list) {
-                    if (!Array.isArray(data_list)) {
-                        return [];
-                    }
-                    var option_list = [{val: '', text: ''}];
-                    for (var indexList = 0; indexList < data_list.length; indexList++) {
-                        var item = data_list[indexList];
-                        option_list.push({"val": item.id, "text": item.roleName});
-                    }
-                    return option_list;
-                    }
-
+            function makeOption(data_list) {
+                if (!Array.isArray(data_list)) {
+                    return [];
+                }
+                var option_list = [{val: '', text: ''}];
+                for (var indexList = 0; indexList < data_list.length; indexList++) {
+                    var item = data_list[indexList];
+                    option_list.push({"val": item.id, "text": item.roleName});
+                }
+                return option_list;
+            }
+            
             table.render({
                 elem: '#user-table',
                 id: 'user-table',
                 page: {
-                    layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
-
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'],
                 },
-                url: '../../../user/getAllUser',
+                // url: '../../../user/getAllUser',
+                data: [],
                 toolbar: '#toolbar', 
                 width: 700,  
                 cols: [[
@@ -111,15 +111,40 @@
                     }},
                     {title: '操作', minWidth: 300, toolbar: '#currentTableBar', align: "center", unresize: true}
                 ]],
-                parseData: function(res) {
-                    return {
-                        "code": res.code,
-                        "msg": res.message,
-                        "count": res.totalElements,
-                        "data": res.body
-                    }
-                },
+                // parseData: function(res) {
+                //     return {
+                //         "code": res.code,
+                //         "msg": res.message,
+                //         "count": res.totalElements,
+                //         "data": res.body? res.body: []
+                //     }
+                // },
             });
+
+            $.ajax({
+                url: '../../../user/getAllUser',
+                type: 'get',
+                success: function(res) {
+                    if (res.code === 0) {
+                        var data = res.body;
+                        table.reload('user-table', {
+                            data: data
+                        });
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../../login.html';
+                        });
+                    } else {
+                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                    }
+                }, 
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                    console.log('error: get all user request error');
+                }
+            })
+
+            
 
             table.on('toolbar(user-table)', function (obj) {
                 var data = obj.data;
