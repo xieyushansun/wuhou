@@ -104,10 +104,6 @@
             range: '~'
         });
 
-        laydate.render({
-            elem: '#endDate'
-        });
-
         table.render({
             elem: '#log-table',
             url: '../../log/normalFindLog',
@@ -137,6 +133,12 @@
             request: {
                 pageName: 'currentPage',
                 limitName: 'pageSize'
+            },
+            done: function() {
+                console.log('done');
+                laydate.render({
+                    elem: '#endDate'
+                });
             }
         });
 

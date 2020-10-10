@@ -59,7 +59,7 @@
                 <h3 class="layui-timeline-title">{{ d.diskName }}</h3>
             {{# } }}
                 <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="{{ d.diskName }}" style="width: 300px;">
-                    <div class="layui-progress-bar layui-bg-green" lay-percent="{{ d.usedPercent }}"></div>
+                    <div class="layui-progress-bar layui-bg-green" lay-percent="{{ d.usedPercent }}%"></div>
                 </div>
                 <p>
                     总空间：{{ d.totalSpace }} GB <br>
@@ -178,9 +178,8 @@
 
             function getCurrDisk() {
                 // 获取已经使用中的磁盘
-                $("#disk_used").empty();
                 $.ajax({
-                    url: '../../DiskManage/getCurrentDiskNameAndSpace',
+                    url: '../../DiskManage/getUsedDiskNameAndSpace',
                     type: 'get',
                     success: function(res) {
                         if (res.code === 0) {
@@ -204,6 +203,9 @@
                 // 渲染已使用磁盘的line
                 var getTpl = $("#lineTpl").html(),
                     view = $("#disk_used");
+                if (disks.length === 0) {
+                    return;
+                }
                 view.empty();
                 layui.each(disks, function(index, item) {
                     laytpl(getTpl).render(item, function(html) {
