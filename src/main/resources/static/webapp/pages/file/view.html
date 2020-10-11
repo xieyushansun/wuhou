@@ -222,6 +222,7 @@
                         documentCategoryData = res.body;
                         selectInit(documentCategoryData); // 初始化渲染select
                         form.render('select');
+                        documentCatAbbr = getDocCatAbbr(documentCategoryData);
                     } else if (res.code === 12) {
                         layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                             top.location.href = '../login.html';
@@ -330,7 +331,8 @@
                         '</td>', 
                     '</tr>'].join(''));
                 $("#images").append("<li><img src='" + previewUrl + "' alt='" + file + "'></li>");
-                viewer.update();
+                imgList.push(file.name);
+                // viewer.update();
             }
 
             // 预览图片
@@ -358,6 +360,7 @@
             });
             fileListView.append(tr);
         });
+        viewer.update();
     }
 
     // 编辑按钮的点击
@@ -534,6 +537,7 @@
                     $(".doc-form").addClass('layui-disabled').attr({'readonly': 'true', 'disabled': 'true'});
                     $("#testList").removeClass('layui-disabled');
                     $("#testListAction").removeClass("layui-disabled");
+                    $("#upload-container").removeClass('layui-hide');
                     form.render('select');
                     getFileList();
                 } else if (res.code === 12) {
@@ -651,7 +655,7 @@
                 layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                 console.log('error: find file list by document recordId request error');
             }
-        })
+        });
     }
 
 </script>

@@ -258,6 +258,7 @@
                 success: function(res) {
                     if (res.code == 0) {
                         documentCategoryData = res.body;
+                        documentCatAbbr = getDocCatAbbr(documentCategoryData);
                         selectInit(documentCategoryData); // 初始化渲染select
                         form.render('select');
                     } else if (res.code === 12) {
