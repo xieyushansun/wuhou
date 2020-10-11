@@ -28,8 +28,8 @@ public class DocumentCategoryController {
     @ApiOperation("新增案卷类别")
     public ResultUtil<String> addDocumentCategoryService(
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "就业创业补助资金") String documentCategory,
-            @ApiParam(value = "档案类别缩写", required = false) @RequestParam(required = false) String documentCategoryShortName,
-            @ApiParam(value = "案卷类别", required = true) @RequestParam() String[] fileCategory
+            @ApiParam(value = "档案类别缩写", required = false) @RequestParam(required = false, defaultValue = "") String documentCategoryShortName,
+            @ApiParam(value = "案卷类别", required = true) @RequestParam(required = false, defaultValue = "") String[] fileCategory
     ){
         try {
             documentCategoryService.addDocumentCategory(documentCategory, documentCategoryShortName, fileCategory);
@@ -58,7 +58,7 @@ public class DocumentCategoryController {
     @ApiOperation("修改档案类别数据")
     public ResultUtil<String> modifyDocumentCategory(
             @ApiParam(value = "档案id", required = true) @RequestParam() String id,
-            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "就业创业补助资金") String documentCategory,
+            @ApiParam(value = "档案类别", required = true) @RequestParam() String documentCategory,
             @ApiParam(value = "档案类别缩写", required = true) @RequestParam() String documentCategoryShortName,
             @ApiParam(value = "案卷类别", required = true) @RequestParam() String[] fileCategory
     ){

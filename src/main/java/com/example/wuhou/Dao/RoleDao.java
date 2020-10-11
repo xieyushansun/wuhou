@@ -124,4 +124,9 @@ public class RoleDao {
         }
         return role.getPermissions();
     }
+    public Role findRoleByRoleId(String roleId){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(roleId)));
+        return mongoTemplate.findOne(query, Role.class);
+    }
 }

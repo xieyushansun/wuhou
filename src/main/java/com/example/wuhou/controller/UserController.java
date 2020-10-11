@@ -2,13 +2,17 @@ package com.example.wuhou.controller;
 
 import com.example.wuhou.Dao.DiskManageDao;
 import com.example.wuhou.Dao.LogDao;
+import com.example.wuhou.Dao.RoleDao;
 import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DiskManage;
+import com.example.wuhou.entity.Role;
 import com.example.wuhou.entity.User;
+import com.example.wuhou.entity.UserRole;
 import com.example.wuhou.service.UserService;
 import com.example.wuhou.util.ResultUtil;
+import com.example.wuhou.util.UserRoleUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -35,6 +40,8 @@ public class UserController {
     LogDao logDao;
     @Autowired
     DiskManageDao diskManageDao;
+    @Autowired
+    RoleDao roleDao;
     @PostMapping("/login")
     @ApiOperation("登录")
     public ResultUtil<User> Login(
@@ -148,13 +155,25 @@ public class UserController {
     }
     @GetMapping("/getCurrentUser")
     @ApiOperation("获取当前登录用户状态")
-    public ResultUtil getCurrentUserFromSession() {
+    public UserRoleUtil getCurrentUserFromSession() {
         User user = userService.getCurrentUserFromSession();
-        if (user != null) {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", user);
-        } else {
-            return new ResultUtil<>(ResponseConstant.ResponseCode.UNAUTHORIZED_RESOURCES, "获取失败", "登录状态异常!");
+        if (user == null){
+            return new UserRoleUtil<>(ResponseConstant.ResponseCode.UNAUTHORIZED_RESOURCES, "获取失败", "登录状态异常!");
         }
+        Role role;
+        UserRole userRole = new UserRole();
+        if (user.getRoleId().equals("guest")){
+            userRole.setRoleName("guest");
+            userRole.setPermitions(new HashSet<>());
+        }else {
+            role = roleDao.findRoleByRoleId(user.getRoleId());
+            userRole.setRoleName(role.getRoleName());
+            userRole.setPermitions(role.getPermissions());
+        }
+        userRole.setUserId(user.getUserId());
+        userRole.setNickName(user.getNickName());
+        return new UserRoleUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", userRole);
+
     }
 
     @PostMapping("/changePassword")
@@ -198,4 +217,5 @@ public class UserController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", userList);
     }
+
 }
