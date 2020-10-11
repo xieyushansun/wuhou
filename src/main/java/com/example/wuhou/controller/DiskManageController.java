@@ -63,7 +63,7 @@ public class DiskManageController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", diskManage);
     }
 
-    @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+//    @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/getCurrentDiskNameAndSpace")
     @ApiOperation("获取当前存储磁盘")
     public ResultUtil<DiskManage> getCurrentDiskNameAndSpace(){

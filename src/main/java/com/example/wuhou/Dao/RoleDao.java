@@ -3,6 +3,8 @@ package com.example.wuhou.Dao;
 import com.example.wuhou.entity.Role;
 import com.example.wuhou.entity.User;
 import com.example.wuhou.exception.ExistException;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,6 +22,15 @@ public class RoleDao {
     MongoTemplate mongoTemplate;
     @Autowired
     LogDao logDao;
+
+    //获取当前用户
+    public String getCurrentUserId() throws Exception {
+        Subject currentUser = SecurityUtils.getSubject();
+        if (currentUser.getPrincipals() == null){
+            throw new Exception("获取当前用户登录状态异常");
+        }
+        return currentUser.getPrincipals().toString();
+    }
 
     //添加角色
     public void addRole(Role role) throws Exception {
@@ -44,7 +55,7 @@ public class RoleDao {
             throw new Exception("该角色不存在");
         }
         if(role.getRoleName().equals("超级管理员")){
-            throw new ExistException("不可以删除超级管理员角色！");
+            throw new Exception("不可以删除超级管理员角色！");
         }
         mongoTemplate.remove(query, Role.class);
 //        LogUtil.delteDB("删除角色 > " + role.getRoleName());
@@ -70,6 +81,12 @@ public class RoleDao {
     }
     //为用户赋予角色
     public void userRoleAuthorize(String userId, String roleId) throws Exception {
+        if (userId.equals("admin")){
+            throw new Exception("不可以修改超级管理员的角色！");
+        }
+        if (getCurrentUserId().equals(userId)){
+            throw new Exception("不可以修改自己的角色！");
+        }
         Update update = new Update();
         Query query = new Query();
 //        Criteria criteria = Criteria.where("_id").is(new ObjectId(userId));
@@ -82,6 +99,12 @@ public class RoleDao {
     }
     //删除用户角色，默认回到guest，没有任何权限
     public void removeUserRoleAuthorize(String userId) throws Exception {
+        if (userId.equals("admin")){
+            throw new Exception("不可以移除超级管理员的角色！");
+        }
+        if (getCurrentUserId().equals(userId)){
+            throw new Exception("不可以修改自己的角色！");
+        }
         Update update = new Update();
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(userId)));
