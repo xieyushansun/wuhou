@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 17:52:53
- * @LastEditTime: 2020-10-08 21:18:00
+ * @LastEditTime: 2020-10-11 17:26:06
  * @LastEditors: liyan
  * @Description: 添加角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\add-role.html
@@ -72,7 +72,7 @@
         table.render({
             elem: '#permission-table',
             id: 'permission-table',
-            data: permissions,
+            data: PERMISSIONS,
             cols: [[
                 {field: 'permission_name', title: '权限名称', width: 200, unresize: true, align: 'center'},
                 {title:'赋予权限', width:110, templet: '#checkboxTpl', unresize: true, align: 'center'}

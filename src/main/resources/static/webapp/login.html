@@ -108,18 +108,17 @@
     }
 </script>
 <script src="./js/jquery.min.js" charset="utf-8"></script>
-<script src="./js/jquery.cookie.js" charset="utf-8"></script>
 <script src="./layui/layui.all.js" charset="utf-8"></script>
 <script>
     var form = layui.form,
         layer = layui.layer;
 
     $(document).ready(function() {
-        var remember = $.cookie('rm');
-        var user = $.cookie('uu');
-        var pwd = $.cookie('pp');
+        var remember = localStorage.getItem('remember');
+        var username = localStorage.getItem('username');
+        var pwd = localStorage.getItem('pwd');
         if (remember === 'true') {
-            $("input[name='username']").val(user);
+            $("input[name='username']").val(username);
             $("input[name='password']").val(pwd);
             $("input[name='remember']").prop('checked', true);
             form.render('checkbox');
@@ -157,15 +156,13 @@
     function rememberPassword() {
         var user = $("input[name='username']").val();
         var pwd = $("input[name='password']").val();
-        $.cookie('uu', user, {expires: 15});
-        $.cookie('pp', pwd, {expires: 15});
-        $.cookie('rm', 'true');
+        localStorage.setItem('username', user);
+        localStorage.setItem('pwd', pwd);
+        localStorage.setItem('remember', 'true');
     }
 
     function forgetPassword() {
-        $.cookie('uu', null);
-        $.cookie('pp', null);
-        $.cookie('rm', null);
+        localStorage.clear();
     }
 
     // 进行登录操作
@@ -185,24 +182,8 @@
             data: {userId: data.username, password: data.password},
             success: function(res) {
                 if (res.code == 0) {
-                    $.ajax({
-                        url: '../user/getCurrentUser',
-                        type: 'get',
-                        success: function(res) {
-                            if (res.code === 0) {
-                                $.cookie('nickname', res.body.nickName);
-                                $.cookie('role', res.body.role);
-                                layer.msg('登录成功',  {time: 700},function() {
-                                    window.location = './index.html';
-                                });
-                            } else {
-                                layer.msg(res.message);
-                            }
-                        }, 
-                        error: function(jqxhr, textStatus, errorThrown) {
-                            layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
-                            console.log('error: add document transfer request error');
-                        }
+                    layer.msg('登录成功',  {time: 700},function() {
+                        window.location = './index.html';
                     });
                 } else {
                     layer.msg(res.message);

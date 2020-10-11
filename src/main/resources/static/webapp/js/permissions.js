@@ -1,13 +1,13 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-05 10:01:06
- * @LastEditTime: 2020-10-08 21:09:32
+ * @LastEditTime: 2020-10-11 17:25:52
  * @LastEditors: liyan
  * @Description: 权限列表
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\permissions.js
  * @liyan@cilab@uestc
  */
-var permissions = [
+const PERMISSIONS = [
     {
         "permission_name": "用户管理",
         "permission": "USER_MANAGE"
