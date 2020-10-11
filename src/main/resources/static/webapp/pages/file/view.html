@@ -91,6 +91,7 @@
                             <label class="layui-form-label">档案类别</label>
                             <div class="layui-input-inline">
                                 <select name="documentCategory" class="docNoUsed doc-form" lay-verify="required" lay-reqtext="档案类别不能为空" lay-filter='documentCategory' lay-search></select>
+                                <!-- <input autocomplete="off" type="text" class="layui-input docNoUsed doc-form" id="documentCategory" placeholder="下拉选择或输入新的" name="documentCategory"  z-index: 1> -->
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -205,13 +206,40 @@
         upload = layui.upload;
     var Viewer = window.Viewer;
 
-    var documentCategoryData = parent.documentCategoryData; // 档案类别的数据
-    var documentCatAbbr = getDocCatAbbr(documentCategoryData); // 档案类别缩写；
-    var documentCategoryList = parent.documentCategoryList, // 档案类别的list
-        fileCategoryList = parent.fileCategoryList; // 案卷类别的list
-    var documentCategory = parent.documentCategory, // 当前的档案类别
-        fileCategory = parent.fileCategory; // 当前的文档类别
-    var fileListView = $('#fileList'); // 文件列表的展示元素
+    var documentCategoryData, // 档案类别的数据
+        documentCatAbbr; // 档案类别缩写；
+
+    var fileListView = $('#fileList'), // 文件列表的展示元素
+        uploadInst; // 文件上传的实例，后期赋值，重载
+
+    $(document).ready(function(){
+        (function() {
+            $.ajax({
+                url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
+                type: "get",
+                success: function(res) {
+                    if (res.code == 0) {
+                        documentCategoryData = res.body;
+                        selectInit(documentCategoryData); // 初始化渲染select
+                        form.render('select');
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../login.html';
+                        });
+                    } else {
+                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                    }
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                    console.log('error: find all document category request error');
+                }
+            })
+        })(); // 获取档案类别
+        // selectInit(documentCategoryData, add=true);
+        $('.doc-form').attr('readonly', true).attr('disabled', true).addClass('layui-disabled');
+        form.render();
+    });
 
     var durationDict = {
             '10年': 'D',
@@ -227,21 +255,16 @@
 
     var documentRecordId = 3;
 
-    var username = $.cookie("nickname");
-
     // 创建图片预览实例
     var viewer = new Viewer(document.getElementById('images'), {
             toolbar: true,
             viewed() {
                 viewer.zoomTo(1);
             }
-        }), 
-            imgIdx = 0;
+        });
 
-    $(document).ready(function(){
-        selectInit(documentCategoryData, add=true);
-        $('.doc-form').attr('readonly', true).attr('disabled', true).addClass('layui-disabled');
-        form.render();
+    $(".docNoUsed").change(function() {
+        makeDocumentNo();
     });
 
     // 填充数据 由父页面调用；
@@ -267,6 +290,7 @@
         form.render();
         // 获取文件列表
         getFileList(data.id);
+        rendUpload();
     }
 
 
@@ -275,7 +299,6 @@
             files = files.sort();
         else 
             files = [];
-        imgIdx = 0;
         $("#images").empty();
         imgList = [];
         layui.each(files, function(index, file) {
@@ -311,7 +334,6 @@
                     '</tr>'].join(''));
                 $("#images").append("<li><img src='" + previewUrl + "' alt='" + file + "'></li>");
                 viewer.update();
-                imgIdx++;
             }
 
             // 预览图片
@@ -357,10 +379,10 @@
     // 监听案卷类别下拉选择的变化
     form.on('select(documentCategory)', function(data) {
         makeDocumentNo();
-        documentCategory = data.value;
-        fileCategory = '';
-        fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
-        changeOption('fileCategory', makeOption(fileCategoryList, documentCategory=undefined, file=true));
+        var documentCategory = data.value,
+            fileCategory = '',
+            fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+        changeOption('fileCategory', makeFileOption(fileCategoryList));
         form.render('select');
         console.log(documentCategory);
     });
@@ -368,7 +390,6 @@
     // 监听案卷类别下拉选择的变化
     form.on('select(fileCategory)', function(data) {
         makeDocumentNo();
-        fileCategory = data.value;
     });
 
     form.on('select(duration)', function(data) {
@@ -380,7 +401,8 @@
     });
 
     // 上传按钮和列表
-    var uploadListIns = upload.render({
+    function rendUpload() {
+        uploadListIns = upload.render({
             elem: '#testList',
             url: '../../../document/adddocumentrecordfile',
             accept: 'file',
@@ -489,6 +511,7 @@
 
             }
         });
+    }
 
     //监听提交
     form.on('submit(saveBtn)', function (data) {
@@ -545,11 +568,17 @@
 
         if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
             documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
-            var indexList = fileCategoryList.indexOf(fileCategory);
-            var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
-            var documentNumber = recordGroupNumber + '-' + year + '-' + duration + '.' + 
-                                    documentCatAbbr[documentCategory] + '.' + no +
-                                    '-' + boxNumber;
+            var indexList = fileCategoryList.indexOf(fileCategory),
+                docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
+            var no;
+            if (indexList > -1) {
+                no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
+            } else {
+                no = 'idx'
+            }
+            var documentNumber = recordGroupNumber + '-' + year + '-' + durationDict[duration] + '.' + 
+                                 docCatAbbr + '.' + no +
+                                 '-' + boxNumber;
             form.val('view-form', {
                 "documentNumber": documentNumber
             });
