@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-08 10:13:37
- * @LastEditTime: 2020-10-08 11:20:13
+ * @LastEditTime: 2020-10-11 18:11:10
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\get-user.js
@@ -29,9 +29,7 @@ function getCurrUser() {
         logUrl = logUrl3;
     }
     
-    var userId = '';
-    var nickName = '';
-    var roleId = ''
+    var user = {};
     $.ajax({
         url: url,
         type: 'get',
@@ -39,9 +37,11 @@ function getCurrUser() {
         success: function(res) {
             if (res.code === 0) {
                 var body = res.body;
-                userId = body.userId;
-                nickName = body.nickName;
-                roleId = body.roleId;
+                user['username'] = body.userId;
+                user['nickname'] = body.nickname;
+                user['rolename'] = body.rolename;
+                user['permissions'] = body.permissions;
+                localStorage.setItem('user', JSON.stringify(user));
             } else if (res.code === 12) {
                 layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                     top.location.href = logUrl;
@@ -54,21 +54,13 @@ function getCurrUser() {
         }
     });
 
-    return {
-        username: userId,
-        nickname: nickName,
-        roleId: roleId
-    }
+    return user;
 }
 
 function getUser() {
-    username = $.cookie('uu');
-    nickname = $.cookie('nickname');
-    if (username && nickname) {
-        return {
-            username: username,
-            nickname: nickname
-        }
+    var user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+        return user;
     } else {
         return getCurrUser();
     }

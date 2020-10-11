@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-05 15:43:36
- * @LastEditTime: 2020-10-09 15:14:00
+ * @LastEditTime: 2020-10-11 17:26:19
  * @LastEditors: liyan
  * @Description: 修改角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
@@ -61,7 +61,7 @@
 
         function renderTable(rolename, hasPermissions) {
             $("#rolename").val(rolename);
-            var allPermissions = dataTrans(permissions, hasPermissions);
+            var allPermissions = dataTrans(PERMISSIONS, hasPermissions);
             table.render({
                 elem: '#permission-table',
                 id: 'permission-table',

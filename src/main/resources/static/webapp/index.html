@@ -10,7 +10,7 @@
     <META HTTP-EQUIV="expires" CONTENT="0">
 
     <meta http-equiv="cache-control" content="no-cache">
-    <title>武侯区就业局档案管理系统</title>
+    <title>武侯区社会保险事业管理局</title>
     <link rel="icon" href="images/favicon.png">
     <link rel="stylesheet" href="layui/css/layui.css">
     <link rel="stylesheet" href="css/layuimini.css">
@@ -46,7 +46,7 @@
                         <a href="javascript:;" id="nickname">admin</a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料</a>
+                                <a href="javascript:;" layuimini-content-href="pages/user/user-info.html" data-title="基本资料" data-icon="fa fa-gears">基本资料</a>
                             </dd>
                             <dd>
                                 <a href="javascript:;" id="update-password" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
@@ -106,13 +106,14 @@
 
     </div>
     <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.cookie.js"></script>
     <script src="layui/layui.js"></script>
     <script src="js/lay-config.js"></script>
+    <script src="js/get-user.js"></script>
     <script>
         $(document).ready(function() {
             (function() {
-                $("#nickname").html($.cookie("nickname"));
+                var user = getUser();
+                $("#nickname").html(user.nickname);
             })();
         })
         layui.use(['layer', 'miniAdmin'], function () {
@@ -171,8 +172,24 @@
                     success: function(layero, index) {
                         layer.iframeAuto(index);
                     }
-                })
-            })
+                });
+            });
+            // $('#user-info').on('click', function() {
+            //     layer.open({
+            //         id: 'pass',
+            //         title: '基本资料',
+            //         type: 2,
+            //         content: './pages/user-info.html',
+            //         btn: ['取消'],
+            //         area: ['600px', '300px'],
+            //         closeBtn: 0,
+            //         anmi: 5,
+            //         success: function(layero, index) {
+            //             layer.iframeAuto(index);
+            //         }
+            //     });
+            // });
+
         });
     </script>
 </body>
