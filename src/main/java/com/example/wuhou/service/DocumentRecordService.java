@@ -87,7 +87,7 @@ public class DocumentRecordService {
             out.flush();
             out.close();
         }
-        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件: " + Arrays.toString(filelist));
+        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件");
     }
 //    public DocumentFile downLoadDocumentRecordFile(String fileId){
 //        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));

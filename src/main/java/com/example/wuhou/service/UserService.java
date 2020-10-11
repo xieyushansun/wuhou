@@ -40,12 +40,10 @@ public class UserService {
         user.setSalt(salt);
         Md5Hash md5Hash = new Md5Hash(password, salt,5);
         user.setPassword(md5Hash.toHex());
-
         user.setNickName(nickName);
-        if (roleId.equals("")) {
-            user.setRoleId("guest");
-            userDao.addUser(user);
-        } else {
+        user.setRoleId("guest");
+        userDao.addUser(user);
+        if (!roleId.equals("")) {
             userDao.addUser(user);
             roleDao.userRoleAuthorize(userId, roleId);
         }
