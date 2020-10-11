@@ -48,6 +48,7 @@ public class ShiroConfig {
 //        bean.setLoginUrl("/webapp/pages/403.html");
         bean.setLoginUrl("/webapp/login.html");
         bean.setUnauthorizedUrl("/webapp/403.html");
+
         return bean;
     }
 
