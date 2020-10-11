@@ -1,10 +1,10 @@
 /*
  * @Author: liyan
  * @Date: 2020-09-21 20:16:16
- * @LastEditTime: 2020-09-21 22:04:10
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-10-11 09:36:35
+ * @LastEditors: liyan
  * @Description: 用于档案类别和案卷类别下拉选择的渲染和数据处理
- * @FilePath: \archives-management\archives-management\src\main\webapp\js\document-category-render.js
+ * @FilePath: \wuhou\src\main\resources\static\webapp\js\document-category-render.js
  */
 
 // 获取档案类别
@@ -68,28 +68,40 @@ function getFileCategoryList(data, documentCategory=null) {
 }
 
 // 创建option list
-function makeOption(data_list, documentCatAbbr=undefined, file=undefined){
+function makeDocumentOption(data_list, documentCatAbbr){
     if (!Array.isArray(data_list)) {
         return [];
     }
     var option_list = [{val: '', text: ''}];
-    if (documentCatAbbr !== undefined) {
-        for (var indexList = 0; indexList < data_list.length; indexList++) {
-            var data = data_list[indexList];
-            var abbr = documentCatAbbr[data];
-            option_list.push({"val": data, "text": data + '-' + abbr});
-        }
-    } else if (file !== undefined) {
-        for (var indexList = 0; indexList < data_list.length; indexList++) {
-            var data = data_list[indexList];
-            var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
-            option_list.push({"val": data, "text": data + '-' + no});
-        }
-    } else {
-        for (var indexList = 0; indexList < data_list.length; indexList++) {
-            var data = data_list[indexList];
-            option_list.push({"val": data, "text": data});
-        }
+    for (var indexList = 0; indexList < data_list.length; indexList++) {
+        var data = data_list[indexList];
+        var abbr = documentCatAbbr[data];
+        option_list.push({"val": data, "text": data + '-' + abbr});
+    }
+    return option_list;
+}
+
+function makeFileOption(data_list){
+    if (!Array.isArray(data_list)) {
+        return [];
+    }
+    var option_list = [{val: '', text: ''}];
+    for (var indexList = 0; indexList < data_list.length; indexList++) {
+        var data = data_list[indexList];
+        var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
+        option_list.push({"val": data, "text": data + '-' + no});
+    }
+    return option_list;
+}
+
+function makeOption(data_list) {
+    if (!Array.isArray(data_list)) {
+        return [];
+    }
+    var option_list = [{val: '', text: ''}];
+    for (var indexList = 0; indexList < data_list.length; indexList++) {
+        var data = data_list[indexList];
+        option_list.push({"val": data, "text": data});
     }
     return option_list;
 }
@@ -110,12 +122,12 @@ function changeOption(filter, option_list){
 
 // select标签的初始化渲染
 function selectInit(data, add=false) {
-    documentCategoryList = getDocumentCategoryList(data); // 获取档案类别的list
-    fileCategoryList = getFileCategoryList(data);
+    var documentCategoryList = getDocumentCategoryList(data); // 获取档案类别的list
+    var fileCategoryList = getFileCategoryList(data);
     if (add) {
         var documentCatAbbr = getDocCatAbbr(data);
-        changeOption('documentCategory', makeOption(documentCategoryList, documentCatAbbr=documentCatAbbr));
-        changeOption('fileCategory', makeOption(fileCategoryList, documentCatAbbr=undefined, file=true));
+        changeOption('documentCategory', makeDocumentOption(documentCategoryList, documentCatAbbr));
+        changeOption('fileCategory', makeFileOption(fileCategoryList, file=true));
     } else {
         changeOption('documentCategory', makeOption(documentCategoryList)); //修改档案类别的option;
         changeOption('fileCategory', makeOption(fileCategoryList));
