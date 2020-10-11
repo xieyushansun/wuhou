@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-08 10:13:37
- * @LastEditTime: 2020-10-11 18:11:10
+ * @LastEditTime: 2020-10-11 21:05:59
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\get-user.js
@@ -38,8 +38,8 @@ function getCurrUser() {
             if (res.code === 0) {
                 var body = res.body;
                 user['username'] = body.userId;
-                user['nickname'] = body.nickname;
-                user['rolename'] = body.rolename;
+                user['nickname'] = body.nickName;
+                user['rolename'] = body.roleName;
                 user['permissions'] = body.permissions;
                 localStorage.setItem('user', JSON.stringify(user));
             } else if (res.code === 12) {
