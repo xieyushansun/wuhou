@@ -206,7 +206,8 @@
     var Viewer = window.Viewer;
 
     var documentCategoryData, // 档案类别的数据
-        documentCatAbbr; // 档案类别缩写；
+        documentCatAbbr, // 档案类别缩写；
+        fileCategoryList = [];
 
     var fileListView = $('#fileList'), // 文件列表的展示元素
         uploadInst; // 文件上传的实例，后期赋值，重载
@@ -376,8 +377,8 @@
     form.on('select(documentCategory)', function(data) {
         makeDocumentNo();
         var documentCategory = data.value,
-            fileCategory = '',
-            fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+            fileCategory = '';
+        fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
         changeOption('fileCategory', makeFileOption(fileCategoryList));
         form.render('select');
         console.log(documentCategory);
@@ -403,7 +404,7 @@
             url: '../../../document/adddocumentrecordfile',
             accept: 'file',
             multiple: true,
-            data: documentRecordId,
+            data: {documentRecordId: documentRecordId},
             auto: false,
             bindAction: '#testListAction',
             choose: function(obj) {

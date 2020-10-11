@@ -234,7 +234,8 @@
             documentCatAbbr; // 档案类别缩写；
 
         var documentCategory = parent.documentCategory,
-            fileCategory = parent.fileCategory;
+            fileCategory = parent.fileCategory,
+            fileCategoryList = [];
 
         var durationDict = {
             '10年': 'D',
@@ -328,11 +329,10 @@
         form.on('select(documentCategory)', function(data) {
             makeDocumentNo();
             var documentCategory = data.value,
-                fileCategory = '',
-                fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
+                fileCategory = '';
+            fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory);
             changeOption('fileCategory', makeFileOption(fileCategoryList));
             form.render('select');
-            console.log(documentCategory);
         });
 
         // 监听案卷类别下拉选择的变化
@@ -402,7 +402,6 @@
                                     '</td>', 
                                 '</tr>'].join(''));
                             $("#images").append("<li><img src='" + result + "' alt='" + file.name + "'></li>");
-                            imgIdx++;
                             imgList.push(file.name);
                             viewer.update();
                         } else {
