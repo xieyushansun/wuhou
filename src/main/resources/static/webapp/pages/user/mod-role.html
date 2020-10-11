@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-05 15:43:36
- * @LastEditTime: 2020-10-11 17:26:19
+ * @LastEditTime: 2020-10-11 22:11:14
  * @LastEditors: liyan
  * @Description: 修改角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
@@ -24,7 +24,7 @@
 <body>
     <div class="layuimini-container">
         <div class="layuimini-main">
-            <fieldset class="table-search-fieldset">
+            <fieldset class="table-search-fieldset" style="margin: 0 64px;">
                 <div style="margin: 10p;">
                     <div class="layui-form layui-form-pane">
                         <div class="layui-form-item">
@@ -67,9 +67,11 @@
                 id: 'permission-table',
                 data: allPermissions,
                 cols: [[
-                {field: 'permission_name', title: '权限名称', width: 200, unresize: true, align: 'center'},
-                {title:'赋予权限', width:110, templet: '#checkboxTpl', unresize: true, align: 'center'}
+                    {field: 'permission_name', title: '权限名称', width: 200, unresize: true, align: 'center'},
+                    {title:'赋予权限', width:110, templet: '#checkboxTpl', unresize: true, align: 'center'},
+                    {field: 'tips', title: '备注', width: 200, unresize: true, align: 'center'}
                 ]],
+                width: 514,
                 limit: 20
             });
         }
