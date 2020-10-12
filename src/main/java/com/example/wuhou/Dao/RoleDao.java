@@ -72,16 +72,16 @@ public class RoleDao {
         logDao.insertLog("role", "删除", "删除角色 > " + role.getRoleName());
     }
     //修改角色
-    public void modifyRole(Role role, String roleId){
+    public void modifyRole(Role role, String roleId) throws Exception {
         //首先删除要修改的角色数据
 //        deleteRole(id);
 //        role.setId(id);
 //        addRole(role);
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(roleId)));
-        Role role1 = mongoTemplate.findOne(query, Role.class);
         Update update = Update.update("roleName", role.getRoleName()).set("permissions", role.getPermissions());
         mongoTemplate.updateMulti(query, update, Role.class);
+        logDao.insertLog("role", "修改", "修改角色: " + role.getRoleName());
 
     }
     //获取所有角色
@@ -104,7 +104,7 @@ public class RoleDao {
         query.addCriteria(criteria);
         update.set("roleId", new ObjectId(roleId));
         mongoTemplate.updateFirst(query, update, User.class);
-        logDao.insertLog("role", "修改", "为用户 " + userId + "添加角色id > " + roleId);
+        logDao.insertLog("role", "修改", "为用户 " + userId + " 添加角色id > " + roleId);
     }
     //删除用户角色，默认回到guest，没有任何权限
     public void removeUserRoleAuthorize(String userId) throws Exception {
