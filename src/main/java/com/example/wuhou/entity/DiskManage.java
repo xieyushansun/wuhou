@@ -17,7 +17,6 @@ public class DiskManage {
     //是否被选中过（是否存有数据）
     String isUsed;
 
-
     public DiskManage(){
         _id = null;
         diskName = "";

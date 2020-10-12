@@ -53,7 +53,7 @@ layui.use(['table', 'form', 'layer'], function () {
     $("#search-btn").on("click", function() {
         var documentNumber = $("#document-no").val();
         if (documentNumber === "")  {
-            layer.tips('请填写完整档号', '#nocument-no');
+            layer.tips('请填写完整档号', '#document-no');
             return;
         }
         table.reload('search-table', {
