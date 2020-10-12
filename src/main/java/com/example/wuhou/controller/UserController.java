@@ -48,39 +48,12 @@ public class UserController {
             @ApiParam(value = "用户名", required = true) @RequestParam() String userId,
             @ApiParam(value = "密码", required = true) @RequestParam() String password
     ) throws Exception {
-//        Boolean isLogin = false;
-//        User user;
-//        try {
-//            user = userService.login(userId, password);
-//        } catch (NotExistException e) {
-//            return new ResultUtil<>(ResponseConstant.ResponseCode.EXIST_ERROR, "用户不存在");
-//        } catch (Exception e) {
-//            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, e.getMessage());
-//        }
-////        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "登录成功！");
-////        String userame = userfind.getUserName();
-//        if (user != null){
-////            User user = new User();
-////            user.setRole("role");
-//            user.setPassword("");
-//            user.setSalt("");
-////            user.setNickName("nickName");
-//            ResultUtil<User> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "登录成功！");
-//            resultUtil.setBody(user);
-//            return resultUtil;
-//        }else{
-//            ResultUtil<User> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.NOT_LOGIN, "用户名或密码错误！");
-//            resultUtil.setBody(null);
-//            return resultUtil;
-//        }
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(userId, password);
         try {
             subject.login(token);
             //设置30分钟后登陆超时
             SecurityUtils.getSubject().getSession().setTimeout(1800000);
-
-
             logDao.insertLog("登录操作", "登录", "用户名为: " + userId + " 的用户登录系统！");
         }catch (UnknownAccountException e){ //用户名不存在
             return new ResultUtil<>(ResponseConstant.ResponseCode.EXIST_ERROR, "用户不存在！");
@@ -89,12 +62,9 @@ public class UserController {
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "登录失败: " + e.getMessage());
         }
-
         // 用来触发登录界面
         if (subject.isAuthenticated()){
             subject.hasRole("test");
-//            System.out.println(subject.hasRole("role1"));
-//            System.out.println(subject.hasAllRoles(Arrays.asList("role1", "role2")));
         }
         ResultUtil<User> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "登录成功啦！");
         DiskManage diskManage = diskManageDao.getCurrentDiskNameAndSpace();
@@ -164,16 +134,15 @@ public class UserController {
         UserRole userRole = new UserRole();
         if (user.getRoleId().equals("guest")){
             userRole.setRoleName("guest");
-            userRole.setPermitions(new HashSet<>());
+            userRole.setPermission(new HashSet<>());
         }else {
             role = roleDao.findRoleByRoleId(user.getRoleId());
             userRole.setRoleName(role.getRoleName());
-            userRole.setPermitions(role.getPermissions());
+            userRole.setPermission(role.getPermissions());
         }
         userRole.setUserId(user.getUserId());
         userRole.setNickName(user.getNickName());
         return new UserRoleUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", userRole);
-
     }
 
     @PostMapping("/changePassword")

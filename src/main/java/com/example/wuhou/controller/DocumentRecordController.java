@@ -51,10 +51,8 @@ public class DocumentRecordController {
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime
-//            @ApiParam(value = "所在盘符路径", required = true) @RequestParam(defaultValue = "1") String diskPath,
-//            @ApiParam(value = "盘符下的存储路径", required = true) @RequestParam(defaultValue = "1") String storePath
             ){
-        String documentRecordId = "";
+        String documentRecordId;
         try {
             DocumentRecord documentRecord = new DocumentRecord();
 
@@ -83,19 +81,6 @@ public class DocumentRecordController {
         //返回档案记录Id
         resultUtil.setBody(documentRecordId);
         return resultUtil;
-//        List<String> filelist = new ArrayList<>();
-//        filelist = documentRecordService.findFileListByFileName(fileCategory);
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.addProperty("id", documentRecordId);
-////        jsonObject.addProperty("filelist", filelist);
-//        JsonArray jsonArray = new JsonArray();
-//        for (int i = 0; i < filelist.size(); i++){
-//            jsonArray.add(filelist.get(i));
-//        }
-//        jsonObject.add("filelist", jsonArray);
-//        ResultUtil<String> resultUtil = new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
-//        resultUtil.setBody(jsonObject.toString());  //返回档案在数据库中存储的id
-//        return resultUtil;
     }
 
     //删除档案
@@ -156,31 +141,6 @@ public class DocumentRecordController {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "下载失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "下载成功！");
-//        FileOutputStream fileOutputStream = null;
-//        DocumentFile documentFile = documentRecordService.downLoadDocumentRecordFile(fileId);
-//        byte[] buffer = documentFile.getFile();
-//
-//        //先下载到本地
-////        String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
-////        FileOutputStream out = new FileOutputStream(new File(path));
-////        out.write(buffer);
-////        File f = new File(path);
-////
-////        FileInputStream fileInputStream = new FileInputStream(f);
-//
-//        //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
-//        response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode("test3.jpg", "UTF-8"));
-//        OutputStream outputStream = response.getOutputStream();
-////        byte[] bytes = new byte[204800];
-//        int len = buffer.length;
-////        while ((len = fileInputStream.read(bytes))>0){
-//            outputStream.write(buffer,0,len);
-////        }
-////        fileInputStream.close();
-//        outputStream.close();
-
-//        return response;
-//      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
 
     //预览档案文件
@@ -210,31 +170,6 @@ public class DocumentRecordController {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "预览失败: " + e.getMessage());
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "预览成功！");
-//        FileOutputStream fileOutputStream = null;
-//        DocumentFile documentFile = documentRecordService.downLoadDocumentRecordFile(fileId);
-//        byte[] buffer = documentFile.getFile();
-//
-//        //先下载到本地
-////        String path = "C:\\Users\\DF\\Desktop\\test11.jpg";
-////        FileOutputStream out = new FileOutputStream(new File(path));
-////        out.write(buffer);
-////        File f = new File(path);
-////
-////        FileInputStream fileInputStream = new FileInputStream(f);
-//
-//        //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
-//        response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode("test3.jpg", "UTF-8"));
-//        OutputStream outputStream = response.getOutputStream();
-////        byte[] bytes = new byte[204800];
-//        int len = buffer.length;
-////        while ((len = fileInputStream.read(bytes))>0){
-//            outputStream.write(buffer,0,len);
-////        }
-////        fileInputStream.close();
-//        outputStream.close();
-
-//        return response;
-//      return new ResultUtil<fileOutputStream>(ResponseConstant.ResponseCode.SUCCESS, "下载成功!");
     }
     //根据档案记录Id查询路径下对应的文件清单名
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)

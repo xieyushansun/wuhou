@@ -74,7 +74,7 @@ public class RoleController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "修改成功！");
     }
-    @RequiresRoles(value = {PermissionConstant.ROLE_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @RequiresRoles(value = {PermissionConstant.ROLE_MANAGE, PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/getAllRole")
     @ApiOperation("获取所有角色内容")
     public ResultUtil<List<Role>> getAllRole(){
@@ -88,7 +88,7 @@ public class RoleController {
         resultUtil.setBody(roleList);
         return resultUtil;
     }
-    @RequiresRoles(value = {PermissionConstant.ROLE_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/userRoleAuthorize")
     @ApiOperation("为用户授权")
     public ResultUtil<String>userRoleAuthorize(String userId, String roleId){
@@ -100,7 +100,7 @@ public class RoleController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "角色授权成功！");
     }
 
-    @RequiresRoles(value = {PermissionConstant.ROLE_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @RequiresRoles(value = {PermissionConstant.USER_MANAGE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/removeUserRoleAuthorize")
     @ApiOperation("删除用户当前角色，默认为guest")
     public ResultUtil<String>removeUserRoleAuthorize(String userId){
