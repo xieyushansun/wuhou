@@ -182,6 +182,7 @@
                 $.ajax({
                     url: '../../DiskManage/getUsedDiskNameAndSpace',
                     type: 'get',
+                    cache: false,
                     success: function(res) {
                         if (res.code === 0) {
                             renderDisk(res.body);
@@ -223,6 +224,7 @@
                 $.ajax({
                     url: '../../DiskManage/getAllDiskNameAndSpace',
                     type: 'get',
+                    cache: false,
                     success: function(res) {
                         if (res.code === 0) {
                             disks = res.body;

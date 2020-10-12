@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-08 10:13:37
- * @LastEditTime: 2020-10-12 14:46:39
+ * @LastEditTime: 2020-10-12 21:29:40
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\get-user.js
@@ -34,6 +34,7 @@ function getCurrUser() {
         url: url,
         type: 'get',
         async: false,
+        cache: false,
         success: function(res) {
             if (res.code === 0) {
                 var body = res.body;

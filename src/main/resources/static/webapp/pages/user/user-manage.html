@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-10-12 15:20:37
+ * @LastEditTime: 2020-10-12 21:35:15
  * @LastEditors: liyan
  * @Description: 用户管理页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-manage.html
@@ -61,6 +61,7 @@
                 url: "../../../role/getAllRole",
                 type: "get",
                 async: false,
+                cache: false,
                 success: function(res) {
                     if (res.code === 0) {
                         roles = res.body;
@@ -126,6 +127,7 @@
                 $.ajax({
                     url: '../../../user/getAllUser',
                     type: 'get',
+                    cache: false,
                     success: function (res) {
                         if (res.code === 0) {
                             var data = res.body;

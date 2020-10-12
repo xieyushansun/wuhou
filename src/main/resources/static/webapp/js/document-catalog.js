@@ -93,6 +93,7 @@ layui.use(['table', 'form', 'layer'], function () {
                 url: '../../../cataloging/generateFileCatalog',
                 data: {documentNumber: documentNumber},
                 type: 'get',
+                cache: false,
                 beforeSend: function() {
                     $('#search-btn').addClass('layui-disabled'); // 查询按钮禁用
                     $('.loading').removeClass('layui-hide'); // 显示加载按钮
