@@ -294,7 +294,9 @@ public class DocumentRecordDao {
                 .set("danweiName", documentRecord.getDanweiName())
                 .set("position", documentRecord.getPosition())
                 .set("recorder", documentRecord.getRecorder())
-                .set("recordTime", documentRecord.getRecordTime());
+                .set("recordTime", documentRecord.getRecordTime())
+                .set("diskPath", documentRecord.getDiskPath())
+                .set("storePath", documentRecord.getStorePath());
         mongoTemplate.updateFirst(query, update, DocumentRecord.class);
         logDao.insertLog("documentRecord", "修改", "修改案卷题名为" + documentRecord.getFileName() + " 的档案记录内容");
     }
