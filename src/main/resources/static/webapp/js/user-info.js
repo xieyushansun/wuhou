@@ -28,9 +28,11 @@ layui.use(['form', 'table'], function() {
         elem: '#permission-table',
         id: 'permission-table',
         data: permissionNames,
+        defaultToolbar: [],
         cols: [[
             {field: 'permission_name', title: '权限', align: 'center'}
         ]],
-        width: 300
+        width: 300,
+        limit: 50
     });
 });

@@ -21,7 +21,7 @@ layui.use(['table', 'form', 'layer'], function () {
             {field: 'security', title: '密级', width: 70, minWidth: 70},
             {field: 'documentCategory', title: '档案类别', width: 150, minWidth: 120},
             {field: 'fileCategory', title: '案卷类型', width: 150, minWidth: 120},
-            {field: 'fileNumber', title: '案卷号', width: 80, minWidth: 80},
+            {field: 'boxNumber', title: '案卷号', width: 80, minWidth: 80},
             {field: 'responsible', title: '责任者', width: 150, minWidth: 150},
             {field: 'danweiCode', title: '单位代码', width: 200, minWidth: 150},
             {field: 'danweiName', title: '单位名称', width: 150, minWidth: 150},
@@ -72,6 +72,7 @@ layui.use(['table', 'form', 'layer'], function () {
                     $('.down-btn').addClass('layui-hide').removeAttr('href');
                 } else if (res.code === 12) {
                     top.layui.layer.msg('登录失效', {time: 1.2*1000});
+                    top.location.href = '../../login.html';
                 }
             }
         });

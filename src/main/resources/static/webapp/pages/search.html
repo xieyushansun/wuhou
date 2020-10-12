@@ -56,7 +56,7 @@
                 {field: 'security', title: '密级', width: 70, minWidth: 70},
                 {field: 'documentCategory', title: '档案类别', width: 150, minWidth: 120},
                 {field: 'fileCategory', title: '案卷类型', width: 150, minWidth: 120},
-                {field: 'fileNumber', title: '案卷号', width: 80, minWidth: 80},
+                {field: 'boxNumber', title: '案卷号', width: 80, minWidth: 80},
                 {field: 'responsible', title: '责任者', width: 150, minWidth: 150},
                 {field: 'danweiCode', title: '单位代码', width: 200, minWidth: 150},
                 {field: 'danweiName', title: '单位名称', width: 150, minWidth: 150},
@@ -83,6 +83,12 @@
             },
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
+            done: function(res) {
+                if (res.code === 12) {
+                    layer.msg('登录超时', {time: 0.8*1000, anim: 6});
+                    top.location.href = '../login.html';
+                }
+            }
         });
 
         // 监听搜索操作
@@ -113,10 +119,15 @@
                                 // 是否模糊查询
                                 formData['blurryFind'] = iframeWin.layui.form.val(formFilter).blurryFind;
                             } else {
+                                var oneValue = iframeWin.layui.form.val(formFilter);
+                                if (onValue.fieldContent === "") {
+                                    return true;
+                                }
                                 list.push(iframeWin.layui.form.val(formFilter));
                             }
                         })
                         formData['list'] = JSON.stringify(list);
+                        
                     }
                     if (formData.blurryFind === undefined) {
                         formData.blurryFind = '1';

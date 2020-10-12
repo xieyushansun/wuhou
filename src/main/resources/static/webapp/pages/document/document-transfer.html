@@ -120,6 +120,12 @@
             request: {
                 pageName: 'currentPage',
                 limitName: 'pageSize'
+            },
+            done: function(res) {
+                if (res.code === 12) {
+                    layer.msg('登录超时', {time: 0.8*1000, anim: 6});
+                    top.location.href = '../../login.html';
+                }
             }
         });
 
@@ -154,13 +160,13 @@
                                 '<div class="layui-inline">',
                                     '<label class="layui-form-label">盒号</label>',
                                     '<div class="layui-input-inline">',
-                                        '<input type="text" name="boxNumber" autocomplete="off" class="layui-input">',
+                                        '<input type="text" name="boxNumber" lay-verify="required" autocomplete="off" class="layui-input">',
                                     '</div>',
                                 '</div>',
                                 '<div class="layui-inline">',
                                     '<label class="layui-form-label">调卷人</label>',
                                     '<div class="layui-input-inline">',
-                                        '<input type="text" name="borrower" autocomplete="off" class="layui-input">',
+                                        '<input type="text" name="borrower" lay-verify="required" autocomplete="off" class="layui-input">',
                                     '</div>',
                                 '</div>',
                             '</div>',
@@ -177,6 +183,7 @@
                             success: function(res) {
                                 if (res.code === 0) {
                                     layer.msg('登记成功', {time: 0.6*1000, icon: 1});
+                                    layer.close(index); // 添加成后关闭
                                     table.reload('transfor-table', {
                                         url: '../../../DocumentTransfer/findAllDocumentTransfer',
                                     });
