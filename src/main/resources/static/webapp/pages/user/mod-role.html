@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-05 15:43:36
- * @LastEditTime: 2020-10-11 22:11:14
+ * @LastEditTime: 2020-10-12 15:19:36
  * @LastEditors: liyan
  * @Description: 修改角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\mod-role.html
@@ -103,7 +103,7 @@
                             top.location.href = '../../login.html';
                         });
                     } else {
-                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
                 }, 
                 error: function(jqxhr, textStatus, errorThrown) {

@@ -108,6 +108,9 @@
     <script src="js/jquery.min.js"></script>
     <script src="layui/layui.js"></script>
     <script src="js/lay-config.js"></script>
+    <script>
+        const ERROR_TIME = 1.8*1000;
+    </script>
     <script src="js/get-user.js"></script>
     <script>
         layui.use(['layer', 'miniAdmin'], function () {
@@ -149,7 +152,7 @@
                                 top.location.href = './login.html';
                             });
                         } else {
-                            layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                            layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                         }
                     },
                     error: function(jqxhr, textStatus, errorThrown) {

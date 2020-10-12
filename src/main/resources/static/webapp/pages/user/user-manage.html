@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-10-09 09:38:51
+ * @LastEditTime: 2020-10-12 15:20:37
  * @LastEditors: liyan
  * @Description: 用户管理页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-manage.html
@@ -73,7 +73,7 @@
                             top.location.href = '../../login.html';
                         });
                     } else {
-                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
@@ -137,7 +137,7 @@
                                 top.location.href = '../../login.html';
                             });
                         } else {
-                            layer.msg(res.message, {time: 0.8 * 1000, icon: 2});
+                            layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                         }
                     },
                     error: function (jqxhr, textStatus, errorThrown) {
@@ -190,7 +190,7 @@
                                         top.location.href = '../../login.html';
                                     });
                                 } else {
-                                    layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                                    layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                                 }
                             }, 
                             error: function(jqxhr, textStatus, errorThrown) {
@@ -214,7 +214,7 @@
                                     top.location.href = '../../login.html';
                                 });
                             } else {
-                                layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                                layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                             }
                         },
                         error: function(jqxhr, textStatus, errorThrown) {
@@ -257,7 +257,7 @@
                                             top.location.href = '../../login.html';
                                         });
                                     } else {
-                                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                                     }
                                 }, 
                                 error: function(jqxhr, textStatus, errorThrown) {
