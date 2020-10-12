@@ -60,6 +60,7 @@ layui.use(['layer', 'miniAdmin'], function () {
         $.ajax({
             url: '../../DiskManage/getCurrentDiskNameAndSpace',
             type: 'get',
+            cache: false,
             success: function(res) {
                 if (res.code === 0) {
                     var disk = res.body;

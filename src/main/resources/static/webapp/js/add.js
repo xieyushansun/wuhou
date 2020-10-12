@@ -30,6 +30,7 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         $.ajax({
             url: "../../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
             type: "get",
+            cache: false,
             success: function(res) {
                 if (res.code == 0) {
                     documentCategoryData = res.body;

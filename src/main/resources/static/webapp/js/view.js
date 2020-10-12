@@ -39,6 +39,7 @@ function getCat() {
     $.ajax({
         url: "../../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
         type: "get",
+        cache: false,
         async: false,
         success: function(res) {
             if (res.code === 0) {
@@ -81,7 +82,8 @@ function fillData(data) {
         "position": data.position,
         "recorder": data.recorder,
         "recordTime": data.recordTime,
-        "diskPath": data.diskPath
+        "diskPath": data.diskPath,
+        "sotrePath": data.storePath
     });
     form.render();
     // 获取文件列表
@@ -437,6 +439,7 @@ function getFileList() {
     $.ajax({
         url: '../../../document/findFileListByDocumentRecordId',
         type: 'get',
+        cache: false,
         data: {documentRecordId: documentRecordId},
         success: function(res) {
             if (res.code === 0) {

@@ -63,6 +63,7 @@ layui.use(['layer', 'table', 'form', 'soulTable'], function() {
         $.ajax({
             url: "../../../DocumentCategory/FindAllDocumentCategory",
             type: "get",
+            cache: false,
             success: function(res) {
                 if (res.code === 0) {
                     tableData = res.body;

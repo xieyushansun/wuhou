@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-10-12 20:53:41
+ * @LastEditTime: 2020-10-12 21:32:53
  * @LastEditors: liyan
  * @Description: 创建档案页面的查询页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\create-file.html
@@ -81,6 +81,7 @@
                 $.ajax({
                     url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
                     type: "get",
+                    cache: false,
                     success: function(res) {
                         if (res.code === 0) {
                             documentCategoryData = res.body;
