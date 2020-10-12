@@ -1,16 +1,14 @@
 package com.example.wuhou.Dao;
 
+import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.entity.DiskManage;
 import com.example.wuhou.entity.DiskManageForDataBase;
-import com.example.wuhou.util.PageUtil;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +18,6 @@ public class DiskManageDao {
     @Autowired
     MongoTemplate mongoTemplate;
     public List<DiskManage> getAllDiskNameAndSpaceFromComputer() throws Exception {
-//        List<DiskManage> diskManageList = mongoTemplate.findAll(DiskManage.class);
-//        if (diskManageList.size() == 0){
-//            refreshDiskDatabase();
-//            return mongoTemplate.findAll(DiskManage.class);
-//        }else {
-//            return diskManageList;
-//        }
         File[] roots = File.listRoots();
         if (roots.length == 0){
             throw new Exception("此电脑上没有磁盘！");
@@ -88,43 +79,6 @@ public class DiskManageDao {
         }
         throw new Exception("没有该磁盘！");
     }
-    // 更新数据库中磁盘内容
-//    public void refreshDiskDatabase() throws Exception {
-//        DiskManage currentDiskManage = getCurrentDiskNameAndSpace();
-//        String currentDiskName = "";
-//        if (currentDiskManage != null){
-//            currentDiskName = currentDiskManage.getDiskName();
-//        }
-//        File[] roots = File.listRoots();
-//        for (int i = 0; i < roots.length; i++) {
-//            DiskManage diskManage = new DiskManage();
-//            double totalSpace = (double) roots[i].getTotalSpace()/1024/1024/1024.;
-//            double restSpace = (double) roots[i].getFreeSpace()/1024/1024/1024.;
-//            double usedSpace = totalSpace - restSpace;
-//
-//            //总磁盘空间大小
-//            diskManage.setTotalSpace(String.format("%.2f", totalSpace));
-//            //剩余磁盘空间大小
-//            diskManage.setRestSpace(String.format("%.2f", restSpace));
-//            //已用磁盘空间大小
-//            diskManage.setUsedSpace(String.format("%.2f", usedSpace));
-//            //磁盘名
-//            diskManage.setDiskName(roots[i].getPath().split(":")[0]);
-//            //设置已使用百分比
-//            diskManage.setUsedPercent(String.format("%.0f", (restSpace/totalSpace)*100));
-//            //磁盘是否设置当前存储盘
-//            if (currentDiskManage == null){
-//                diskManage.setIsChoosed("0");
-//            }else {
-//                if (currentDiskName.equals(diskManage.getDiskName())){
-//                    diskManage.setIsChoosed("1");
-//                }else {
-//                    diskManage.setIsChoosed("0");
-//                }
-//            }
-//            mongoTemplate.insert(diskManage);
-//        }
-//    }
     public DiskManage getCurrentDiskNameAndSpace() throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("isChoosed").is("1"));
@@ -133,7 +87,6 @@ public class DiskManageDao {
             return null;
         }
         DiskManage diskManage = new DiskManage();
-
         DiskManage d = getDiskUsedSituation(diskManageForDataBase.getDiskName());
 
         diskManage.setDiskName(diskManageForDataBase.getDiskName());
@@ -195,6 +148,7 @@ public class DiskManageDao {
             //将新选择的置为1
             mongoTemplate.updateFirst(query, update2, DiskManageForDataBase.class);
         }
+        PathConstant.DISK_NAME = diskName;
     }
     public boolean checkIsDiskNameIllegal(String name){
         boolean b = false;

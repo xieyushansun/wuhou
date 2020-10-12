@@ -30,7 +30,7 @@ public class DocumentRecordService {
     DiskManageDao diskManageDao;
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
         if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
-            throw new Exception("案卷题目重复！修改后创建创建！");
+            throw new Exception("案卷题名重复，请修改后再创建！");
         }
 
         if (PathConstant.DISK_NAME.isEmpty()){
@@ -122,8 +122,10 @@ public class DocumentRecordService {
         logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
-        //初始化新记录的存储路径set
-
+        if (!documentRecordDao.checkFileName(newDocumentRecord.getFileName())){
+            throw new Exception("案卷题名重复，请修改后再保存！");
+        }
+        //初始化新记录的存储路径
         if (PathConstant.DISK_NAME.isEmpty()){
             DiskManage diskManage = diskManageDao.getCurrentDiskNameAndSpace();
             if (diskManage != null){

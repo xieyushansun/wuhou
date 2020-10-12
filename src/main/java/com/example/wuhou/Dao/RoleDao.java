@@ -2,7 +2,6 @@ package com.example.wuhou.Dao;
 
 import com.example.wuhou.entity.Role;
 import com.example.wuhou.entity.User;
-import com.example.wuhou.exception.ExistException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.bson.types.ObjectId;
@@ -47,6 +46,9 @@ public class RoleDao {
     }
     //
 
+
+    //问题修改！
+
     public void deleteRole(String id) throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(id)));
@@ -62,7 +64,7 @@ public class RoleDao {
 //        LogUtil.delteDB("删除角色 > " + role.getRoleName());
 
         Query query1 = new Query();
-        query.addCriteria(Criteria.where("roleId").is(new ObjectId(id)));
+        query1.addCriteria(Criteria.where("roleId").is(new ObjectId(id)));
         Update update = new Update();
         update.set("roleId", "guest");
         mongoTemplate.updateMulti(query1, update, User.class);
@@ -70,11 +72,17 @@ public class RoleDao {
         logDao.insertLog("role", "删除", "删除角色 > " + role.getRoleName());
     }
     //修改角色
-    public void modifyRole(Role role, String id) throws Exception {
+    public void modifyRole(Role role, String roleId){
         //首先删除要修改的角色数据
-        deleteRole(id);
-        role.setId(id);
-        addRole(role);
+//        deleteRole(id);
+//        role.setId(id);
+//        addRole(role);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(new ObjectId(roleId)));
+        Role role1 = mongoTemplate.findOne(query, Role.class);
+        Update update = Update.update("roleName", role.getRoleName()).set("permissions", role.getPermissions());
+        mongoTemplate.updateMulti(query, update, Role.class);
+
     }
     //获取所有角色
     public List<Role> getAllRole(){

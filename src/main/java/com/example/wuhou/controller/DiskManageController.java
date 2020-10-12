@@ -36,18 +36,6 @@ public class DiskManageController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", diskManageList);
     }
 
-//    @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-//    @PostMapping("/refreshDiskDatabase")
-//    @ApiOperation("更新数据库磁盘信息")
-//    public ResultUtil refreshDiskDatabase(){
-//        try {
-//            diskManageService.refreshDiskDatabase();
-//        } catch (Exception e) {
-//            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "更新失败: " + e.getMessage());
-//        }
-//        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "更新成功！");
-//    }
-
     @RequiresRoles(value = {PermissionConstant.SUPER_ONLY, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/getDiskUsedSituation")
     @ApiOperation("获取某磁盘使用状况")

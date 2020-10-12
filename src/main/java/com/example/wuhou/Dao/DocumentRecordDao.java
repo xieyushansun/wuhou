@@ -14,7 +14,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ public class DocumentRecordDao {
         if (documentRecord == null){
             throw new Exception("没有这条记录！");
         }
-
         String recordPath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
         File file = new File(recordPath);
         List<String> fileList = null;
@@ -52,13 +50,6 @@ public class DocumentRecordDao {
 //            fileList = list.get(0).getFilelist();
             fileList = Arrays.asList(file.list());
         }
-
-        //把filelist所有元素都加上路径
-//        for (int i = 0; i < fileList.size(); i++){
-//            String filename = fileList.get(i);
-//            String filepath = recordPath + "\\" + filename;
-//            fileList.set(i, filepath);
-//        }
         return fileList;
     }
     //删除文件记录
@@ -99,19 +90,8 @@ public class DocumentRecordDao {
         DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
         return documentRecord;
     }
-    //下载档案文件
-//    public DocumentFile downLoadDocumentRecordFile(ObjectId fileId) {
-//        Query query = new Query();
-//        Criteria criteria = Criteria.where("_id").is(fileId);
-//        query.addCriteria(criteria);
-//        DocumentFile documentFile = mongoTemplate.findOne(query, DocumentFile.class);
-//        return documentFile;
-////        FileOutputStream fileOutputStream = FileOperationUtil.bytesToFile(documentFile.getFile(), documentFile.getDocumentName());
-////        return fileOutputStream;
-//    }
     //普通查询
     public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
-//        List<List<DocumentRecord>> lists = new ArrayList<>();
         List<DocumentRecord> resultList;
         Query query = new Query();
         if (blurryFind.compareTo("0") == 0){ //精确
@@ -129,17 +109,11 @@ public class DocumentRecordDao {
         pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
         query.skip((currentPage - 1) * pageSize);
         query.limit(pageSize);
-//        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
         resultList = mongoTemplate.find(query, DocumentRecord.class);
         pageUtil.setBody(resultList);
-        // 将二维lists转为一维resultList
-//        for (List<DocumentRecord> list : lists) {
-//            resultList.addAll(list);
-//        }
         return pageUtil;
     }
     // 一般查询
-    //
     public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
 //        PageUtil pageUtil = new PageUtil();
 //
@@ -247,116 +221,6 @@ public class DocumentRecordDao {
     // 组合查询
     // keywordList: 字段名，字段内容，运算符，连接符
     public PageUtil combinationFindDocumentRecord(JSONArray jsonArray, String blurryFind, Integer currentPage, Integer pageSize) throws Exception {
-//        PageUtil pageUtil = new PageUtil();
-//
-//        /**
-//        * jsonArray
-//         * filedName : 字段名
-//         * filedContent : 字段内容
-//         * operator :
-//         * {
-//         *      $gt:大于
-//         *      $lt:小于
-//         *      $gte:大于或等于
-//         *      $lte:小于或等于
-//         * }
-//         * joiner : AND/OR
-//        * */
-////        "fileName" : "20120102张三就业创业补助资金",
-////        "documentNumber" : "129-2020-10年.jb.3-001",
-////        "recordGroupNumber" : "129",
-////        "boxNumber" : "001",
-////        "year" : "2020",
-////        "duration" : "10年",
-////        "security" : "绝密",
-////        "documentCategory" : "就业创业补助资金",
-////        "fileCategory" : "类别4",
-////        "responsible" : "",
-////        "danwieCode" : "danwieCode",
-////        "danweiName" : "张三",
-////        "position" : "",
-////        "recorder" : "杉杉",
-////        "recordTime" : "20201002",
-////        "diskPath" : "E:\\wuhoudocument",
-////        "storePath" : "129\\就业创业补助资金\\2020\\类别4\\001\\20120102张三就业创业补助资金",
-//        Query query = new Query();
-//        List<Criteria> criteriaAndList = new ArrayList<>();
-//        List<Criteria> criteriaOrList = new ArrayList<>();
-//        for (int i = 0; i < jsonArray.size(); i++){
-//            JSONObject jsonObject = jsonArray.getJSONObject(i);
-//            String filedName = jsonObject.get("filedName").toString();
-//            String filedContent = jsonObject.get("filedContent").toString();
-//            String operator = jsonObject.get("operator").toString();
-//            String joiner = jsonObject.get("joiner").toString();
-//
-//            if (joiner.compareTo("AND") == 0){
-//                // 判断是否是创建日期
-//                if (filedName.equals("recordTime") || filedName.compareTo("year") == 0){
-//                    switch (operator){
-//                        case "gt": criteriaAndList.add(Criteria.where(filedName).gt(filedContent)); break;
-//                        case "lt": criteriaAndList.add(Criteria.where(filedName).lt(filedContent)); break;
-//                        case "gte": criteriaAndList.add(Criteria.where(filedName).gte(filedContent)); break;
-//                        case "lte": criteriaAndList.add(Criteria.where(filedName).lte(filedContent)); break;
-//                        case "is": criteriaAndList.add(Criteria.where(filedName).is(filedContent)); break;
-//                        default: throw new Exception("操作符传递出错");
-//                    }
-//                }else {
-//                    criteriaAndList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
-//                }
-//            }else if (joiner.compareTo("OR") == 0){
-//                // 判断是否是创建日期
-//                if (filedName.equals("recordTime") || filedName.equals("year")){
-//                    switch (operator){
-//                        case "gt": criteriaOrList.add(Criteria.where(filedName).gt(filedContent)); break;
-//                        case "lt": criteriaOrList.add(Criteria.where(filedName).lt(filedContent)); break;
-//                        case "gte": criteriaOrList.add(Criteria.where(filedName).gte(filedContent)); break;
-//                        case "lte": criteriaOrList.add(Criteria.where(filedName).lte(filedContent)); break;
-//                        case "is": criteriaOrList.add(Criteria.where(filedName).is(filedContent)); break;
-//                        default: throw new Exception("操作符传递出错");
-//                    }
-//                } else {
-//                    criteriaOrList.add(Criteria.where(filedName).regex(".*?" + filedContent + ".*?"));
-//                }
-//            }
-//        }
-//        if (criteriaAndList.size() != 0 && criteriaOrList.size() != 0){
-//
-//            Criteria criteriaOr = new Criteria();
-//            Criteria criteria1[] = new Criteria[criteriaOrList.size()];
-//            criteriaOrList.toArray(criteria1);
-//            criteriaOr.orOperator(criteria1);
-//
-//            Criteria criteriaAnd = new Criteria();
-//            Criteria criteria2[] = new Criteria[criteriaAndList.size() + 1];
-//            criteriaAndList.add(criteriaOr);
-//            criteriaAndList.toArray(criteria2);
-//            criteriaAnd.andOperator(criteria2);
-//
-//            query.addCriteria(criteriaAnd);
-//
-//        }else if (criteriaAndList.size() != 0){
-//            Criteria criteriaAnd = new Criteria();
-//            Criteria criteria[] = new Criteria[criteriaAndList.size()];
-//            criteriaAndList.toArray(criteria);
-//            criteriaAnd.andOperator(criteria);
-//            query.addCriteria(criteriaAnd);
-//        }else if (criteriaOrList.size() != 0){
-//            Criteria criteriaOr = new Criteria();
-//            Criteria criteria[] = new Criteria[criteriaOrList.size()];
-//            criteriaOrList.toArray(criteria);
-//            criteriaOr.orOperator(criteria);
-//            query.addCriteria(criteriaOr);
-//        }
-//
-//        // 获取总数
-//        int n = (int) mongoTemplate.count(query, DocumentRecord.class);
-//        pageUtil.setTotalElement(n);
-//        // 分页查询
-//        query.skip((currentPage - 1) * pageSize);
-//        query.limit(pageSize);
-//        List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
-//        pageUtil.setBody(documentRecordList);
-//        return pageUtil;
         PageUtil pageUtil = new PageUtil();
         /**
          * jsonArray
@@ -371,23 +235,6 @@ public class DocumentRecordDao {
          * }
          * joiner : AND/OR
          * */
-//        "fileName" : "20120102张三就业创业补助资金",
-//        "documentNumber" : "129-2020-10年.jb.3-001",
-//        "recordGroupNumber" : "129",
-//        "boxNumber" : "001",
-//        "year" : "2020",
-//        "duration" : "10年",
-//        "security" : "绝密",
-//        "documentCategory" : "就业创业补助资金",
-//        "fileCategory" : "类别4",
-//        "responsible" : "",
-//        "danwieCode" : "danwieCode",
-//        "danweiName" : "张三",
-//        "position" : "",
-//        "recorder" : "杉杉",
-//        "recordTime" : "20201002",
-//        "diskPath" : "E:\\wuhoudocument",
-//        "storePath" : "129\\就业创业补助资金\\2020\\类别4\\001\\20120102张三就业创业补助资金",
         String lastSql = "";
         String currentSql = "";
 
@@ -466,7 +313,6 @@ public class DocumentRecordDao {
         pageUtil.setBody(documentRecordList);
         return pageUtil;
     }
-
     // 判断案卷名是否有重复的
     public Boolean checkFileName(String fileName){
         Query query = new Query();
@@ -475,7 +321,6 @@ public class DocumentRecordDao {
         List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
         return documentRecordList.size() == 0;
     }
-
     public void ModifyDocumentRecord(DocumentRecord documentRecord) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecord.getId()));

@@ -126,7 +126,7 @@ public class DocumentTransferController {
     }
     //查找未归还调卷
     @RequiresRoles(value = {PermissionConstant.SUPERADMIN, PermissionConstant.DOCUMENT_TRANSFER_MANAGE}, logical = Logical.OR)
-    @PostMapping("/findDocumentTransferByNotReturned")
+    @GetMapping("/findDocumentTransferByNotReturned")
     @ApiOperation("查找未归还调卷")
     public ResultUtil findDocumentTransferByNotReturned(){
         List<DocumentTransfer> documentTransferList;
