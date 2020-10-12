@@ -7,7 +7,7 @@ public class UserRole {
     String userId;
     String nickName;
     String roleName;
-    Set<String> permitions;
+    Set<String> permission;
 
     public String getUserId() {
         return userId;
@@ -33,11 +33,11 @@ public class UserRole {
         this.roleName = roleName;
     }
 
-    public Set<String> getPermitions() {
-        return permitions;
+    public Set<String> getPermission() {
+        return permission;
     }
 
-    public void setPermitions(Set<String> permitions) {
-        this.permitions = permitions;
+    public void setPermission(Set<String> permission) {
+        this.permission = permission;
     }
 }

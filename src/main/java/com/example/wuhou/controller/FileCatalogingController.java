@@ -31,20 +31,19 @@ public class FileCatalogingController {
     @GetMapping("/outputFileCatalog")
     @ApiOperation("导出案卷编目")
     public ResultUtil<List<Log>> outputFileCatalog(
-            @ApiParam(value = "档号", required = true) @RequestParam() String documentNumber,
+            @ApiParam(value = "下载的文件名", required = true) @RequestParam() String fileName,
             HttpServletResponse response
     ){
-        String filename = "编目导出.docx";
-        String outputPath = PathConstant.WORD_OUTPUT;
+
+        String outputPath = PathConstant.WORD_OUTPUT + "\\" + fileName;
         try {
-            //生成文件
-            fileCatalogingService.outputFileCatalog(documentNumber);
+//            Thread.sleep(10000);
             InputStream inputStream = new BufferedInputStream(new FileInputStream(outputPath));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             inputStream.close();
             response.reset();
-            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
+            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             toClient.write(buffer);
             toClient.flush();
@@ -56,5 +55,28 @@ public class FileCatalogingController {
         file.delete();
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "导出成功！");
     }
+
+    @RequiresRoles(value = {PermissionConstant.SUPERADMIN, PermissionConstant.FILE_CATALOG}, logical = Logical.OR)
+    @GetMapping("/generateFileCatalog")
+    @ApiOperation("生成案卷编目")
+    public ResultUtil generateFileCatalog(
+            @ApiParam(value = "档号", required = true) @RequestParam() String documentNumber
+    ) throws Exception {
+        String generateFileName = documentNumber + "-编目导出.docx";
+        try {
+            String outputPath = PathConstant.WORD_OUTPUT + "\\" + documentNumber + "-编目导出.docx";
+            File file = new File(outputPath);
+            if (file.exists()){
+                return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功，但可能不是最新的版本", generateFileName);
+            }
+            //生成文件
+            fileCatalogingService.outputFileCatalog(documentNumber);
+        }catch (Exception e){
+            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "生成失败: " + e.getMessage());
+        }
+
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功！", generateFileName);
+    }
+
 }
 

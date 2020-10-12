@@ -104,7 +104,7 @@ public class FileCatalogingService {
 
 
         String inputPath = PathConstant.WORD_TEMPLATE;
-        String outputPath = PathConstant.WORD_OUTPUT;
+        String outputPath = PathConstant.WORD_OUTPUT + "\\" + documentNumber + "-编目导出.docx";
 
         WorderToNewWordUtils.changWord(inputPath, outputPath, testMap, tableList);
 
