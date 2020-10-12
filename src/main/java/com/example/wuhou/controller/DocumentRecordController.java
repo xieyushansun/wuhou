@@ -379,7 +379,7 @@ public class DocumentRecordController {
             newDocumentRecord.setDiskPath(diskPath);
             newDocumentRecord.setStorePath(storePath);
 
-            documentRecordService.modifyDocumentRecord(newDocumentRecord);
+            newStorePath = documentRecordService.modifyDocumentRecord(newDocumentRecord);
 
         } catch (Exception e) {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "修改失败: " + e.getMessage());

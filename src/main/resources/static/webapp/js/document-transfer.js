@@ -26,7 +26,9 @@ layui.use(['form', 'table', 'laydate'], function () {
         ]],
         limits: [10, 15, 20, 25, 50, 100],
         limit: 15,
-        page: true,
+        page: {
+            layout: ['limit', 'count', 'refresh', 'prev', 'page', 'next', 'skip'],
+        },
         parseData: function(res) {
             return {
                 "code": res.code,

@@ -51,8 +51,8 @@ body {
 
 /**自定义滚动条样式 */
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px
+    width: 12px;
+    height: 12px
 }
 
 ::-webkit-scrollbar-track {

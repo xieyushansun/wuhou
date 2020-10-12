@@ -333,7 +333,7 @@ form.on('submit(saveBtn)', function (data) {
         success: function(res) {
             if (res.code === 0) {
                 var storePath = res.body;
-                $("input[name=sotrePath]").val(storePath);
+                $("#storePath").val(storePath);
                 layer.msg(res.message, {icon: 1}); // 保存成功，隐藏保存按钮，显示编辑按钮，重新渲染表格。
                 $("#save-btn").addClass("layui-hide").addClass("layui-disabled");
                 $("#edit-btn").removeClass("layui-hide");

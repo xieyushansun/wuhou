@@ -19,6 +19,19 @@ public class DiskManage {
 
     public DiskManage(){
         _id = null;
+        diskName = "";
+        //总共空间
+        totalSpace = "";
+        //已用空间
+        usedSpace = "";
+        //剩余空间
+        restSpace = "";
+        //设置使用百分比(整数)
+        usedPercent = "";
+        //是否选中为当前存储盘
+        isChoosed = "";
+        //是否被选中过（是否存有数据）
+        isUsed = "";
     }
 
     public String get_id() {

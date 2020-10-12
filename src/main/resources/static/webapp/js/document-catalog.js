@@ -31,8 +31,7 @@ layui.use(['table', 'form', 'layer'], function () {
             {field: 'recordTime', title: '著录时间', width: 100, minWidth: 80},
             {title: '存放路径', width: 100, templet: function(d) {
                 return d.diskPath + ':\\' + d.storePath;
-            }},
-            {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center", width: 150, fixed: 'right'}
+            }}
         ]],
         request: {
             pageName: 'currentPage',
@@ -54,7 +53,7 @@ layui.use(['table', 'form', 'layer'], function () {
     $("#search-btn").on("click", function() {
         var documentNumber = $("#document-no").val();
         if (documentNumber === "")  {
-            layer.tips('请填写完整档号', '#nocument-no');
+            layer.tips('请填写完整档号', '#document-no');
             return;
         }
         table.reload('search-table', {
@@ -66,8 +65,9 @@ layui.use(['table', 'form', 'layer'], function () {
             page: {
                 curr: 1
             },
+
             done: function(res, curr, count) {
-                if (res.code === 0) {
+                if (res.code === 0 && count > 0) {
                     $(".start-btn").removeClass('layui-disabled');
                     $('.down-btn').addClass('layui-hide').removeAttr('href');
                 } else if (res.code === 12) {

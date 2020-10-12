@@ -86,6 +86,11 @@ public class DiskManageDao {
         if (diskManageForDataBase == null){
             return null;
         }
+        File file = new File(diskManageForDataBase.getDiskName() + ":");
+        if (!file.exists()){
+            throw new Exception("磁盘: " + diskManageForDataBase.getDiskName() + " 不存在！");
+        }
+
         DiskManage diskManage = new DiskManage();
         DiskManage d = getDiskUsedSituation(diskManageForDataBase.getDiskName());
 
@@ -107,18 +112,23 @@ public class DiskManageDao {
         List<DiskManage> returnDiskManageList = new ArrayList<>();
         for (int i = 0; i < diskManageForDataBaseList.size(); i++){
             DiskManageForDataBase diskManageForDataBase =diskManageForDataBaseList.get(i);
+
             DiskManage diskManage = new DiskManage();
 
             diskManage.setDiskName(diskManageForDataBase.getDiskName());
             diskManage.setIsUsed("1");
             diskManage.setIsChoosed(diskManageForDataBase.getIsChoosed());
 
-            DiskManage d = getDiskUsedSituation(diskManageForDataBase.getDiskName());
-            diskManage.setUsedPercent(d.getUsedPercent());
-            diskManage.setTotalSpace(d.getTotalSpace());
-            diskManage.setUsedSpace(d.getUsedSpace());
-            diskManage.setRestSpace(d.getRestSpace());
-
+            File file = new File(diskManageForDataBase.getDiskName() + ":");
+            if (file.exists()){
+                DiskManage d = getDiskUsedSituation(diskManageForDataBase.getDiskName());
+                diskManage.setUsedPercent(d.getUsedPercent());
+                diskManage.setTotalSpace(d.getTotalSpace());
+                diskManage.setUsedSpace(d.getUsedSpace());
+                diskManage.setRestSpace(d.getRestSpace());
+            } else {
+                diskManage.setDiskName(diskManageForDataBase.getDiskName() + "(读取失败，请检查磁盘是否插好！)");
+            }
             returnDiskManageList.add(diskManage);
         }
         return returnDiskManageList;
