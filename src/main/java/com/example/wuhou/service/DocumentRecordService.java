@@ -138,15 +138,19 @@ public class DocumentRecordService {
                 throw new Exception("还未选择档案记录存储磁盘，请联系管理员设置存储磁盘！");
             }
         }
+        //原来的文件存放路径
+        String oldPath = newDocumentRecord.getDiskPath() + ":\\" + newDocumentRecord.getStorePath();
+
         String storePath = PathConstant.STORE_FILENAME + "\\" + newDocumentRecord.getRecordGroupNumber() + "\\" + newDocumentRecord.getDocumentCategory() + "\\" + newDocumentRecord.getYear()
                 + "\\" + newDocumentRecord.getFileCategory() + "\\" + newDocumentRecord.getBoxNumber() + "\\" + newDocumentRecord.getFileName();
         newDocumentRecord.setStorePath(storePath);
-        newDocumentRecord.setDiskPath(PathConstant.DISK_NAME);
+        newDocumentRecord.setDiskPath(newDocumentRecord.getDiskPath());
 
+        //新的文件存放路径
         String newPath = newDocumentRecord.getDiskPath() + ":\\" + storePath;
 
-        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
-        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
+//        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
+//        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
 
         // 判断新旧文件夹路径是否一样
         if (!oldPath.equals(newPath)){

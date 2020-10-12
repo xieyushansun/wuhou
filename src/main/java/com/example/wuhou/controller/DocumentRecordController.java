@@ -337,21 +337,23 @@ public class DocumentRecordController {
     @PostMapping("/modifyDocumentRecord")
     @ApiOperation("修改档案记录")
     public ResultUtil<String> modifyDocumentRecord(
-            @ApiParam(value = "案卷题名", required = true) @RequestParam(defaultValue = "1") String fileName,
-            @ApiParam(value = "档号", required = true) @RequestParam(defaultValue = "1") String documentNumber,
-            @ApiParam(value = "全宗号", required = true) @RequestParam(defaultValue = "129") String recordGroupNumber,
-            @ApiParam(value = "盒号", required = true) @RequestParam(defaultValue = "1") String boxNumber,
-            @ApiParam(value = "年份", required = true) @RequestParam(defaultValue = "1") String year,
-            @ApiParam(value = "保管期限", required = true) @RequestParam(defaultValue = "1") String duration,
+            @ApiParam(value = "案卷题名", required = true) @RequestParam() String fileName,
+            @ApiParam(value = "档号", required = true) @RequestParam() String documentNumber,
+            @ApiParam(value = "全宗号", required = true) @RequestParam() String recordGroupNumber,
+            @ApiParam(value = "盒号", required = true) @RequestParam() String boxNumber,
+            @ApiParam(value = "年份", required = true) @RequestParam() String year,
+            @ApiParam(value = "保管期限", required = true) @RequestParam() String duration,
             @ApiParam(value = "密级") @RequestParam(required = false, defaultValue = "") String security,
-            @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
-            @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
+            @ApiParam(value = "档案类别", required = true) @RequestParam() String documentCategory,
+            @ApiParam(value = "案卷类型", required = true) @RequestParam() String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danweiCode,
-            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
+            @ApiParam(value = "单位代码", required = true) @RequestParam() String danweiCode,
+            @ApiParam(value = "单位名称", required = true) @RequestParam() String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
-            @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
-            @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime,
+            @ApiParam(value = "著录人", required = true) @RequestParam() String recorder,
+            @ApiParam(value = "著录时间", required = true) @RequestParam() String recordTime,
+            @ApiParam(value = "磁盘名", required = true) @RequestParam() String diskPath,
+            @ApiParam(value = "磁盘名", required = true) @RequestParam() String storePath,
             @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId
     ){
         try {
@@ -373,6 +375,8 @@ public class DocumentRecordController {
             newDocumentRecord.setPosition(position);
             newDocumentRecord.setRecorder(recorder);
             newDocumentRecord.setRecordTime(recordTime);
+            newDocumentRecord.setDiskPath(diskPath);
+            newDocumentRecord.setStorePath(storePath);
 
             documentRecordService.modifyDocumentRecord(newDocumentRecord);
 
