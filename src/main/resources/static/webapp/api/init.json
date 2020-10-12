@@ -35,9 +35,23 @@
         },
         {
           "title": "档案管理",
-          "href": "pages/manage.html",
+          "href": "",
           "icon": "fa fa-window-maximize",
-          "target": "_self"
+          "target": "_self",
+          "child": [
+            {
+              "title": "调卷登记",
+              "href": "pages/document/document-transfer.html",
+              "icon": "fa fa-edit",
+              "target": "_self"
+            },
+            {
+              "title": "案卷编目",
+              "href": "pages/document/document-catalog.html",
+              "icon": "fa fa-list",
+              "target": "_self"
+            }
+          ]
         },
         {
           "title": "系统维护",
