@@ -48,9 +48,12 @@ public class DocumentRecordService {
         documentRecord.setDiskPath(PathConstant.DISK_NAME);
         //创建这条记录对应的文件夹
         String strPath = documentRecord.getDiskPath() + ":\\" + storePath;
+
         File file = new File(strPath);
         if(!file.exists()){
-            file.mkdirs();
+            if(!file.mkdirs()){
+                throw new Exception("磁盘: " + documentRecord.getDiskPath() + " 不存在或路径错误！");
+            }
         }
         //返回文档记录在数据库中的id
         String documentRecordId = documentRecordDao.addDocumentRecord(documentRecord);
@@ -68,6 +71,10 @@ public class DocumentRecordService {
         //获取数据库中对应id的记录内容
         DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
         String path = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
+        File fileExsit = new File(path);
+        if (!fileExsit.exists()){
+            throw new Exception("磁盘: " + documentRecord.getDiskPath() + " 不存在或路径错误！");
+        }
         File file = new File(path);
         String[] fileName = file.list();
         List<String> list = new ArrayList<>();
@@ -148,7 +155,11 @@ public class DocumentRecordService {
 
         //新的文件存放路径
         String newPath = newDocumentRecord.getDiskPath() + ":\\" + storePath;
-
+        //判断路径是否存在
+        File file = new File(newPath);
+        if (!file.exists()){
+            throw new Exception("磁盘: " + newDocumentRecord.getDiskPath() + " 不存在或路径错误！");
+        }
 //        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
 //        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
 
