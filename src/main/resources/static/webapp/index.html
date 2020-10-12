@@ -110,12 +110,6 @@
     <script src="js/lay-config.js"></script>
     <script src="js/get-user.js"></script>
     <script>
-        $(document).ready(function() {
-            (function() {
-                var user = getUser();
-                $("#nickname").html(user.nickname);
-            })();
-        })
         layui.use(['layer', 'miniAdmin'], function () {
             var layer = layui.layer,
                 miniAdmin = layui.miniAdmin,
@@ -132,6 +126,12 @@
                 maxTabNum: 20,              // 最大的tab打开数量
             };
             miniAdmin.render(options);
+            $(document).ready(function() {
+                (function() {
+                    var user = getUser();
+                    $("#nickname").html(user.nickname);
+                })();
+            })
 
             // 百度统计代码，只统计指定域名
 

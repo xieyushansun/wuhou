@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-08 10:13:37
- * @LastEditTime: 2020-10-11 21:05:59
+ * @LastEditTime: 2020-10-11 22:55:33
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\get-user.js
@@ -40,16 +40,16 @@ function getCurrUser() {
                 user['username'] = body.userId;
                 user['nickname'] = body.nickName;
                 user['rolename'] = body.roleName;
-                user['permissions'] = body.permissions;
+                user['permissions'] = body.permission;
                 localStorage.setItem('user', JSON.stringify(user));
             } else if (res.code === 12) {
-                layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                layui.layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                     top.location.href = logUrl;
                 });
             }
         },
         error: function(jqxhr, textStatus, errorThrown) {
-            layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+            layui.layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
             console.log('error: get current user request error');
         }
     });
