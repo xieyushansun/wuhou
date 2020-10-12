@@ -80,7 +80,8 @@ function fillData(data) {
         "fileName": data.fileName,
         "position": data.position,
         "recorder": data.recorder,
-        "recordTime": data.recordTime
+        "recordTime": data.recordTime,
+        "diskPath": data.diskPath
     });
     form.render();
     // 获取文件列表
