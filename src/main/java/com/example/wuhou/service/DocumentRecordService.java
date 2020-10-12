@@ -155,11 +155,7 @@ public class DocumentRecordService {
 
         //新的文件存放路径
         String newPath = newDocumentRecord.getDiskPath() + ":\\" + storePath;
-        //判断路径是否存在
-        File file = new File(newPath);
-        if (!file.exists()){
-            throw new Exception("磁盘: " + newDocumentRecord.getDiskPath() + " 不存在或路径错误！");
-        }
+
 //        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
 //        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
 
@@ -169,7 +165,8 @@ public class DocumentRecordService {
             File newFile = new File(newPath);
             if (!newFile.exists()){
                 if (!newFile.mkdirs()){
-                    throw new Exception("创建文件夹: " + newPath + " 失败");
+//                    throw new Exception("创建文件夹: " + newPath + " 失败");
+                    throw new Exception("磁盘: " + newDocumentRecord.getDiskPath() + " 不存在或路径错误！");
                 }
             }
             //2.将旧文件夹下的文件移动到新文件夹下
