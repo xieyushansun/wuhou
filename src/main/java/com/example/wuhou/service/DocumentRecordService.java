@@ -121,7 +121,7 @@ public class DocumentRecordService {
         }
         logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
-    public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
+    public String modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
         String repeatRecordId = documentRecordDao.checkFileName(newDocumentRecord.getFileName());
         if (!repeatRecordId.isEmpty()){ //说明有重复的
             if (!repeatRecordId.equals(newDocumentRecord.getId())){
@@ -181,5 +181,6 @@ public class DocumentRecordService {
         }
 
         documentRecordDao.ModifyDocumentRecord(newDocumentRecord);
+        return storePath;
     }
 }

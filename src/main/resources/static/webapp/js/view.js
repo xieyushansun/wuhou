@@ -83,7 +83,7 @@ function fillData(data) {
         "recorder": data.recorder,
         "recordTime": data.recordTime,
         "diskPath": data.diskPath,
-        "sotrePath": data.storePath
+        "storePath": data.storePath
     });
     form.render();
     // 获取文件列表

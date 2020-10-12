@@ -356,6 +356,7 @@ public class DocumentRecordController {
             @ApiParam(value = "磁盘名", required = true) @RequestParam() String storePath,
             @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId
     ){
+        String newStorePath = "";
         try {
             DocumentRecord newDocumentRecord = new DocumentRecord();
 
@@ -383,6 +384,6 @@ public class DocumentRecordController {
         } catch (Exception e) {
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "修改失败: " + e.getMessage());
         }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "档案记录修改成功！");
+        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "档案记录修改成功！", newStorePath);
     }
 }
