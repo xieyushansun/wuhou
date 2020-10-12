@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-13 17:59:25
- * @LastEditTime: 2020-10-11 21:00:37
+ * @LastEditTime: 2020-10-12 15:14:56
  * @LastEditors: liyan
  * @Description: 创建档案页面的查询页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\create-file.html
@@ -82,7 +82,7 @@
                     url: "../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
                     type: "get",
                     success: function(res) {
-                        if (res.code == 0) {
+                        if (res.code === 0) {
                             documentCategoryData = res.body;
                             selectInit(documentCategoryData); // 初始化渲染select
                             form.render('select');
@@ -91,7 +91,7 @@
                                 top.location.href = '../login.html';
                             });
                         } else {
-                            layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                            layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                         }
                     },
                     error: function(jqxhr, textStatus, errorThrown) {
@@ -165,11 +165,13 @@
                 limitName: 'pageSize'
             },
             parseData: function(res) {
+                var data = res.body? res.body: [];
+                var totalElement = res.totalElement? res.totalElement: data.length;
                 return {
                     "code": res.code,
                     "msg": res.message,
-                    "count": res.totalElement,
-                    "data": res.body
+                    "count": totalElement,
+                    "data": data
                 }
             },
             limits: [10, 15, 20, 25],
@@ -192,9 +194,9 @@
                         table.reload('result-table');
                     }
                 });
-                $(window).on('resize', function() {
-                    layer.full(index);
-                });
+                // $(window).on('resize', function() {
+                //     layer.full(index);
+                // });
                 return false;
             } else if (obj.event === 'delete') {
                 var checkStatus = table.checkStatus('result-table'),
@@ -213,7 +215,7 @@
                     type: 2,
                     shade: 0.2,
                     maxmin: true,
-                    area: ['80%', '80%'],
+                    area: ['90%', '90%'],
                     content: './file/view.html',
                     success: function(layero, index) {
                         var iframeWin = window[layero.find('iframe')[0]['name']];
@@ -222,9 +224,9 @@
                         });
                     }
                 });
-                $(window).on('resize', function() {
-                    layer.full(index);
-                });
+                // $(window).on('resize', function() {
+                //     layer.full(index);
+                // });
                 return false;
             } else if (layEvent === 'delete') {
                 layer.confirm("确定删除档案\"" + data.fileName + "\"?", {icon: 3, title: '提示'}, function(index) {

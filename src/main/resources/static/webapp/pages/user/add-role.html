@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 17:52:53
- * @LastEditTime: 2020-10-11 22:07:29
+ * @LastEditTime: 2020-10-12 15:19:23
  * @LastEditors: liyan
  * @Description: 添加角色
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\add-role.html
@@ -115,7 +115,7 @@
                             top.location.href = '../../login.html';
                         });
                     } else {
-                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
                 }, 
                 error: function(jqxhr, textStatus, errorThrown) {

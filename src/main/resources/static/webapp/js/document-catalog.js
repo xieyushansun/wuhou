@@ -103,6 +103,12 @@ layui.use(['table', 'form', 'layer'], function () {
                         $('.down-btn').removeClass('layui-hide'); // 显示下载按钮
                         $('.down-btn').attr('href', downUrl);
                         $('#search-btn').removeClass('layui-disabled');
+                    } else if (res.code === 12) {
+                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                            top.location.href = '../../login.html';
+                        });
+                    } else {
+                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
                 }
             });

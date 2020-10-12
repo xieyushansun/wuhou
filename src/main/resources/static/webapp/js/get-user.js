@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-10-08 10:13:37
- * @LastEditTime: 2020-10-11 22:55:33
+ * @LastEditTime: 2020-10-12 14:46:39
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\get-user.js
@@ -43,7 +43,7 @@ function getCurrUser() {
                 user['permissions'] = body.permission;
                 localStorage.setItem('user', JSON.stringify(user));
             } else if (res.code === 12) {
-                layui.layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                layui.layer.msg('登录已失效', {time: top.ERROR_TIME, anim: 6}, function() {
                     top.location.href = logUrl;
                 });
             }

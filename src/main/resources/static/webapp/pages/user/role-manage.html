@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-10-04 15:24:14
- * @LastEditTime: 2020-10-11 22:12:31
+ * @LastEditTime: 2020-10-12 15:16:21
  * @LastEditors: liyan
  * @Description: 
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\role-manage.html
@@ -57,11 +57,13 @@
             ]],
             width: 500,
             parseData: function(res) {
+                var data = res.body? res.body: [];
+                var count = data.length;
                 return {
                     "code": res.code,
                     "msg": res.message,
-                    "data": res.body,
-                    "count": res.body.length
+                    "data": data,
+                    "count": count
                 }
             } 
 
@@ -85,10 +87,10 @@
                         iframeWin.addRole();
                     }
                 });
-                $(window).on('resize', function() {
-                    layer.full(index);
+                // $(window).on('resize', function() {
+                //     layer.full(index);
                     
-                });
+                // });
                 return false;
             }
         });
@@ -114,9 +116,9 @@
                         iframeWin.modRole(data.id);
                     }
                 });
-                $(window).on('resize', function() {
-                    layer.full(index);
-                });
+                // $(window).on('resize', function() {
+                //     layer.full(index);
+                // });
                 return false;
             } else if (event === 'delete') {
                 layer.confirm('确定删除角色：' + data.roleName + '?', {icon: 3}, function(index) {
@@ -139,7 +141,7 @@
                             top.location.href = '../../login.html';
                         });
                     } else {
-                        layer.msg(res.message, {time: 0.8*1000, icon: 2});
+                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
