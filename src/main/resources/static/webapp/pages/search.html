@@ -83,6 +83,12 @@
             },
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
+            done: function(res) {
+                if (res.code === 12) {
+                    layer.msg('登录超时', {time: 0.8*1000, anim: 6});
+                    top.location.href = '../login.html';
+                }
+            }
         });
 
         // 监听搜索操作

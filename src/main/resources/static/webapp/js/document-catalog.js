@@ -72,6 +72,7 @@ layui.use(['table', 'form', 'layer'], function () {
                     $('.down-btn').addClass('layui-hide').removeAttr('href');
                 } else if (res.code === 12) {
                     top.layui.layer.msg('登录失效', {time: 1.2*1000});
+                    top.location.href = '../../login.html';
                 }
             }
         });
