@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -115,63 +116,12 @@ public class DocumentRecordDao {
     }
     // 一般查询
     public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
-//        PageUtil pageUtil = new PageUtil();
-//
-//        // 用空格隔开的各个关键字
-//        String keyWord[] = multiKeyWord.split(" ");
-//        Query query = new Query();
-//        // 模糊查询
-//        if (blurryFind.compareTo("1") == 0){
-//            Criteria criteria = new Criteria();
-//            for (String s : keyWord) {
-//                criteria.orOperator(
-//                        Criteria.where("documentNumber").regex(".*?" + s + ".*?"),
-//                        Criteria.where("duration").regex(".*?" + s + ".*?"),
-//                        Criteria.where("security").regex(".*?" + s + ".*?"),
-//                        Criteria.where("responsible").regex(".*?" + s + ".*?"),
-//                        Criteria.where("danwieCode").regex(".*?" + s + ".*?"),
-//                        Criteria.where("danweiName").regex(".*?" + s + ".*?"),
-//                        Criteria.where("position").regex(".*?" + s + ".*?"),
-//                        Criteria.where("recorder").regex(".*?" + s + ".*?"),
-//                        Criteria.where("recordTime").regex(".*?" + s + ".*?"),
-//                        Criteria.where("storePath").regex(".*?" + s + ".*?")
-//                );
-//                query.addCriteria(criteria);
-//            }
-//        }
-//        else { // 精确查询
-//            for (String s : keyWord) {
-//                Criteria criteria = new Criteria();
-//                criteria.orOperator(
-//                        Criteria.where("documentNumber").is(s),
-//                        Criteria.where("duration").is(s),
-//                        Criteria.where("security").is(s),
-//                        Criteria.where("responsible").is(s),
-//                        Criteria.where("danwieCode").is(s),
-//                        Criteria.where("danweiName").is(s),
-//                        Criteria.where("position").is(s),
-//                        Criteria.where("recorder").is(s),
-//                        Criteria.where("recordTime").is(s),
-//                        Criteria.where("storePath").is(s)
-//                );
-//                query.addCriteria(criteria);
-//            }
-//        }
-//        pageUtil.setTotalElement((int) mongoTemplate.count(query, DocumentRecord.class));
-//
-//        query.skip((currentPage - 1) * pageSize);
-//        query.limit(pageSize);
-//
-//        pageUtil.setBody(mongoTemplate.find(query, DocumentRecord.class));
-//        return pageUtil;
         PageUtil pageUtil = new PageUtil();
 
         // 用空格隔开的各个关键字
         String keyWord[] = multiKeyWord.split(" ");
-//        Query query = new Query();
         StringBuilder sqlStart = new StringBuilder("{$and:[");
         String sqlEnd = "]}";
-
         // 模糊查询
         if (blurryFind.compareTo("1") == 0){
             for (String s : keyWord) {
@@ -180,7 +130,7 @@ public class DocumentRecordDao {
                         "{duration: /" + s + "/}," +
                         "{security: /" + s + "/}," +
                         "{responsible: /" + s + "/}," +
-                        "{danwieCode: /" + s + "/}," +
+                        "{danweiCode: /" + s + "/}," +
                         "{danweiName: /" + s + "/}," +
                         "{position: /" + s + "/}," +
                         "{recorder: /" + s + "/}," +
@@ -197,7 +147,7 @@ public class DocumentRecordDao {
                         "{duration: " + s + "}," +
                         "{security: " + s + "}," +
                         "{responsible: " + s + "}," +
-                        "{danwieCode: " + s + "}," +
+                        "{danweiCode: " + s + "}," +
                         "{danweiName: " + s + "}," +
                         "{position: " + s + "}," +
                         "{recorder: " + s + "}," +
@@ -224,8 +174,8 @@ public class DocumentRecordDao {
         PageUtil pageUtil = new PageUtil();
         /**
          * jsonArray
-         * filedName : 字段名
-         * filedContent : 字段内容
+         * fieldName : 字段名
+         * fieldContent : 字段内容
          * operator :
          * {
          *      $gt:大于
@@ -240,37 +190,37 @@ public class DocumentRecordDao {
 
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String filedName = jsonObject.get("filedName").toString();
-            String filedContent = jsonObject.get("filedContent").toString();
+            String fieldName = jsonObject.get("fieldName").toString();
+            String fieldContent = jsonObject.get("fieldContent").toString();
             String operator = jsonObject.get("operator").toString();
             String joiner = jsonObject.get("joiner").toString();
-            if (filedName.equals("recordTime") || filedName.compareTo("year") == 0) {
+            if (fieldName.equals("recordTime") || fieldName.compareTo("year") == 0) {
                 if (i == 0) {
                     switch (operator) {
-                        case "gt": currentSql = String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent);break;
-                        case "lt": currentSql = String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent);break;
-                        case "gte": currentSql = String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent);break;
-                        case "lte": currentSql = String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent);break;
-                        case "is": currentSql = String.format("{ %s:\"%s\"}", filedName, filedContent);break;
+                        case "gt": currentSql = String.format("{ %s:{ $gt: \"%s\" }}", fieldName, fieldContent);break;
+                        case "lt": currentSql = String.format("{ %s:{ $lt: \"%s\" }}", fieldName, fieldContent);break;
+                        case "gte": currentSql = String.format("{ %s:{ $gte: \"%s\" }}", fieldName, fieldContent);break;
+                        case "lte": currentSql = String.format("{ %s:{ $lte: \"%s\" }}", fieldName, fieldContent);break;
+                        case "is": currentSql = String.format("{ %s:\"%s\"}", fieldName, fieldContent);break;
                         default: throw new Exception("操作符传递出错");
                     }
                 } else {
                     if (joiner.equals("AND")) {
                         switch (operator) {
-                            case "gt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "lt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "gte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "lte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "is": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", filedName, filedContent) + "]}";break;
+                            case "gt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "lt": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "gte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "lte": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "is": currentSql = "{$and:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", fieldName, fieldContent) + "]}";break;
                             default: throw new Exception("操作符传递出错");
                         }
                     }else {
                         switch (operator) {
-                            case "gt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "lt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "gte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "lte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", filedName, filedContent) + "]}";break;
-                            case "is": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", filedName, filedContent) + "]}";break;
+                            case "gt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gt: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "lt": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lt: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "gte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $gte: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "lte": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:{ $lte: \"%s\" }}", fieldName, fieldContent) + "]}";break;
+                            case "is": currentSql = "{$or:[" + lastSql + ", " + String.format("{ %s:\"%s\"}", fieldName, fieldContent) + "]}";break;
                             default: throw new Exception("操作符传递出错");
                         }
                     }
@@ -278,23 +228,23 @@ public class DocumentRecordDao {
             } else {
                 if (i == 0) {
                     if(blurryFind.equals("1")){
-                        currentSql = String.format("{%s: /%s/}", filedName, filedContent);
+                        currentSql = String.format("{%s: /%s/}", fieldName, fieldContent);
                     }else {
-                        currentSql = String.format("{%s: \"%s\"}", filedName, filedContent);
+                        currentSql = String.format("{%s: \"%s\"}", fieldName, fieldContent);
                     }
                 } else {
                     if (joiner.equals("AND")) {
                         if (blurryFind.equals("1")){
-                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: /%s/}", filedName, filedContent) + "]}";
+                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: /%s/}", fieldName, fieldContent) + "]}";
                         }else {
-                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: \"%s\"}", filedName, filedContent) + "]}";
+                            currentSql = "{$and:[" + lastSql + ", " + String.format("{%s: \"%s\"}", fieldName, fieldContent) + "]}";
                         }
 
                     } else {
                         if (blurryFind.equals("1")){
-                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: /%s/}", filedName, filedContent) + "]}";
+                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: /%s/}", fieldName, fieldContent) + "]}";
                         }else {
-                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: \"%s\"}", filedName, filedContent) + "]}";
+                            currentSql = "{$or:[" + lastSql + ", " + String.format("{%s: \"%s\"}", fieldName, fieldContent) + "]}";
                         }
                     }
                 }
@@ -314,20 +264,38 @@ public class DocumentRecordDao {
         return pageUtil;
     }
     // 判断案卷名是否有重复的
-    public Boolean checkFileName(String fileName){
+    public String checkFileName(String fileName){
         Query query = new Query();
         Criteria criteria = Criteria.where("fileName").is(fileName);
         query.addCriteria(criteria);
-        List<DocumentRecord> documentRecordList = mongoTemplate.find(query, DocumentRecord.class);
-        return documentRecordList.size() == 0;
+        DocumentRecord documentRecord = mongoTemplate.findOne(query, DocumentRecord.class);
+        if (documentRecord == null){
+            return "";
+        }else {
+            return documentRecord.getId();
+        }
     }
+
     public void ModifyDocumentRecord(DocumentRecord documentRecord) throws Exception {
         Query query = new Query();
         Criteria criteria = Criteria.where("_id").is(new ObjectId(documentRecord.getId()));
         query.addCriteria(criteria);
-        mongoTemplate.remove(query, DocumentRecord.class);
-        logDao.insertLog("documentRecord", "删除", "删除档案记录:" + documentRecord.toString());
-        mongoTemplate.insert(documentRecord);
-        logDao.insertLog("documentRecord", "添加", "添加档案记录:" + documentRecord.toString());
+        Update update = Update.update("fileName", documentRecord.getFileName())
+                .set("documentNumber", documentRecord.getDocumentNumber())
+                .set("recordGroupNumber", documentRecord.getRecordGroupNumber())
+                .set("boxNumber", documentRecord.getBoxNumber())
+                .set("year", documentRecord.getYear())
+                .set("duration", documentRecord.getDuration())
+                .set("security", documentRecord.getSecurity())
+                .set("documentCategory", documentRecord.getDocumentCategory())
+                .set("fileCategory", documentRecord.getFileCategory())
+                .set("responsible", documentRecord.getResponsible())
+                .set("danweiCode", documentRecord.getDanweiCode())
+                .set("danweiName", documentRecord.getDanweiName())
+                .set("position", documentRecord.getPosition())
+                .set("recorder", documentRecord.getRecorder())
+                .set("recordTime", documentRecord.getRecordTime());
+        mongoTemplate.updateFirst(query, update, DocumentRecord.class);
+        logDao.insertLog("documentRecord", "修改", "修改案卷题名为" + documentRecord.getFileName() + " 的档案记录内容");
     }
 }

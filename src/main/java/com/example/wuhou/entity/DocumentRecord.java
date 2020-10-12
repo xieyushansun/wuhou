@@ -24,7 +24,7 @@ public class DocumentRecord {
     //责任者
     String responsible;
     //单位代码
-    String danwieCode;
+    String danweiCode;
     //单位名称
     String danweiName;
     //档案室中的存放位置
@@ -130,12 +130,12 @@ public class DocumentRecord {
         this.responsible = responsible;
     }
 
-    public String getDanwieCode() {
-        return danwieCode;
+    public String getDanweiCode() {
+        return danweiCode;
     }
 
-    public void setDanwieCode(String danwieCode) {
-        this.danwieCode = danwieCode;
+    public void setDanweiCode(String danweiCode) {
+        this.danweiCode = danweiCode;
     }
 
     public String getDanweiName() {
@@ -199,7 +199,7 @@ public class DocumentRecord {
                 ", 档案类别='" + documentCategory + '\'' +
                 ", 案卷类型='" + fileCategory + '\'' +
                 ", 责任者='" + responsible + '\'' +
-                ", 单位代码='" + danwieCode + '\'' +
+                ", 单位代码='" + danweiCode + '\'' +
                 ", 单位名称='" + danweiName + '\'' +
                 ", 存放位置='" + position + '\'' +
                 ", 著录人='" + recorder + '\'' +

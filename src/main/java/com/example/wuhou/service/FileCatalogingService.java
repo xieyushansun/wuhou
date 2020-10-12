@@ -50,7 +50,7 @@ public class FileCatalogingService {
 //            record[0] = String.valueOf(jian);
             record[0] = String.format("%03d", jian);
             jian++;
-            record[1] = dR.getDanwieCode();
+            record[1] = dR.getDanweiCode();
             record[2] = dR.getDanweiName();
             record[3] = dR.getFileName();
             record[4] = dR.getRecordTime();

@@ -29,7 +29,7 @@ public class DocumentRecordService {
     @Autowired
     DiskManageDao diskManageDao;
     public String addDocumentRecord(DocumentRecord documentRecord) throws Exception {
-        if (!documentRecordDao.checkFileName(documentRecord.getFileName())){
+        if (!documentRecordDao.checkFileName(documentRecord.getFileName()).isEmpty()){
             throw new Exception("案卷题名重复，请修改后再创建！");
         }
 
@@ -122,8 +122,12 @@ public class DocumentRecordService {
         logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
     public void modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
-        if (!documentRecordDao.checkFileName(newDocumentRecord.getFileName())){
-            throw new Exception("案卷题名重复，请修改后再保存！");
+        String repeatRecordId = documentRecordDao.checkFileName(newDocumentRecord.getFileName());
+        if (!repeatRecordId.isEmpty()){ //说明有重复的
+            if (!repeatRecordId.equals(newDocumentRecord.getId())){
+                throw new Exception("案卷题名重复，请修改后再保存！");
+            }
+            //如果不满足条件，说明是没有修改案卷题目，只是和修改前重复了
         }
         //初始化新记录的存储路径
         if (PathConstant.DISK_NAME.isEmpty()){
@@ -156,14 +160,16 @@ public class DocumentRecordService {
             //2.将旧文件夹下的文件移动到新文件夹下
             File oldFile = new File(oldPath);
             String[] fileName = oldFile.list();
-            for (String s : fileName) {
-                //file中的文件移到file2去
-                File file1 = new File(oldPath + "\\" + s);
-                File file2 = new File(newPath + "\\" + s);
-                if (!file1.renameTo(file2)) {
-                    // 删除之前新建的文件夹
-                    file2.delete();
-                    throw new Exception("文件: " + s + "移动到新路径" + newPath + "失败!");
+            if (fileName != null) {
+                for (String s : fileName) {
+                    //file中的文件移到file2去
+                    File file1 = new File(oldPath + "\\" + s);
+                    File file2 = new File(newPath + "\\" + s);
+                    if (!file1.renameTo(file2)) {
+                        // 删除之前新建的文件夹
+                        file2.delete();
+                        throw new Exception("文件: " + s + "移动到新路径" + newPath + "失败!");
+                    }
                 }
             }
             //3.删除旧文件夹

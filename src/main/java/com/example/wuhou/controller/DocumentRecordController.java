@@ -46,7 +46,7 @@ public class DocumentRecordController {
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "documentCategory") String documentCategory,
             @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "fileCategory") String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "danwieCode") String danwieCode,
+            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "danweiCode") String danweiCode,
             @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "danweiName") String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
@@ -66,7 +66,7 @@ public class DocumentRecordController {
             documentRecord.setDocumentCategory(documentCategory);
             documentRecord.setFileCategory(fileCategory);
             documentRecord.setResponsible(responsible);
-            documentRecord.setDanwieCode(danwieCode);
+            documentRecord.setDanweiCode(danweiCode);
             documentRecord.setDanweiName(danweiName);
             documentRecord.setPosition(position);
             documentRecord.setRecorder(recorder);
@@ -202,7 +202,7 @@ public class DocumentRecordController {
             @ApiParam(value = "档案类别1") @RequestParam(required = false, defaultValue = "") String documentCategory,
             @ApiParam(value = "案卷类型1") @RequestParam(required = false, defaultValue = "") String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danwieCode,
+            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danweiCode,
             @ApiParam(value = "单位名称") @RequestParam(required = false, defaultValue = "") String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人") @RequestParam(required = false, defaultValue = "") String recorder,
@@ -242,8 +242,8 @@ public class DocumentRecordController {
         if (!responsible.isEmpty()){
             findKeyWordMap.put("responsible", responsible);
         }
-        if (!danwieCode.isEmpty()){
-            findKeyWordMap.put("danwieCode", danwieCode);
+        if (!danweiCode.isEmpty()){
+            findKeyWordMap.put("danweiCode", danweiCode);
         }
         if (!danweiName.isEmpty()){
             findKeyWordMap.put("danweiName", danweiName);
@@ -347,7 +347,7 @@ public class DocumentRecordController {
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "1") String documentCategory,
             @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "1") String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danwieCode,
+            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "1") String danweiCode,
             @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "1") String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
@@ -368,7 +368,7 @@ public class DocumentRecordController {
             newDocumentRecord.setDocumentCategory(documentCategory);
             newDocumentRecord.setFileCategory(fileCategory);
             newDocumentRecord.setResponsible(responsible);
-            newDocumentRecord.setDanwieCode(danwieCode);
+            newDocumentRecord.setDanweiCode(danweiCode);
             newDocumentRecord.setDanweiName(danweiName);
             newDocumentRecord.setPosition(position);
             newDocumentRecord.setRecorder(recorder);
