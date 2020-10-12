@@ -46,13 +46,11 @@
                 </div>
             </fieldset>
             <div class="add-form">
-                <div class="layui-form layuimini-form layui-form-pane" lay-filter="add-form">
+                <div class="layui-form layui-form-pane" lay-filter="add-form">
                     <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">档号</label>
-                            <div class="layui-input-inline">    
-                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input" autocomplete="off">
-                            </div>
+                        <label class="layui-form-label">档号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input" autocomplete="off">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -117,13 +115,13 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">单位代码</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="danweiCode" class="layui-input" placeholder="(社会保障号码)" autocomplete="off">
+                                <input type="text" name="danweiCode" lay-verify="required" class="layui-input" placeholder="(社会保障号码)" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">单位名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="danweiName" class="layui-input" placeholder="(姓名)" autocomplete="off">
+                                <input type="text" name="danweiName" lay-verify="required"  class="layui-input" placeholder="(姓名)" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -153,7 +151,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">著录时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="recordTime"class="layui-input layui-disabled" readonly>
+                                <input type="text" name="recordTime" class="layui-input layui-disabled" readonly>
                             </div>
                         </div>
                     </div>
@@ -426,8 +424,8 @@
                             var filename = $(this).data()['name'];
                             var uploadedIdx = -1;
                             var thatIdx = index;
-                            if ((uploadedIdx = uploadedFiles.indexOf(files[thatIdx].filename)) !== -1) {
-                                if (deleteFile(documentRecordId, files[thatIdx].filename)) { // 删除成功
+                            if ((uploadedIdx = uploadedFiles.indexOf(filename)) !== -1) {
+                                if (deleteFile(documentRecordId, filename)) { // 删除成功
                                     uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
                                     tr.remove();
                                     uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选

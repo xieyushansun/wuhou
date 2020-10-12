@@ -45,15 +45,16 @@
                 </div>
             </fieldset> -->
             <div class="view-form">
-                <div class="layui-form layuimini-form layui-form-pane" lay-filter="view-form">
+                <div class="layui-form layui-form-pane" lay-filter="view-form">
+                    <input type="text" name="documentRecordId" class="layui-hide">
                     <div class="layui-form-item">
-                        <input type="text" name="documentRecordId" class="layui-hide">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">档号</label>
-                            <div class="layui-input-inline">    
-                                <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input doc-form" autocomplete="off">
-                            </div>
+
+                        <label class="layui-form-label">档号</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="documentNumber" lay-verify="required" lay-reqtext="档号不能为空" value="" class="layui-input doc-form" autocomplete="off">
                         </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-inline">
                             <label class="layui-form-label">全宗号</label>
                             <div class="layui-input-inline">
@@ -210,33 +211,12 @@
         fileCategoryList = [];
 
     var fileListView = $('#fileList'), // 文件列表的展示元素
-        uploadInst; // 文件上传的实例，后期赋值，重载
+        uploadListIns; // 文件上传的实例，后期赋值，重载
+    var uploadedFiles = [],
+        choosedFiles = [],
+        imgList = [];
 
     $(document).ready(function(){
-        (function() {
-            $.ajax({
-                url: "../../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
-                type: "get",
-                success: function(res) {
-                    if (res.code == 0) {
-                        documentCategoryData = res.body;
-                        selectInit(documentCategoryData); // 初始化渲染select
-                        form.render('select');
-                        documentCatAbbr = getDocCatAbbr(documentCategoryData);
-                    } else if (res.code === 12) {
-                        layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
-                            top.location.href = '../login.html';
-                        });
-                    } else {
-                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
-                    }
-                },
-                error: function(jqxhr, textStatus, errorThrown) {
-                    layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
-                    console.log('error: find all document category request error');
-                }
-            })
-        })(); // 获取档案类别
         // selectInit(documentCategoryData, add=true);
         $('.doc-form').attr('readonly', true).attr('disabled', true).addClass('layui-disabled');
         form.render();
@@ -250,10 +230,6 @@
             '永久': 'Y'
         };
 
-    var uploadedFiles = [],
-        choosedFiles = [],
-        imgList = [];
-
     var documentRecordId = 3;
 
     // 创建图片预览实例
@@ -261,9 +237,36 @@
             toolbar: true,
         });
 
+    // 获取档案类别，
+    function getCat() {
+        $.ajax({
+            url: "../../../DocumentCategory/FindAllDocumentCategory", // 获取档案类别
+            type: "get",
+            async: false,
+            success: function(res) {
+                if (res.code === 0) {
+                    documentCategoryData = res.body;
+                    selectInit(documentCategoryData); // 初始化渲染select
+                    form.render('select');
+                    documentCatAbbr = getDocCatAbbr(documentCategoryData);
+                } else if (res.code === 12) {
+                    layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                        top.location.href = '../login.html';
+                    });
+                } else {
+                    layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
+                }
+            },
+            error: function(jqxhr, textStatus, errorThrown) {
+                layer.confirm([textStatus, errorThrown].join(':'), {icon: 2});
+                console.log('error: find all document category request error');
+            }
+        });
+    }
 
     // 填充数据 由父页面调用；
     function fillData(data) {
+        getCat(); // 先获取档案类别 再填充数据
         documentRecordId = data.id;
         form.val('view-form', {
             "documentRecordId": data.id,
@@ -296,6 +299,7 @@
             files = [];
         $("#images").empty();
         imgList = [];
+        fileListView.empty();
         layui.each(files, function(index, file) {
             if (file === undefined || file === null) {
                 return;
@@ -452,8 +456,8 @@
                         var filename = $(this).data()['name'];
                         var uploadedIdx = -1;
                         var thatIdx = index;
-                        if ((uploadedIdx = uploadedFiles.indexOf(files[index].filename)) !== -1) {
-                            if (deleteFile(files[index].filename)) { // 删除成功
+                        if ((uploadedIdx = uploadedFiles.indexOf(filename)) !== -1) {
+                            if (deleteFile(filename)) { // 删除成功
                                 uploadedFiles.splice(uploadedIdx, 1); // 如果该文件在已上传文件列表中，需要从列表中删除，并从服务器删除。
                                 tr.remove();
                                 uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
@@ -501,6 +505,7 @@
                     tds = tr.children();
                 if (msg !== undefined) { // 如果有错误信息则显示错误信息
                     tds.eq(2).html('<span style="color: #FF5722;">' + msg +'</span>');
+                    tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
                 } else { // 一般是网络问题造成的错误
                     tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
                     tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
@@ -518,7 +523,7 @@
 
         uploadedFiles = []; 
         uploadListIns.reload({ // 重载上传实例
-            data: {documentRecordId: data.field.id}
+            data: {documentRecordId: data.field.documentRecordId}
         });
         // $("#save").addClass("layui-disabled").attr("disabled", "true");
         $.ajax({
@@ -526,11 +531,10 @@
             url: '../../../document/modifyDocumentRecord',
             data: data.field,
             success: function(res) {
-                if (res.code == 0) {
+                if (res.code === 0) {
                     layer.msg(res.message, {icon: 1}); // 保存成功，隐藏保存按钮，显示编辑按钮，重新渲染表格。
                     $("#save-btn").addClass("layui-hide").attr("disabled", "true");
                     $("#edit-btn").removeClass("layui-hide");
-                    $("#upload-container").addClass('layui-hide');
                     $(".doc-form").addClass('layui-disabled').attr({'readonly': 'true', 'disabled': 'true'});
                     $("#testList").removeClass('layui-disabled');
                     $("#testListAction").removeClass("layui-disabled");
@@ -638,7 +642,7 @@
             data: {documentRecordId: documentRecordId},
             success: function(res) {
                 if (res.code === 0) {
-                    uploadedFiles = res.body;
+                    uploadedFiles = res.body? res.body: [];
                     fileTable(uploadedFiles);
                 } else if (res.code === 12) {
                     layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
