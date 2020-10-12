@@ -47,7 +47,6 @@ public class UserService {
             userDao.addUser(user);
             roleDao.userRoleAuthorize(userId, roleId);
         }
-
     }
     public void deleteUser(String userId) throws Exception {
         userDao.deleteUser(userId);

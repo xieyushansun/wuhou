@@ -18,10 +18,6 @@ public class RoleService {
     RoleDao roleDao;
     public void addRole(Set<String> permissions, String roleName) throws Exception {
         Role role = new Role();
-//        if (permissions.size() == 0){
-//            //如果没有添加任何权限，添加一个权限为guest
-//            permissions.add(PermissionConstant.GUEST);
-//        }
         role.setPermissions(permissions);
         role.setRoleName(roleName);
         roleDao.addRole(role);
@@ -30,12 +26,6 @@ public class RoleService {
         roleDao.deleteRole(id);
     }
     public void modifyRole(Role role, String id) throws Exception {
-        // 如果修改后权限表为空，则赋予guest权限，即没有权限
-//        if (role.getPermissions().size() == 0){
-//            Set<String> permissions = new HashSet<>();
-//            permissions.add(PermissionConstant.GUEST);
-//            role.setPermissions(permissions);
-//        }
         roleDao.modifyRole(role, id);
     }
     public List<Role> getAllRole(){
@@ -47,7 +37,6 @@ public class RoleService {
     public void removeUserRoleAuthorize(String userId) throws Exception {
         roleDao.removeUserRoleAuthorize(userId);
     }
-
     public Set<String> getRolePermissions(String roleId){
         return roleDao.getRolePermissions(roleId);
     }

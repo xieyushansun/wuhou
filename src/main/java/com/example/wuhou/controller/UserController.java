@@ -186,5 +186,4 @@ public class UserController {
         }
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "获取成功！", userList);
     }
-
 }

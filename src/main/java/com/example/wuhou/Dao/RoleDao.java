@@ -45,7 +45,8 @@ public class RoleDao {
         logDao.insertLog("role", "添加",  "添加角色 > " + role.getRoleName());
 
     }
-    //删除角色
+    //
+
     public void deleteRole(String id) throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(new ObjectId(id)));

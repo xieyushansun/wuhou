@@ -188,7 +188,7 @@ public class DocumentRecordController {
     }
 
     //普通查询
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
+    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.FILE_CATALOG, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @GetMapping("/normalFindDocumentRecord")
     @ApiParam("普通查询档案记录, 0:默认是精确，1:模糊")
     public PageUtil normalFindDocumentRecord(

@@ -62,18 +62,19 @@ public class FileCatalogingController {
     public ResultUtil generateFileCatalog(
             @ApiParam(value = "档号", required = true) @RequestParam() String documentNumber
     ) throws Exception {
+        String generateFileName = documentNumber + "-编目导出.docx";
         try {
             String outputPath = PathConstant.WORD_OUTPUT + "\\" + documentNumber + "-编目导出.docx";
             File file = new File(outputPath);
             if (file.exists()){
-                return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功，但可能不是最新的版本");
+                return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功，但可能不是最新的版本", generateFileName);
             }
             //生成文件
             fileCatalogingService.outputFileCatalog(documentNumber);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "生成失败: " + e.getMessage());
         }
-        String generateFileName = documentNumber + "-编目导出.docx";
+
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功！", generateFileName);
     }
 
