@@ -101,7 +101,6 @@ layui.use(['table', 'form', 'layer'], function () {
                 success: function(res) {
                     if (res.code === 0) {
                         var downUrl = '../../../cataloging/outputFileCatalog?fileName=' + res.body;
-                        $('.loading').addClass('layui-hide'); // 编目成功，隐藏加载
                         $('.down-btn').removeClass('layui-hide'); // 显示下载按钮
                         $('.down-btn').attr('href', downUrl);
                         $('#search-btn').removeClass('layui-disabled');
@@ -112,6 +111,13 @@ layui.use(['table', 'form', 'layer'], function () {
                     } else {
                         layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
                     }
+                },
+                error: function(jqxhr, textStatus, errorThrown) {
+                    layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
+                    console.log('error: add document transfer request error');
+                },
+                finally: function() {
+                    $('.loading').addClass('layui-hide'); // 不管编目成功与否，隐藏加载
                 }
             });
         }
