@@ -46,6 +46,9 @@ public class DocumentRecordDao {
         }
         String recordPath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
         File file = new File(recordPath);
+        if (!file.exists()){
+            throw new Exception("路径: " + recordPath + " 不存在");
+        }
         List<String> fileList = null;
         if (file.isDirectory()){
 //            fileList = list.get(0).getFilelist();

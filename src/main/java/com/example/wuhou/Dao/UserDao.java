@@ -31,7 +31,6 @@ public class UserDao {
         return user;
     }
     public void addUser(User user) throws Exception {
-
         Query query = new Query();
         Criteria criteria = Criteria.where("userId").is(user.getUserId());
         query.addCriteria(criteria);
