@@ -44,7 +44,7 @@ public class UserService {
         user.setRoleId("guest");
         userDao.addUser(user);
         if (!roleId.equals("")) {
-            userDao.addUser(user);
+//            userDao.addUser(user);
             roleDao.userRoleAuthorize(userId, roleId);
         }
     }
