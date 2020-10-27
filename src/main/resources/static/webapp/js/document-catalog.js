@@ -116,7 +116,7 @@ layui.use(['table', 'form', 'layer'], function () {
                     layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                     console.log('error: add document transfer request error');
                 },
-                finally: function() {
+                complete: function() {
                     $('.loading').addClass('layui-hide'); // 不管编目成功与否，隐藏加载
                 }
             });

@@ -183,7 +183,7 @@ layui.use(['form', 'table', 'laydate'], function () {
                         layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                         console.log('error: add document transfer request error');
                     },
-                    finally: function() {
+                    complete: function() {
                         layer.close(index);
                     }
                 });

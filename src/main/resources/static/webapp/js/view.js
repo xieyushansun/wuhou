@@ -79,6 +79,9 @@ function fillData(data) {
         "danweiCode": data.danweiCode,
         "danweiName": data.danweiName,
         "fileName": data.fileName,
+        "generateTime": data.generateTime,
+        "order": data.order,
+        "pageNumber": data.pageNumber,
         "position": data.position,
         "recorder": data.recorder,
         "recordTime": data.recordTime,
@@ -86,6 +89,7 @@ function fillData(data) {
         "storePath": data.storePath
     });
     form.render();
+    $("#batch-down").attr("href", "../../../document/downLoadDocumentFileToPDF?documentRecordId=" + data.id);
     // 获取文件列表
     getFileList(data.id);
     rendUpload();
@@ -127,7 +131,7 @@ function fileTable(files) {
                     '<td>已上传</td>', 
                     '<td>', 
                         '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file + '">查看</button>', 
-                        '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\">下载</a>', 
+                        '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\" download>下载</a>', 
                         '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
                     '</td>', 
                 '</tr>'].join(''));
@@ -360,6 +364,30 @@ form.on('submit(saveBtn)', function (data) {
     return false;
 });
 
+$("#dell-all").on('click', function() {
+    $.ajax({
+        url: "../../../document/deleteAllFile",
+        type: "get",
+        data: {'documentRecordId': documentRecordId},
+        success: function(res) {
+            if (res.code === 0) {
+                layer.msg('清空成功');
+                $("#fileList").empty();
+                $("images").empty();
+                choosedFiles = [];
+                uploadedFiles = [];
+                imgList = [];
+            } else if (res.code === 12) {
+                layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                    top.location.href = '../../login.html';
+                });
+            } else {
+                layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
+            }
+        }
+    });
+});
+
 // 生成档号
 function makeDocumentNo() {
     var formData = form.val('view-form');
@@ -372,16 +400,16 @@ function makeDocumentNo() {
 
     if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
         documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
-        var indexList = fileCategoryList.indexOf(fileCategory),
-            docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
-        var no;
-        if (indexList > -1) {
-            no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
-        } else {
-            no = 'idx'
-        }
+        // var indexList = fileCategoryList.indexOf(fileCategory),
+        //     docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
+        // var no;
+        // if (indexList > -1) {
+        //     no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
+        // } else {
+        //     no = 'idx'
+        // }
         var documentNumber = recordGroupNumber + '-' + year + '-' + durationDict[duration] + '.' + 
-                                docCatAbbr + '.' + no +
+                                docCatAbbr + '.' + fileCategory +
                                 '-' + boxNumber;
         form.val('view-form', {
             "documentNumber": documentNumber

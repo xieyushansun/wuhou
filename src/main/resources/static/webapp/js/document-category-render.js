@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-09-21 20:16:16
- * @LastEditTime: 2020-10-11 09:36:35
+ * @LastEditTime: 2020-10-27 15:28:18
  * @LastEditors: liyan
  * @Description: 用于档案类别和案卷类别下拉选择的渲染和数据处理
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\document-category-render.js
@@ -89,7 +89,7 @@ function makeFileOption(data_list){
     for (var indexList = 0; indexList < data_list.length; indexList++) {
         var data = data_list[indexList];
         var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
-        option_list.push({"val": data, "text": data + '-' + no});
+        option_list.push({"val": data + '-' + no, "text": data + '-' + no});
     }
     return option_list;
 }

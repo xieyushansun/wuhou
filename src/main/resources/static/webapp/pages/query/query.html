@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-27 14:03:16
- * @LastEditTime: 2020-10-12 21:00:28
+ * @LastEditTime: 2020-10-27 16:17:54
  * @LastEditors: liyan
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\query\query.html
@@ -156,8 +156,25 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">案卷题名</label>
                             <div class="layui-input-block">
-                                <input type="text" name="fileName" lay-reqtext="案卷题名不能为空" value=""
-                                    class="layui-input" autocomplete="off">
+                                <input type="text" name="fileName" value="" class="layui-input" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">产生时间</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="generateTime" value="" class="layui-input" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">序号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="order" value="" class="layui-input" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">页码</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="pageNumber" value="" class="layui-input" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -210,6 +227,9 @@
                                     <option value="danweiCode">单位代码</option>
                                     <option value="danweiName">单位名称</option>
                                     <option value="fileName">案卷题名</option>
+                                    <option value="generateTime">产生时间</option>
+                                    <option value="order">序号</option>
+                                    <option value="pageNumber">页号</option>
                                     <option value="recorder">著录人</option>
                                     <option value="recordTime">著录时间</option>
                                 </select>

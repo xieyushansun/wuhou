@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-09-23 21:24:24
- * @LastEditTime: 2020-10-12 21:35:15
+ * @LastEditTime: 2020-10-27 17:13:32
  * @LastEditors: liyan
  * @Description: 用户管理页面
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\user\user-manage.html
@@ -198,7 +198,7 @@
                             error: function(jqxhr, textStatus, errorThrown) {
                                 layer.alert([textStatus, errorThrown].join(':'), {icon: 2});
                             },
-                            finally: function() {
+                            complete: function() {
                                 layer.close(index);
                             }
                         });

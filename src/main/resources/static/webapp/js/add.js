@@ -75,8 +75,8 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         makeDocumentNo();
     });
 
-    // 继续添加按钮的点击
-    $("#continue-add").on('click', function() {
+    // 清空添加按钮的点击
+    $("#new-add").on('click', function() {
         form.val('add-form', {
             "documentNumber": "",
             "year": "",
@@ -89,6 +89,9 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
             "danweiCode": "",
             "danweiName": "",
             "fileName": "",
+            "generateTime": "",
+            "order": "",
+            "pageNumber": "",
             "position": "",
             "recorder": user.username,
             "recordTime": getDate()
@@ -97,6 +100,25 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         $("#mount-btn").addClass("layui-disabled");
         $("#fileList").empty();
         $("#upload-container").css("display", "none");
+        $("images").empty();
+        choosedFiles = [];
+        uploadedFiles = [];
+        imgList = [];
+    });
+    $("#continue-add").on('click', function() {
+        var last_order = $('input[name="order"]').val();
+        form.val('add-form', {
+            "fileName": "",
+            "order": last_order + 1,
+            "pageNumber": "",
+            "recorder": user.username,
+            "recordTime": getDate()
+        });
+        $("#save").removeClass("layui-disabled").removeAttr("disabled");
+        $("#mount-btn").addClass("layui-disabled");
+        $("#fileList").empty();
+        $("#upload-container").css("display", "none");
+        $("images").empty();
         choosedFiles = [];
         uploadedFiles = [];
         imgList = [];
@@ -287,6 +309,30 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         
         return false;
     });
+    
+    $("#dell-all").on('click', function() {
+        $.ajax({
+            url: "../../../document/deleteAllFile",
+            type: "get",
+            data: {'documentRecordId': documentRecordId},
+            success: function(res) {
+                if (res.code === 0) {
+                    layer.msg('清空成功');
+                    $("#fileList").empty();
+                    $("images").empty();
+                    choosedFiles = [];
+                    uploadedFiles = [];
+                    imgList = [];
+                } else if (res.code === 12) {
+                    layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
+                        top.location.href = '../../login.html';
+                    });
+                } else {
+                    layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
+                }
+            }
+        });
+    });
 
     // 生成档号
     function makeDocumentNo() {
@@ -300,16 +346,16 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
 
         if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
             documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
-            var indexList = fileCategoryList.indexOf(fileCategory),
-                docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
-            var no;
-            if (indexList > -1) {
-                no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
-            } else {
-                no = 'idx'
-            }
+            // var indexList = fileCategoryList.indexOf(fileCategory),
+            //     docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
+            // var no;
+            // if (indexList > -1) {
+            //     no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
+            // } else {
+            //     no = 'idx'
+            // }
             var documentNumber = recordGroupNumber + '-' + year + '-' + durationDict[duration] + '.' + 
-                                 docCatAbbr + '.' + no +
+                                 docCatAbbr + '.' + fileCategory +
                                  '-' + boxNumber;
             form.val('add-form', {
                 "documentNumber": documentNumber

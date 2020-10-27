@@ -132,12 +132,24 @@
                                 <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input doc-form" autocomplete="off">
                             </div>
                         </div>
-                        <!-- <div class="layui-inline">
-                            <label class="layui-form-label">分类号</label>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">产生时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="classNumber" lay-verify="" lay-reqtext="目录号不能为空" value="" class="layui-input">
+                                <input type="text" name="generateTime" value="" class="layui-input">
                             </div>
-                        </div> -->
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">序号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="order" lay-verify="required|number" lay-reqtext="序号不能为空" value="" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">页号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="pageNumber" lay-verify="required|number" lay-reqtext="页号不能为空" value="" class="layui-input">
+                            </div>
+                        </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">存放位置</label>
                             <div class="layui-input-inline">
@@ -176,7 +188,9 @@
     <div class="layuimini-container" id="upload-container">
         <div class="layuimini-main">
             <div class="layui-upload">
-                <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button> 
+                <button type="button" class="layui-btn layui-btn-normal" id="testList">选择多文件</button>
+                <button type="button" class="layui-btn layui-btn-danger" id="del-all">删除所有文件</button>
+                <a class="layui-btn layui-btn-danger" href="" id="batch-down" download>合并图片下载</a>
                 <div class="layui-upload-list">
                   <table class="layui-table">
                     <thead>
@@ -188,7 +202,9 @@
                     <tbody id="fileList"></tbody>
                   </table>
                 </div>
-                <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+                <div class="layui-btn-group">
+                    <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+                </div>
               </div> 
         </div>
     </div>
