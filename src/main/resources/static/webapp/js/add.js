@@ -92,6 +92,7 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
             "generateTime": "",
             "order": "",
             "pageNumber": "",
+            "sex": "", 
             "position": "",
             "recorder": user.username,
             "recordTime": getDate()

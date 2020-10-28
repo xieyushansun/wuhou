@@ -82,6 +82,7 @@ function fillData(data) {
         "generateTime": data.generateTime,
         "order": data.order,
         "pageNumber": data.pageNumber,
+        "sex": data.sex,
         "position": data.position,
         "recorder": data.recorder,
         "recordTime": data.recordTime,
