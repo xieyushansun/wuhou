@@ -256,7 +256,7 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
                         tds = tr.children();
                     tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
                     tds.eq(3).find('.demo-reload').addClass('layui-hide');
-                    uploadedFiles.push(this.files[index].filename); // 在已上传文件中添加该文件
+                    uploadedFiles.push(this.files[index].name); // 在已上传文件中添加该文件
                     return delete this.files[index]; //删除文件队列已经上传成功的文件
                 }
                 this.error(index, upload, res.message);

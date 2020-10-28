@@ -119,7 +119,7 @@ function fileTable(files) {
                     '<td>已上传</td>', 
                     '<td>', 
                         '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\">下载</a>', 
-                        '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
+                        '<button class="layui-btn layui-btn-xs layui-btn-danger delete-file file-btn">删除</button>', 
                     '</td>', 
                 '</tr>'].join(''));
         } else {
@@ -132,7 +132,7 @@ function fileTable(files) {
                     '<td>', 
                         '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file + '">查看</button>', 
                         '<a class="layui-btn layui-btn-xs download-file file-btn" href=\"'+ downloadUrl + '\" download>下载</a>', 
-                        '<button class="layui-btn layui-btn-xs delete-file file-btn">删除</button>', 
+                        '<button class="layui-btn layui-btn-xs layui-btn-danger delete-file file-btn">删除</button>', 
                     '</td>', 
                 '</tr>'].join(''));
             $("#images").append("<li><img src='" + previewUrl + "' alt='" + file + "'></li>");
@@ -299,7 +299,7 @@ function rendUpload() {
                     tds = tr.children();
                 tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
                 tds.eq(3).find('.demo-reload').addClass('layui-hide');
-                uploadedFiles.push(this.files[index].filename); // 在已上传文件中添加该文件
+                uploadedFiles.push(this.files[index].name); // 在已上传文件中添加该文件
                 return delete this.files[index]; //删除文件队列已经上传成功的文件
             }
             this.error(index, upload, res.message);
