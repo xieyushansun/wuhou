@@ -1,7 +1,7 @@
 <!--
  * @Author: liyan
  * @Date: 2020-09-27 14:03:16
- * @LastEditTime: 2020-10-27 16:17:54
+ * @LastEditTime: 2020-10-28 11:22:33
  * @LastEditors: liyan
  * @Description: In User Settings Edit
  * @FilePath: \wuhou\src\main\resources\static\webapp\pages\query\query.html
@@ -31,6 +31,12 @@
             text-align: center;
             color: #196159;
             cursor: pointer;
+        }
+        .layui-form-label {
+            width: 130px;
+        }
+        .layui-input-block {
+            margin-left: 160px;
         }
     </style>
 </head>
@@ -141,16 +147,26 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">单位代码</label>
+                            <label class="layui-form-label">单位(个人)代码</label>
                             <div class="layui-input-block">
                                 <input type="text" name="danweiCode" class="layui-input" placeholder="(社会保障号码)"
                                     autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">单位名称</label>
+                            <label class="layui-form-label">单位(个人)名称</label>
                             <div class="layui-input-block">
                                 <input type="text" name="danweiName" class="layui-input" placeholder="(姓名)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">性别</label>
+                            <div class="layui-input-block">
+                                <select name="sex">
+                                    <option value=""></option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">

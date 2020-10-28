@@ -15,21 +15,28 @@
         }
         .view-form {margin: 0 auto;}
         
-        @media screen and (min-width: 642px) {
+        @media screen and (min-width: 700px) {
             .view-form {
-                width: 642px;
+                width: 690px;
                 margin: 10px auto;
             }
         }
 
-        @media screen and (min-width: 965px) {
+        @media screen and (min-width: 1080px) {
             .view-form {
-                width: 965px;
+                width: 1025px;
                 margin: 10px auto;
             }
             .layui-upload {
                 margin: 0 80px;
             }
+        }
+
+        .layui-form-pane .layui-form-label {
+            width: 130px;
+        }
+        .layui-form-pane .layui-input-block {
+            margin-left: 130px;
         }
 
     </style>
@@ -115,15 +122,25 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">单位代码</label>
+                            <label class="layui-form-label">单位(个人)名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="danweiName" class="layui-input doc-form" placeholder="(姓名)" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位(个人)代码</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="danweiCode" class="layui-input doc-form" placeholder="(社会保障号码)" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">单位名称</label>
+                            <label class="layui-form-label">性别</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="danweiName" class="layui-input doc-form" placeholder="(姓名)" autocomplete="off">
+                                <select name="sex" class="doc-form">
+                                    <option value=""></option>
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-inline">
