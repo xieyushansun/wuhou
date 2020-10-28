@@ -1,11 +1,11 @@
 package com.example.wuhou.entity;
 
 public class User{
-    String userId;  //登录ID
-    String password;
-    String nickName;
-    String salt = "";  //盐值
-    String roleId;  //角色
+    private String userId;  //登录ID
+    private String password;
+    private String nickName;
+    private String salt = "";  //盐值
+    private String roleId;  //角色
 
     public String getUserId() {
         return userId;

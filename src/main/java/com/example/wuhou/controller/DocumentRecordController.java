@@ -4,6 +4,7 @@ import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
 
 import com.example.wuhou.entity.DocumentRecord;
+import com.example.wuhou.service.DocumentFileService;
 import com.example.wuhou.util.PageUtil;
 import com.example.wuhou.service.DocumentRecordService;
 import com.example.wuhou.util.ResultUtil;
@@ -31,7 +32,8 @@ import javax.servlet.http.HttpServletResponse;
 public class DocumentRecordController {
     @Autowired
     DocumentRecordService documentRecordService;
-
+    @Autowired
+    DocumentFileService documentFileService;
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_ADD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/adddocumentrecord")
     @ApiOperation("新增档案记录")
@@ -46,9 +48,13 @@ public class DocumentRecordController {
             @ApiParam(value = "档案类别", required = true) @RequestParam(defaultValue = "documentCategory") String documentCategory,
             @ApiParam(value = "案卷类型", required = true) @RequestParam(defaultValue = "fileCategory") String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam(defaultValue = "danweiCode") String danweiCode,
-            @ApiParam(value = "单位名称", required = true) @RequestParam(defaultValue = "danweiName") String danweiName,
+            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danweiCode,
+            @ApiParam(value = "单位名称") @RequestParam(required = false, defaultValue = "") String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "产生时间") @RequestParam(required = false, defaultValue = "") String generateTime,
+            @ApiParam(value = "序号", required = true) @RequestParam(defaultValue = "1") String order,
+            @ApiParam(value = "页码", required = true) @RequestParam(defaultValue = "1") String pageNumber,
+            @ApiParam(value = "性别", required = false) @RequestParam(defaultValue = "1") String sex,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime
             ){
@@ -69,6 +75,10 @@ public class DocumentRecordController {
             documentRecord.setDanweiCode(danweiCode);
             documentRecord.setDanweiName(danweiName);
             documentRecord.setPosition(position);
+            documentRecord.setGenerateTime(generateTime);
+            documentRecord.setOrder(order);
+            documentRecord.setPageNumber(pageNumber);
+            documentRecord.setSex(sex);
             documentRecord.setRecorder(recorder);
             documentRecord.setRecordTime(recordTime);
 
@@ -98,222 +108,6 @@ public class DocumentRecordController {
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "删除成功！");
     }
 
-
-    //添加档案对应的几个文件
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_ADD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @PostMapping("/adddocumentrecordfile")
-    @ApiOperation("新增档案记录关联文件")
-    public ResultUtil<String> addDocumentRecordFile(
-            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
-            @ApiParam(value = "文件清单", required = true) @RequestParam("file") MultipartFile[] filelist
-    ){
-        try {
-            documentRecordService.addDocumentRecordFile(documentRecordId, filelist);
-        }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "新增失败: " + e.getMessage());
-        }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "添加成功！");
-    }
-    //下载档案文件
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_FILE_DOWNLOAD, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/downLoadDocumentRecordFile")
-    @ApiOperation("下载档案文件")
-    public ResultUtil<String> downLoadDocumentRecordFile(
-            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
-            @ApiParam(value = "下载文件名称", required = true) @RequestParam() String fileName,
-            HttpServletResponse response
-    ) {
-        try {
-            DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
-            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
-//            File file = new File(filepath);
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            inputStream.close();
-            response.reset();
-            response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
-            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-            toClient.write(buffer);
-            toClient.flush();
-            toClient.close();
-        }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "下载失败: " + e.getMessage());
-        }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "下载成功！");
-    }
-
-    //预览档案文件
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/previewDocumentRecordFile")
-    @ApiOperation("预览文件")
-    public ResultUtil<String> previewDocumentRecordFile(
-            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId,
-            @ApiParam(value = "预览文件名称", required = true) @RequestParam() String fileName,
-            HttpServletResponse response
-    ) {
-        try {
-            DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
-            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
-            File file = new File(filepath);
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(filepath));
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            inputStream.close();
-            response.reset();
-            response.setHeader("Content-Disposition", "Filename=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8));
-            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-            toClient.write(buffer);
-            toClient.flush();
-            toClient.close();
-        }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "预览失败: " + e.getMessage());
-        }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "预览成功！");
-    }
-    //根据档案记录Id查询路径下对应的文件清单名
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/findFileListByDocumentRecordId")
-    @ApiOperation("查找档案记录关联文件")
-    public ResultUtil<List<String>> findFileListByDocumentRecordId(
-            @ApiParam(value = "档案记录在数据库中的编号", required = true) @RequestParam() String documentRecordId
-    ){
-        List<String> fileList;
-        try {
-            fileList = documentRecordService.findFileListByDocumentRecordId(documentRecordId);
-        }catch (Exception e){
-            return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
-        }
-        return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "查找成功！", fileList);
-    }
-
-    //普通查询
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.FILE_CATALOG, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/normalFindDocumentRecord")
-    @ApiParam("普通查询档案记录, 0:默认是精确，1:模糊")
-    public PageUtil normalFindDocumentRecord(
-            @ApiParam(value = "案卷题名1") @RequestParam(required = false, defaultValue = "") String fileName,
-            @ApiParam(value = "档号") @RequestParam(required = false, defaultValue = "") String documentNumber,
-            @ApiParam(value = "全宗号1") @RequestParam(required = false, defaultValue = "") String recordGroupNumber,
-            @ApiParam(value = "盒号1") @RequestParam(required = false, defaultValue = "") String boxNumber,
-            @ApiParam(value = "年份1") @RequestParam(required = false, defaultValue = "") String year,
-            @ApiParam(value = "保管期限") @RequestParam(required = false, defaultValue = "") String duration,
-            @ApiParam(value = "密级") @RequestParam(required = false, defaultValue = "") String security,
-            @ApiParam(value = "档案类别1") @RequestParam(required = false, defaultValue = "") String documentCategory,
-            @ApiParam(value = "案卷类型1") @RequestParam(required = false, defaultValue = "") String fileCategory,
-            @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danweiCode,
-            @ApiParam(value = "单位名称") @RequestParam(required = false, defaultValue = "") String danweiName,
-            @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
-            @ApiParam(value = "著录人") @RequestParam(required = false, defaultValue = "") String recorder,
-            @ApiParam(value = "著录时间") @RequestParam(required = false, defaultValue = "") String recordTime,
-            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
-            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
-            @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
-    ){
-        Map<String, String> findKeyWordMap = new HashMap<>();
-        if (!fileName.isEmpty()){
-            findKeyWordMap.put("fileName", fileName);
-        }
-        if (!documentNumber.isEmpty()){
-            findKeyWordMap.put("documentNumber", documentNumber);
-        }
-        if (!recordGroupNumber.isEmpty()){
-            findKeyWordMap.put("recordGroupNumber", recordGroupNumber);
-        }
-        if (!boxNumber.isEmpty()){
-            findKeyWordMap.put("boxNumber", boxNumber);
-        }
-        if (!year.isEmpty()){
-            findKeyWordMap.put("year", year);
-        }
-        if (!duration.isEmpty()){
-            findKeyWordMap.put("duration", duration);
-        }
-        if (!security.isEmpty()){
-            findKeyWordMap.put("security", security);
-        }
-        if (!documentCategory.isEmpty()){
-            findKeyWordMap.put("documentCategory", documentCategory);
-        }
-        if (!fileCategory.isEmpty()){
-            findKeyWordMap.put("fileCategory", fileCategory);
-        }
-        if (!responsible.isEmpty()){
-            findKeyWordMap.put("responsible", responsible);
-        }
-        if (!danweiCode.isEmpty()){
-            findKeyWordMap.put("danweiCode", danweiCode);
-        }
-        if (!danweiName.isEmpty()){
-            findKeyWordMap.put("danweiName", danweiName);
-        }
-        if (!position.isEmpty()){
-            findKeyWordMap.put("position", position);
-        }
-        if (!recorder.isEmpty()){
-            findKeyWordMap.put("recorder", recorder);
-        }
-        if (!recordTime.isEmpty()){
-            findKeyWordMap.put("recordTime", recordTime);
-        }
-        PageUtil pageUtil;
-        try {
-            pageUtil = documentRecordService.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
-        }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
-        }
-        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
-        pageUtil.setMessage("查询成功");
-        return pageUtil;
-    }
-
-    //一般查询
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/generalFindDocumentRecord")
-    @ApiParam("一般查询档案记录, 0:默认是精确，1:模糊")
-    public PageUtil generalFindDocumentRecord(
-            @ApiParam(value = "需要查询的多个关键字，空格隔开") @RequestParam(defaultValue = "") String multiKeyWord,
-            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
-            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
-            @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
-    ){
-        PageUtil pageUtil;
-        try {
-            pageUtil = documentRecordService.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
-        }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
-        }
-        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
-        pageUtil.setMessage("查询成功！");
-        return pageUtil;
-    }
-
-    //组合查询
-    @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_CHECK, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
-    @GetMapping("/combinationFindDocumentRecord")
-    @ApiParam("一般查询档案记录, 0:默认是精确，1:模糊")
-    public PageUtil combinationFindDocumentRecord(
-            @ApiParam(value = "需要查询的多内容") @RequestParam() String list,
-            @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
-            @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
-            @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
-    ){
-        PageUtil pageUtil;
-        try {
-            JSONArray jsonArray = JSONArray.fromObject(list);
-//            for (int i = 0; i < jsonArray.size(); i++) {
-//                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                System.out.println("json数组传递过来的参数为:" + "第" + i + "条:" + "\n" + jsonObject.get("id"));
-//            }
-            pageUtil = documentRecordService.combinationFindDocumentRecord(jsonArray, blurryFind, currentPage, pageSize);
-        }catch (Exception e){
-            return new PageUtil(ResponseConstant.ResponseCode.FAILURE, "查找失败: " + e.getMessage());
-        }
-        pageUtil.setCode(ResponseConstant.ResponseCode.SUCCESS);
-        pageUtil.setMessage("查询成功！");
-        return pageUtil;
-    }
     //删除档案记录对应文件
     @RequiresRoles(value = {PermissionConstant.DOCUMENT_RECORD_DELETE, PermissionConstant.SUPERADMIN}, logical = Logical.OR)
     @PostMapping("/deleteDocumentRecordFile")
@@ -326,7 +120,7 @@ public class DocumentRecordController {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
             String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + fileName;
             File file = new File(filepath);
-            documentRecordService.deleteDocumentRecordFile(file, documentRecordId);
+            documentFileService.deleteDocumentRecordFile(file, documentRecordId);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "删除失败: " + e.getMessage());
         }
@@ -347,13 +141,17 @@ public class DocumentRecordController {
             @ApiParam(value = "档案类别", required = true) @RequestParam() String documentCategory,
             @ApiParam(value = "案卷类型", required = true) @RequestParam() String fileCategory,
             @ApiParam(value = "责任者") @RequestParam(required = false, defaultValue = "") String responsible,
-            @ApiParam(value = "单位代码", required = true) @RequestParam() String danweiCode,
-            @ApiParam(value = "单位名称", required = true) @RequestParam() String danweiName,
+            @ApiParam(value = "单位代码") @RequestParam(required = false, defaultValue = "") String danweiCode,
+            @ApiParam(value = "单位名称") @RequestParam(required = false, defaultValue = "") String danweiName,
             @ApiParam(value = "档案室中的存放位置") @RequestParam(required = false, defaultValue = "") String position,
+            @ApiParam(value = "产生时间") @RequestParam(required = false, defaultValue = "") String generateTime,
             @ApiParam(value = "著录人", required = true) @RequestParam() String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam() String recordTime,
             @ApiParam(value = "磁盘名", required = true) @RequestParam() String diskPath,
             @ApiParam(value = "磁盘名", required = true) @RequestParam() String storePath,
+            @ApiParam(value = "序号", required = true) @RequestParam() String order,
+            @ApiParam(value = "页码", required = true) @RequestParam() String pageNumber,
+            @ApiParam(value = "性别", required = false) @RequestParam() String sex,
             @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId
     ){
         String newStorePath = "";
@@ -374,10 +172,14 @@ public class DocumentRecordController {
             newDocumentRecord.setDanweiCode(danweiCode);
             newDocumentRecord.setDanweiName(danweiName);
             newDocumentRecord.setPosition(position);
+            newDocumentRecord.setGenerateTime(generateTime);
             newDocumentRecord.setRecorder(recorder);
             newDocumentRecord.setRecordTime(recordTime);
             newDocumentRecord.setDiskPath(diskPath);
             newDocumentRecord.setStorePath(storePath);
+            newDocumentRecord.setOrder(order);
+            newDocumentRecord.setPageNumber(pageNumber);
+            newDocumentRecord.setSex(sex);
 
             newStorePath = documentRecordService.modifyDocumentRecord(newDocumentRecord);
 

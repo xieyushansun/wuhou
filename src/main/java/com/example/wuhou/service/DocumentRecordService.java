@@ -32,7 +32,6 @@ public class DocumentRecordService {
         if (!documentRecordDao.checkFileName(documentRecord.getFileName()).isEmpty()){
             throw new Exception("案卷题名重复，请修改后再创建！");
         }
-
         if (PathConstant.DISK_NAME.isEmpty()){
             DiskManage diskManage = diskManageDao.getCurrentDiskNameAndSpace();
             if (diskManage != null){
@@ -64,44 +63,7 @@ public class DocumentRecordService {
         //删除documentrecord的文件夹以及文件夹中的内容
         FileOperationUtil.delFolder(path);
     }
-    public void addDocumentRecordFile(String documentRecordId, MultipartFile[] filelist) throws Exception {
-        if (filelist.length == 0){
-            throw new Exception("服务器没有接收到上传的文件！");
-        }
-        //获取数据库中对应id的记录内容
-        DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
-        String path = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath();
-        File fileExsit = new File(path);
-        if (!fileExsit.exists()){
-            throw new Exception("磁盘: " + documentRecord.getDiskPath() + " 不存在或路径错误！");
-        }
-        File file = new File(path);
-        String[] fileName = file.list();
-        List<String> list = new ArrayList<>();
-        list.addAll(Arrays.asList(fileName));
 
-        for (MultipartFile multipartFile : filelist) {
-            if (multipartFile == null) {
-                throw new Exception("存在空文件，上传失败！");
-            }
-            if (list.contains(multipartFile.getOriginalFilename())){
-                throw new Exception("存在重名文件:" + multipartFile.getOriginalFilename());
-            }
-            String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\" + multipartFile.getOriginalFilename();
-            byte[] bytesfile = multipartFile.getBytes();
-            FileOutputStream out = new FileOutputStream(new File(filepath));
-            out.write(bytesfile);
-            out.flush();
-            out.close();
-        }
-        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件");
-    }
-//    public DocumentFile downLoadDocumentRecordFile(String fileId){
-//        return documentRecordDao.downLoadDocumentRecordFile(new ObjectId(fileId));
-//    }
-    public List<String> findFileListByDocumentRecordId(String fileCategory) throws Exception {
-        return documentRecordDao.findFileListByDocumentRecordId(fileCategory);
-    }
     public DocumentRecord getDocumentRecordByDocumentRecordId(String documentRecordId) throws Exception {
         DocumentRecord documentRecord = documentRecordDao.getDocumentRecordById(documentRecordId);
         if (documentRecord == null){
@@ -109,25 +71,7 @@ public class DocumentRecordService {
         }
         return documentRecord;
     }
-    // 普通查询
-    public PageUtil normalFindDocumentRecord(Map<String, String> findKeyWordMap, String blurryFind, Integer currentPage, Integer pageSize){
-        return documentRecordDao.normalFindDocumentRecord(findKeyWordMap, blurryFind, currentPage, pageSize);
-    }
-    // 一般查询
-    public PageUtil generalFindDocumentRecord(String multiKeyWord, String blurryFind, Integer currentPage, Integer pageSize){
-        return documentRecordDao.generalFindDocumentRecord(multiKeyWord, blurryFind, currentPage, pageSize);
-    }
-    //组合查询
-    public PageUtil combinationFindDocumentRecord(JSONArray jsonArray, String blurryFind, Integer currentPage, Integer pageSize) throws Exception {
-        return documentRecordDao.combinationFindDocumentRecord(jsonArray, blurryFind, currentPage, pageSize);
-    }
 
-    public void deleteDocumentRecordFile(File file, String documentRecordId) throws Exception {
-        if (file.exists()){
-            file.delete();
-        }
-        logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
-    }
     public String modifyDocumentRecord(DocumentRecord newDocumentRecord) throws Exception {
         String repeatRecordId = documentRecordDao.checkFileName(newDocumentRecord.getFileName());
         if (!repeatRecordId.isEmpty()){ //说明有重复的
@@ -155,9 +99,6 @@ public class DocumentRecordService {
 
         //新的文件存放路径
         String newPath = newDocumentRecord.getDiskPath() + ":\\" + storePath;
-
-//        DocumentRecord oldDocumentRecord = documentRecordDao.getDocumentRecordById(newDocumentRecord.getId());
-//        String oldPath = oldDocumentRecord.getDiskPath() + ":\\" + oldDocumentRecord.getStorePath();
 
         // 判断新旧文件夹路径是否一样
         if (!oldPath.equals(newPath)){

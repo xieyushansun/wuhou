@@ -364,7 +364,7 @@ form.on('submit(saveBtn)', function (data) {
     return false;
 });
 
-$("#dell-all").on('click', function() {
+$("#del-all").on('click', function() {
     $.ajax({
         url: "../../../document/deleteAllFile",
         type: "get",
@@ -400,8 +400,8 @@ function makeDocumentNo() {
 
     if (recordGroupNumber !== "" && year !== "" && duration !== "" && 
         documentCategory !== "" && fileCategory !== "" && boxNumber !== "") {
-        // var indexList = fileCategoryList.indexOf(fileCategory),
-        //     docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
+        // var indexList = fileCategoryList.indexOf(fileCategory);
+        var docCatAbbr = documentCatAbbr[documentCategory]? documentCatAbbr[documentCategory]: documentCategory;
         // var no;
         // if (indexList > -1) {
         //     no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();

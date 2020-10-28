@@ -1,19 +1,19 @@
 package com.example.wuhou.entity;
 
 public class DocumentTransfer {
-    String _id;
+    private String _id;
     // 盒号
-    String boxNumber;
+    private String boxNumber;
     // 借阅人
-    String borrower;
+    private String borrower;
     // 借阅日期
-    String borrowDate;
+    private String borrowDate;
     // 归还日期
-    String returnDate;
+    private String returnDate;
     // 借阅记录者
-    String borrowRecorder;
+    private String borrowRecorder;
     // 归还记录者
-    String returnRecorder;
+    private String returnRecorder;
 
     public DocumentTransfer(){
         this._id = null;

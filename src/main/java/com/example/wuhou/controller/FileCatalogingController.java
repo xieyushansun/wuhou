@@ -34,10 +34,8 @@ public class FileCatalogingController {
             @ApiParam(value = "下载的文件名", required = true) @RequestParam() String fileName,
             HttpServletResponse response
     ){
-
         String outputPath = PathConstant.WORD_OUTPUT + "\\" + fileName;
         try {
-//            Thread.sleep(10000);
             InputStream inputStream = new BufferedInputStream(new FileInputStream(outputPath));
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);

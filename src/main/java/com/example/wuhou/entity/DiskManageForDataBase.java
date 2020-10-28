@@ -1,11 +1,11 @@
 package com.example.wuhou.entity;
 
 public class DiskManageForDataBase {
-    String _id;
+    private String _id;
     //磁盘名称
-    String diskName;
+    private String diskName;
     //是否选中为当前存储盘
-    String isChoosed;
+    private String isChoosed;
 
     public String getDiskName() {
         return diskName;

@@ -1,21 +1,21 @@
 package com.example.wuhou.entity;
 
 public class DiskManage {
-    String _id;
+    private String _id;
     //磁盘名称
-    String diskName;
+    private String diskName;
     //总共空间
-    String totalSpace;
+    private String totalSpace;
     //已用空间
-    String usedSpace;
+    private String usedSpace;
     //剩余空间
-    String restSpace;
+    private String restSpace;
     //设置使用百分比(整数)
-    String usedPercent;
+    private String usedPercent;
     //是否选中为当前存储盘
-    String isChoosed;
+    private String isChoosed;
     //是否被选中过（是否存有数据）
-    String isUsed;
+    private String isUsed;
 
     public DiskManage(){
         _id = null;

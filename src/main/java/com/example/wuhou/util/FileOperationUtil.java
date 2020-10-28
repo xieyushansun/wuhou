@@ -16,43 +16,6 @@ public class FileOperationUtil {
     @Autowired
     static
     MongoTemplate mongoTemplate;
-
-    public static byte[] fileToByte(File file) throws IOException {
-        byte[] bytes = null;
-        FileInputStream fis = null;
-        try{
-            fis = new FileInputStream(file);
-            bytes = new byte[(int) file.length()];
-            fis.read(bytes);
-        }catch(IOException e){
-            e.printStackTrace();
-            throw e;
-        }finally{
-            fis.close();
-        }
-        return bytes;
-    }
-    public static FileOutputStream bytesToFile(byte[] bFile, String fileName) {
-        Binary binary = new Binary(bFile);
-        binary.getData();
-        FileOutputStream fileOuputStream = null;
-        try {
-            fileOuputStream = new FileOutputStream(fileName);
-            fileOuputStream.write(bFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fileOuputStream != null) {
-                try {
-                    fileOuputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return fileOuputStream;
-    }
     public static boolean delAllFile(String path) {
         boolean flag = false;
         File file = new File(path);
@@ -93,34 +56,4 @@ public class FileOperationUtil {
             e.printStackTrace();
         }
     }
-
-//    public static void wirteUserLog(String msg) throws Exception {
-//        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = new Date(System.currentTimeMillis());
-//        if (PathConstant.DISKNAME.isEmpty()){
-//            throw new Exception("磁盘空间不足");
-//        }
-//        String path = PathConstant.DISKNAME + "\\" + PathConstant.STORE_FILE_NAME + "\\" + "logfile";
-//        String filepath = path + "\\" + formatter.format(date) + ".txt";
-//
-//        formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
-//        String recordTime = formatter.format(date);
-//        msg = recordTime + "--------" + msg;
-////        FileWriter fileWriter = new FileWriter(filepath, true);
-////        fileWriter.write(msg + "\r\n");
-////        fileWriter.close();
-////        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-////        RandomAccessFile randomFile = new RandomAccessFile(filepath, "rw");
-////        long fileLength = randomFile.length();
-////        randomFile.seek(fileLength);
-////        randomFile.writeBytes(msg + "\r\n");
-////        randomFile.close();
-//
-//
-//
-//
-////        bufferedWriter.write(msg + "\r\n");
-////        bufferedWriter.flush();
-////        bufferedWriter.close();
-//    }
 }
