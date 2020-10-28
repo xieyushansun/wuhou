@@ -109,7 +109,7 @@ layui.use(['table', 'form', 'layer'], function () {
                             top.location.href = '../../login.html';
                         });
                     } else {
-                        layer.msg(res.message, {time: top.ERROR_TIME, icon: 2});
+                        layer.msg(res.message, {time: 3*1000, icon: 2});
                     }
                 },
                 error: function(jqxhr, textStatus, errorThrown) {
