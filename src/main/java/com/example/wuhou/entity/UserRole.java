@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 public class UserRole {
-    String userId;
-    String nickName;
-    String roleName;
-    Set<String> permission;
+    private String userId;
+    private String nickName;
+    private String roleName;
+    private Set<String> permission;
 
     public String getUserId() {
         return userId;

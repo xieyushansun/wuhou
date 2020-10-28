@@ -2,42 +2,47 @@ package com.example.wuhou.entity;
 
 public class DocumentRecord {
     //记录在数据库中的id
-    String id;
+    private String id;
     //案卷题名（描述/标题）
-    String fileName;
+    private String fileName;
     //档号
-    String documentNumber;
+    private String documentNumber;
     //全宗号
-    String recordGroupNumber;
+    private String recordGroupNumber;
     //盒号
-    String boxNumber;
+    private String boxNumber;
     //年份
-    String year;
+    private String year;
     //保管期限
-    String duration;
+    private String duration;
     //密级
-    String security;
+    private String security;
     //档案类别
-    String documentCategory;
+    private String documentCategory;
     //案卷类型
-    String fileCategory;
+    private String fileCategory;
     //责任者
-    String responsible;
+    private String responsible;
     //单位代码
-    String danweiCode;
+    private String danweiCode;
     //单位名称
-    String danweiName;
+    private String danweiName;
     //档案室中的存放位置
-    String position;
+    private String position;
+    //产生时间
+    private String generateTime;
     //著录人
-    String recorder;
+    private String recorder;
     //著录时间
-    String recordTime;
+    private String recordTime;
     //所在盘符路径
-    String diskPath;
+    private String diskPath;
     //盘符下的存储路径
-    String storePath;
-
+    private String storePath;
+    //序号
+    private String order;
+    //页码
+    private String pageNumber;
     public DocumentRecord(){
         this.id = null;
     }
@@ -154,6 +159,14 @@ public class DocumentRecord {
         this.position = position;
     }
 
+    public String getGenerateTime() {
+        return generateTime;
+    }
+
+    public void setGenerateTime(String generateTime) {
+        this.generateTime = generateTime;
+    }
+
     public String getRecorder() {
         return recorder;
     }
@@ -173,7 +186,6 @@ public class DocumentRecord {
     public String getDiskPath() {
         return diskPath;
     }
-
     public void setDiskPath(String diskPath) {
         this.diskPath = diskPath;
     }
@@ -184,6 +196,22 @@ public class DocumentRecord {
 
     public void setStorePath(String storePath) {
         this.storePath = storePath;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public String getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(String pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
     @Override
@@ -202,10 +230,13 @@ public class DocumentRecord {
                 ", 单位代码='" + danweiCode + '\'' +
                 ", 单位名称='" + danweiName + '\'' +
                 ", 存放位置='" + position + '\'' +
+                ", 产生时间='" + generateTime + '\'' +
                 ", 著录人='" + recorder + '\'' +
                 ", 著录时间='" + recordTime + '\'' +
                 ", 所在盘符='" + diskPath + '\'' +
                 ", 盘符下的存储路径='" + storePath + '\'' +
+                ", 序号='" + order + '\'' +
+                ", 页码='" + pageNumber + '\'' +
                 '}';
     }
 }

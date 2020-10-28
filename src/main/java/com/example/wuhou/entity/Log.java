@@ -2,17 +2,17 @@ package com.example.wuhou.entity;
 
 public class Log {
     //id
-    String id;
+    private String id;
     // 操作时间
-    String operationTime;
+    private String operationTime;
     // 操作者Id
-    String operatorId;
+    private String operatorId;
     //操作类型
-    String operationType;
+    private String operationType;
     // 操作表
-    String table;
+    private String table;
     // 操作内容
-    String msg;
+    private String msg;
 
     public Log(){
         this.id = null;
