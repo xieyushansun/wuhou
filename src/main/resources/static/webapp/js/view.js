@@ -279,7 +279,7 @@ function rendUpload() {
                         imgList.splice(imgIdxx, 1); // 从imgList中删除该文件
                     }
                     
-                    imgidxx = choosedFiles.indexOf(filename);
+                    imgIdxx = choosedFiles.indexOf(filename);
                     if (imgIdxx > -1) {
                         choosedFiles.splice(imgIdxx, 1); // 从choosedFiles中删除
                     } 
