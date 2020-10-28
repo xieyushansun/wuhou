@@ -107,7 +107,8 @@ public class DocumentRecordDao {
                 .set("diskPath", documentRecord.getDiskPath())
                 .set("storePath", documentRecord.getStorePath())
                 .set("order", documentRecord.getOrder())
-                .set("pageNumber", documentRecord.getPageNumber());
+                .set("pageNumber", documentRecord.getPageNumber())
+                .set("sex", documentRecord.getSex());
         mongoTemplate.updateFirst(query, update, DocumentRecord.class);
         logDao.insertLog("documentRecord", "修改", "修改案卷题名为" + documentRecord.getFileName() + " 的档案记录内容");
     }

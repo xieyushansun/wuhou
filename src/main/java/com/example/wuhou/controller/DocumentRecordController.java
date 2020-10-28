@@ -54,6 +54,7 @@ public class DocumentRecordController {
             @ApiParam(value = "产生时间") @RequestParam(required = false, defaultValue = "") String generateTime,
             @ApiParam(value = "序号", required = true) @RequestParam(defaultValue = "1") String order,
             @ApiParam(value = "页码", required = true) @RequestParam(defaultValue = "1") String pageNumber,
+            @ApiParam(value = "性别", required = false) @RequestParam(defaultValue = "1") String sex,
             @ApiParam(value = "著录人", required = true) @RequestParam(defaultValue = "1") String recorder,
             @ApiParam(value = "著录时间", required = true) @RequestParam(defaultValue = "1") String recordTime
             ){
@@ -77,6 +78,7 @@ public class DocumentRecordController {
             documentRecord.setGenerateTime(generateTime);
             documentRecord.setOrder(order);
             documentRecord.setPageNumber(pageNumber);
+            documentRecord.setSex(sex);
             documentRecord.setRecorder(recorder);
             documentRecord.setRecordTime(recordTime);
 
@@ -149,6 +151,7 @@ public class DocumentRecordController {
             @ApiParam(value = "磁盘名", required = true) @RequestParam() String storePath,
             @ApiParam(value = "序号", required = true) @RequestParam() String order,
             @ApiParam(value = "页码", required = true) @RequestParam() String pageNumber,
+            @ApiParam(value = "性别", required = false) @RequestParam() String sex,
             @ApiParam(value = "需要修改的档案记录的id", required = true) @RequestParam(defaultValue = "1") String documentRecordId
     ){
         String newStorePath = "";
@@ -176,6 +179,7 @@ public class DocumentRecordController {
             newDocumentRecord.setStorePath(storePath);
             newDocumentRecord.setOrder(order);
             newDocumentRecord.setPageNumber(pageNumber);
+            newDocumentRecord.setSex(sex);
 
             newStorePath = documentRecordService.modifyDocumentRecord(newDocumentRecord);
 

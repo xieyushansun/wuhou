@@ -67,6 +67,7 @@ public class DocumentRecordFindDao {
                         "{recordTime: /" + s + "/}," +
                         "{order: /" + s + "/}," +
                         "{pageNumber: /" + s + "/}," +
+                        "{sex: /" + s + "/}," +
                         "{storePath: /" + s + "/}]}";
                 sqlStart.append(temp);
             }
@@ -86,6 +87,7 @@ public class DocumentRecordFindDao {
                         "{recordTime: " + s + "}," +
                         "{order: /" + s + "/}," +
                         "{pageNumber: /" + s + "/}," +
+                        "{sex: /" + s + "/}," +
                         "{generateTime: /" + s + "/}," +
                         "{storePath: " + s + "}]}";
                 sqlStart.append(temp);

@@ -43,6 +43,10 @@ public class DocumentRecord {
     private String order;
     //页码
     private String pageNumber;
+    //性别
+    private String sex;
+
+
     public DocumentRecord(){
         this.id = null;
     }
@@ -214,6 +218,14 @@ public class DocumentRecord {
         this.pageNumber = pageNumber;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
     @Override
     public String toString() {
         return "DocumentRecord{" +
@@ -235,6 +247,7 @@ public class DocumentRecord {
                 ", 著录时间='" + recordTime + '\'' +
                 ", 所在盘符='" + diskPath + '\'' +
                 ", 盘符下的存储路径='" + storePath + '\'' +
+                ", 性别='" + sex + '\'' +
                 ", 序号='" + order + '\'' +
                 ", 页码='" + pageNumber + '\'' +
                 '}';

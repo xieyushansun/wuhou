@@ -51,6 +51,7 @@ public class DocumentRecordFindController {
             @ApiParam(value = "是否模糊查询", required = true) @RequestParam(defaultValue = "1") String blurryFind,
             @ApiParam(value = "序号") @RequestParam(required = false, defaultValue = "") String order,
             @ApiParam(value = "页码") @RequestParam(required = false, defaultValue = "") String pageNumber,
+            @ApiParam(value = "性别") @RequestParam(required = false, defaultValue = "") String sex,
             @ApiParam(value = "当前显示页") @RequestParam(defaultValue = "1") Integer currentPage,
             @ApiParam(value = "页面大小", required = true) @RequestParam(defaultValue = "5") Integer pageSize
     ){
@@ -108,6 +109,9 @@ public class DocumentRecordFindController {
         }
         if (!pageNumber.isEmpty()){
             findKeyWordMap.put("pageNumber", pageNumber);
+        }
+        if(!sex.isEmpty()){
+            findKeyWordMap.put("sex", sex);
         }
         PageUtil pageUtil;
         try {

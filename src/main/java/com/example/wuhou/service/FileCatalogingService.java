@@ -5,6 +5,7 @@ import com.example.wuhou.Dao.DocumentRecordDao;
 import com.example.wuhou.Dao.FileCatalogingDao;
 import com.example.wuhou.Dao.LogDao;
 import com.example.wuhou.constant.PathConstant;
+import com.example.wuhou.constant.ResponseConstant;
 import com.example.wuhou.entity.DocumentRecord;
 import com.example.wuhou.util.WorderToNewWordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,12 @@ public class FileCatalogingService {
     public void outputFileCatalog(String documentNumber) throws Exception {
         List<DocumentRecord> documentRecordList = fileCatalogingDao.getDocumentRecordBydocumentNumber(documentNumber);
 
+        for (DocumentRecord documentRecord : documentRecordList){
+            if (documentRecord.getOrder() == null || documentRecord.getOrder().equals("")){
+                throw new Exception("案卷题名为: " + documentRecord.getFileName() + " 的档案记录的序号为空，请先补充后再进行编目！");
+            }
+        }
+
         // documentRecordList排序
         Comparator<DocumentRecord> netTypeComparator = new Comparator<DocumentRecord>() {
             @Override
@@ -118,7 +125,6 @@ public class FileCatalogingService {
             }
         };
         Collections.sort(documentRecordList, netTypeComparator);
-
 
         if (documentRecordList == null){
             throw new Exception("当前档号下无任何记录！");
@@ -145,7 +151,8 @@ public class FileCatalogingService {
 
             String[] record = new String[6];
 //            record[0] = String.valueOf(jian);
-            record[0] = String.format("%03d", dR.getOrder());
+//            record[0] = String.format("%03d", dR.getOrder());
+            record[0] = dR.getOrder();
             record[1] = dR.getDanweiCode();
             record[2] = dR.getDanweiName();
             record[3] = dR.getFileName();

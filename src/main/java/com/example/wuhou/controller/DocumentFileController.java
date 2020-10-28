@@ -130,6 +130,12 @@ public class DocumentFileController {
         try {
             DocumentRecord documentRecord = documentRecordService.getDocumentRecordByDocumentRecordId(documentRecordId);
             String filepath = documentRecord.getDiskPath() + ":\\" + documentRecord.getStorePath() + "\\";
+            File filetest = new File(filepath);
+            int flag = 1; // 1表示有文件，0表示无文件
+            if(filetest.listFiles().length == 0){
+//                return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "当前档案记录下无文件，无法生成pdf");
+                flag = 0;
+            }
             //将filepath目录下的所有图片生成为一个pdf
             String pdfFileName = documentRecord.getFileName() + ".pdf";
             String outPdfFilePath = PathConstant.PDF_OUTPUT + pdfFileName;
@@ -140,6 +146,9 @@ public class DocumentFileController {
             inputStream.read(buffer);
             inputStream.close();
             response.reset();
+            if (flag == 0){
+                pdfFileName = "当前档案记录下无文件，生成失败.txt";
+            }
             response.setHeader("Content-Disposition", "attachment;Filename=" + URLEncoder.encode(pdfFileName, StandardCharsets.UTF_8));
             OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
             toClient.write(buffer);
