@@ -54,6 +54,9 @@ layui.use(['table', 'form', 'layer'], function () {
 
     // 监听搜索操作
     $("#search-btn").on("click", function() {
+        if ($(this).hasClass('layui-disabled')) {
+            return;
+        }
         var documentNumber = $("#document-no").val();
         if (documentNumber === "")  {
             layer.tips('请填写完整档号', '#document-no');
@@ -106,7 +109,6 @@ layui.use(['table', 'form', 'layer'], function () {
                         var downUrl = '../../../cataloging/outputFileCatalog?fileName=' + res.body;
                         $('.down-btn').removeClass('layui-hide'); // 显示下载按钮
                         $('.down-btn').attr('href', downUrl);
-                        $('#search-btn').removeClass('layui-disabled');
                     } else if (res.code === 12) {
                         layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
                             top.location.href = '../../login.html';
@@ -121,6 +123,7 @@ layui.use(['table', 'form', 'layer'], function () {
                 },
                 complete: function() {
                     $('.loading').addClass('layui-hide'); // 不管编目成功与否，隐藏加载
+                    $('#search-btn').removeClass('layui-disabled');
                 }
             });
         }
