@@ -330,6 +330,10 @@ function rendUpload() {
     });
 }
 
+$("#batch-down").on('click', function () {
+    layer.msg('正在合并图片，请勿重复点击！', {time: 1.5*1000});
+});
+
 //监听提交
 form.on('submit(saveBtn)', function (data) {
     if ($(this).hasClass('layui-disabled')) {

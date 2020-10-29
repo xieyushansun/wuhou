@@ -53,7 +53,7 @@ public class DocumentFileService {
             out.flush();
             out.close();
         }
-        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件");
+//        logDao.insertLog("文件操作", "添加", "添加档案记录Id为: " + documentRecordId + " 的挂载文件");
     }
     public List<String> findFileListByDocumentRecordId(String fileCategory) throws Exception {
         return documentFileDao.findFileListByDocumentRecordId(fileCategory);
@@ -62,6 +62,6 @@ public class DocumentFileService {
         if (file.exists()){
             file.delete();
         }
-        logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
+//        logDao.insertLog("文件操作", "删除", "删除档案记录Id为: " + documentRecordId + " 的挂载文件: " + file.getName());
     }
 }

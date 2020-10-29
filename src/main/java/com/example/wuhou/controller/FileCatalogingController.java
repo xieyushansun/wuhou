@@ -1,5 +1,6 @@
 package com.example.wuhou.controller;
 
+import com.example.wuhou.WuhouApplication;
 import com.example.wuhou.constant.PathConstant;
 import com.example.wuhou.constant.PermissionConstant;
 import com.example.wuhou.constant.ResponseConstant;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -34,7 +38,7 @@ public class FileCatalogingController {
             @ApiParam(value = "下载的文件名", required = true) @RequestParam() String fileName,
             HttpServletResponse response
     ){
-        String outputPath = PathConstant.WORD_OUTPUT + "\\" + fileName;
+        String outputPath = PathConstant.WORD_OUTPUT + fileName;
         try {
             InputStream inputStream = new BufferedInputStream(new FileInputStream(outputPath));
             byte[] buffer = new byte[inputStream.available()];
@@ -62,19 +66,17 @@ public class FileCatalogingController {
     ) throws Exception {
         String generateFileName = documentNumber + "-编目导出.docx";
         try {
-            String outputPath = PathConstant.WORD_OUTPUT + "\\" + documentNumber + "-编目导出.docx";
-            File file = new File(outputPath);
-            if (file.exists()){
-                return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功，但可能不是最新的版本", generateFileName);
-            }
+//            String outputPath = PathConstant.WORD_OUTPUT + "\\" + documentNumber + "-编目导出.docx";
+//            File file = new File(outputPath);
+//            if (file.exists()){
+//                return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功，但可能不是最新的版本", generateFileName);
+//            }
             //生成文件
             fileCatalogingService.outputFileCatalog(documentNumber);
         }catch (Exception e){
             return new ResultUtil<>(ResponseConstant.ResponseCode.FAILURE, "生成失败: " + e.getMessage());
         }
-
         return new ResultUtil<>(ResponseConstant.ResponseCode.SUCCESS, "生成成功！", generateFileName);
     }
-
 }
 
