@@ -19,19 +19,22 @@
         .add-form {margin: 0 auto;}
 
         @media screen and (min-width: 700px) {
-            .view-form {
+            .add-form {
                 width: 690px;
                 margin: 10px auto;
             }
         }
 
-        @media screen and (min-width: 1080px) {
-            .view-form {
-                width: 1025px;
+        @media screen and (min-width: 1200px) {
+            .add-form {
+                width: 1176px;
                 margin: 10px auto;
             }
             .layui-upload {
                 margin: 0 80px;
+            }
+            .layui-form-pane .layui-input-inline {
+                width: 240px;
             }
         }
 
@@ -41,6 +44,7 @@
         .layui-form-pane .layui-input-block {
             margin-left: 130px;
         }
+        
 
     </style>
 </head>
@@ -121,7 +125,7 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">单位(个人）名称</label>
+                            <label class="layui-form-label">单位(个人)名称</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="danweiName"  class="layui-input" placeholder="(姓名)" autocomplete="off">
                             </div>
