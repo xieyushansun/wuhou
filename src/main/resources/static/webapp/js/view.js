@@ -44,8 +44,8 @@ function getCat() {
         success: function(res) {
             if (res.code === 0) {
                 documentCategoryData = res.body;
-                selectInit(documentCategoryData); // 初始化渲染select
-                form.render('select');
+                selectInit(documentCategoryData, add=true); // 初始化渲染select
+                // form.render('select');
                 documentCatAbbr = getDocCatAbbr(documentCategoryData);
             } else if (res.code === 12) {
                 layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
@@ -66,6 +66,16 @@ function getCat() {
 function fillData(data) {
     getCat(); // 先获取档案类别 再填充数据
     documentRecordId = data.id;
+    var documentCategory = data.documentCategory // 获取档案类别
+    fileCategoryList = getFileCategoryList(documentCategoryData, documentCategory); // 根据档案类别获取案卷类别
+    changeOption('fileCategory', makeFileOption(fileCategoryList)); // 重新修改案卷类别的option
+    var fileCategory = data.fileCategory; // 获取案卷类别
+    if (fileCategory.search('-') == -1) {
+        // 如果案卷类别中没有'-'说明是修改前录入的，需要加上'-no'才能正常显示
+        var indexList = fileCategoryList.indexOf(fileCategory);
+        var no = indexList < 10? '0' + (indexList + 1).toString(): (indexList + 1).toString();
+        fileCategory = fileCategory + '-' + no;
+    }
     form.val('view-form', {
         "documentRecordId": data.id,
         "documentNumber": data.documentNumber,
@@ -73,7 +83,7 @@ function fillData(data) {
         "duration": data.duration,
         "security": data.security,
         "documentCategory": data.documentCategory,
-        "fileCategory": data.fileCategory,
+        "fileCategory": fileCategory,
         "boxNumber": data.boxNumber,
         "responsible": data.responsible,
         "danweiCode": data.danweiCode,

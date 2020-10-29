@@ -23,13 +23,13 @@
         },
         {
           "title": "新建档案",
-          "href": "pages/create-file.html",
+          "href": "pages/create-file.html?v=1.2",
           "icon": "fa fa-pencil-square-o",
           "target": "_self"
         },
         {
           "title": "档案查询",
-          "href": "pages/search.html",
+          "href": "pages/search.html?v=1.2",
           "icon": "fa fa-search",
           "target": "_self"
         },

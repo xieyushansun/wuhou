@@ -35,7 +35,7 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
                 if (res.code == 0) {
                     documentCategoryData = res.body;
                     documentCatAbbr = getDocCatAbbr(documentCategoryData);
-                    selectInit(documentCategoryData); // 初始化渲染select
+                    selectInit(documentCategoryData, add=true); // 初始化渲染select
                     form.render('select');
                 } else if (res.code === 12) {
                     layer.msg('登录已失效', {time: 0.8*1000, anim: 6}, function() {
@@ -109,8 +109,7 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
     $("#continue-add").on('click', function() {
         var last_order = $('input[name="order"]').val();
         form.val('add-form', {
-            "fileName": "",
-            "order": last_order + 1,
+            "order": parseInt(last_order) + 1,
             "pageNumber": "",
             "recorder": user.username,
             "recordTime": getDate()

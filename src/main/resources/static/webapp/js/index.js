@@ -41,7 +41,7 @@ layui.use(['layer', 'miniAdmin'], function () {
         miniAdmin = layui.miniAdmin,
         miniTongji = layui.miniTongji;
     var options = {
-        iniUrl: "api/init.json",    // 初始化接口
+        iniUrl: "api/init.json?v=1.2",    // 初始化接口
         urlHashLocation: true,      // 是否打开hash定位
         bgColorDefault: 1,      // 主题默认配置
         multiModule: true,          // 是否开启多模块
