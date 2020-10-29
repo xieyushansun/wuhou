@@ -60,6 +60,7 @@
                 {field: 'responsible', title: '责任者', width: 150, minWidth: 150},
                 {field: 'danweiCode', title: '单位(个人)代码', width: 200, minWidth: 150},
                 {field: 'danweiName', title: '单位(个人)名称', width: 150, minWidth: 150},
+                {field: 'sex', title: '性别', width: 60, minWidth: 60},
                 {field: 'fileName', title: '案卷题名', width: 200, minWidth: 150},
                 {field: 'generateTime', title: '产生时间', width: 100, minWidth: 150},
                 {field: 'order', title: '序号', width: 60, minWidth: 50},
@@ -207,6 +208,9 @@
                         $(iframeWin).ready(function() {
                             iframeWin.fillData(data);
                         });
+                    },
+                    end: function() {
+                        table.reload('result-table');
                     }
                 });
                 $(window).on('resize', function() {

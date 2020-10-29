@@ -1,7 +1,7 @@
 /*
  * @Author: liyan
  * @Date: 2020-09-21 20:16:16
- * @LastEditTime: 2020-10-27 15:28:18
+ * @LastEditTime: 2020-10-29 16:02:32
  * @LastEditors: liyan
  * @Description: 用于档案类别和案卷类别下拉选择的渲染和数据处理
  * @FilePath: \wuhou\src\main\resources\static\webapp\js\document-category-render.js
@@ -122,12 +122,17 @@ function changeOption(filter, option_list){
 
 // select标签的初始化渲染
 function selectInit(data, add=false) {
+    /**
+     * @description: select标签的初始化渲染
+     * @param {data: "后台获取的档案案卷类别数据", add: "是否在option后面添加-缩写（序号）"}
+     * @return {*}
+     */
     var documentCategoryList = getDocumentCategoryList(data); // 获取档案类别的list
     var fileCategoryList = getFileCategoryList(data);
     if (add) {
         var documentCatAbbr = getDocCatAbbr(data);
         changeOption('documentCategory', makeDocumentOption(documentCategoryList, documentCatAbbr));
-        changeOption('fileCategory', makeFileOption(fileCategoryList, file=true));
+        changeOption('fileCategory', makeFileOption(fileCategoryList));
     } else {
         changeOption('documentCategory', makeOption(documentCategoryList)); //修改档案类别的option;
         changeOption('fileCategory', makeOption(fileCategoryList));
