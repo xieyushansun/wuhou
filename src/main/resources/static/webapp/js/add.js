@@ -310,6 +310,10 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         
         return false;
     });
+
+    $("#batch-down").on('click', function () {
+        layer.msg('正在合并图片，请勿重复点击！', {time: 1.5*1000});
+    });
     
     $("#del-all").on('click', function() {
         $.ajax({
