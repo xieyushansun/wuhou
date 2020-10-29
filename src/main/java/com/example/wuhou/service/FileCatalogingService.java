@@ -154,7 +154,7 @@ public class FileCatalogingService {
             String[] record = new String[6];
 //            record[0] = String.valueOf(jian);
 //            record[0] = String.format("%03d", dR.getOrder());
-            record[0] = dR.getOrder();
+            record[0] = dR.getOrder().replace(" ", "");
             record[1] = dR.getDanweiCode();
             record[2] = dR.getDanweiName();
             record[3] = dR.getFileName();
@@ -164,20 +164,20 @@ public class FileCatalogingService {
             tableList.add(record);
         }
 
-        int len = documentRecordList.size();
-        int a = len / 20;
-        // 不满一页补充条数
-        int addContentNum = (a + 1) * 20 -len;
-        String[] addNull = new String[6];
-        addNull[0] = "";
-        addNull[1] = "";
-        addNull[2] = "";
-        addNull[3] = "";
-        addNull[4] = "";
-        addNull[5] = "";
-        for (int i = 0; i < addContentNum; i++){
-            tableList.add(addNull);
-        }
+//        int len = documentRecordList.size();
+//        int a = len / 20;
+//        // 不满一页补充条数
+//        int addContentNum = (a + 1) * 20 -len;
+//        String[] addNull = new String[6];
+//        addNull[0] = "";
+//        addNull[1] = "";
+//        addNull[2] = "";
+//        addNull[3] = "";
+//        addNull[4] = "";
+//        addNull[5] = "";
+//        for (int i = 0; i < addContentNum; i++){
+//            tableList.add(addNull);
+//        }
 
         String documentCategory = documentRecordList.get(0).getDocumentCategory();
         String fileCategory = documentRecordList.get(0).getFileCategory();
