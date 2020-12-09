@@ -175,7 +175,8 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
             choose: function(obj) {
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                 //读取本地文件
-                obj.preview(function(index, file, result) {
+                // obj.preview(function(index, file, result) {
+                layui.each(files, function(index, file) {
                     if (uploadedFiles.indexOf(file.name) !== -1) {
                         layer.msg('已上传过名为\"' + file.name + '\"的文件', {icon: 2, anim: 6}); // 已上传重名文件
                         delete files[index];
@@ -192,17 +193,18 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
                         tr = $([
                             '<tr id="upload-' + index + '">', 
                                 '<td>' + file.name + '</td>',
-                                '<td><div><img src="' + result + '" style="width: 30px; height:30px;"></div></td>', 
+                                // '<td><div><img src="' + result + '" style="width: 30px; height:30px;"></div></td>', 
+                                '<td></td>', 
                                 '<td>等待上传</td>', 
                                 '<td>', 
-                                    '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file.name + '">查看</button>',
+                                    // '<button class="layui-btn layui-btn-primary layui-btn-xs view-file file-btn" data-name="' + file.name + '">查看</button>',
                                     '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', 
                                     '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete" data-name="' + file.name + '">删除</button>', 
                                 '</td>', 
                             '</tr>'].join(''));
-                        $("#images").append("<li><img src='" + result + "' alt='" + file.name + "'></li>");
-                        imgList.push(file.name);
-                        viewer.update();
+                        // $("#images").append("<li><img src='" + result + "' alt='" + file.name + "'></li>");
+                        // imgList.push(file.name);
+                        // viewer.update();
                     } else {
                         tr = $(['<tr id="upload-' + index + '">', '<td>' + file.name + '</td>','<td>' + file.type + '</td>' , '<td>等待上传</td>', '<td>','', '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>', '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>', '</td>', '</tr>'].join(''));
                     }
