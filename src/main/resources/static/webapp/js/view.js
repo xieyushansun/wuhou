@@ -34,6 +34,14 @@ var viewer = new Viewer(document.getElementById('images'), {
         toolbar: true,
     });
 
+form.verify({
+    folder: function(value, item) {
+        if (/(^\s)|(\s+$)/.test(value)) {
+            return '该字段不能以空格开始或结尾';
+        }
+    }
+});
+
 // 获取档案类别，
 function getCat() {
     $.ajax({

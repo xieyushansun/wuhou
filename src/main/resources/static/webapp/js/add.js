@@ -25,6 +25,14 @@ layui.use(['form', 'layer', 'upload', 'util'], function () {
         toolbar: true,
     });
 
+    form.verify({
+        folder: function(value, item) {
+            if (/(^\s)|(\s+$)/.test(value)) {
+                return '该字段不能以空格开始或结尾';
+            }
+        }
+    });
+
     $(document).ready(function(){
         (function() {
         $.ajax({

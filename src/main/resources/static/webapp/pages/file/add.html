@@ -77,7 +77,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">年度</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="year" lay-verify="required" lay-reqtext="年度不能为空" value="" class="layui-input docNoUsed" id="year">
+                                <input type="text" name="year" lay-verify="required|folder" lay-reqtext="年度不能为空" value="" class="layui-input docNoUsed" id="year">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -114,7 +114,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">案卷号</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="boxNumber" lay-verify="required" lay-reqtext="案卷号不能为空" value="" class="layui-input docNoUsed" placeholder="盒号">
+                                <input type="text" name="boxNumber" lay-verify="required|folder" lay-reqtext="案卷号不能为空" value="" class="layui-input docNoUsed" placeholder="盒号">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -149,7 +149,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">案卷题名</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="fileName" lay-verify="required" lay-reqtext="案卷题名不能为空" value="" class="layui-input" autocomplete="off">
+                                <input type="text" name="fileName" lay-verify="required|folder" lay-reqtext="案卷题名不能为空" value="" class="layui-input" autocomplete="off">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -161,13 +161,13 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">序号</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="order" lay-verify="required|number" lay-reqtext="序号不能为空" value="" class="layui-input">
+                                <input type="text" name="order" lay-verify="required|number|folder" lay-reqtext="序号不能为空" value="" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">页号</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="pageNumber" lay-verify="required|number" lay-reqtext="页号不能为空" value="" class="layui-input">
+                                <input type="text" name="pageNumber" lay-verify="required|number|folder" lay-reqtext="页号不能为空" value="" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
